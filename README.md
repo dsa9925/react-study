@@ -1,201 +1,222 @@
 # React 공부하기
 
-## 2. 기본 파일 이해
+## 3. 컴포넌트 html의 이해
 
-### index.html
+- 컴포넌트의 용도 1 은 html 을 출력한다.
+- 컴포넌트의 용도 2 은 여러번 재사용.
+- 컴포넌트의 용도 3 은 유지보수 편리.
+- 컴포넌트는 관례상 파일로 생성.
+- 컴포넌트는 반드시 파스칼케이스(대문자)로 파일 및 코드 생성.
 
-- `npm start`
-- 리액트 결과물은 index.html 의 id = "root" 에 배치된다. (id="root" 변경하지 말자.)
-- SPA (Single Page Application) 은 1장의 html 에서 여러 컨텐츠를 교체하면서 보여주는 결과물을 말한다.
-- index.html 코드 정리
+### 1. 리액트 작업 (컴포넌트 작업 진행 순서)
 
-```html
-<!DOCTYPE html>
-<html lang="ko">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta
-      name="description"
-      content="Web site created using create-react-app"
-    />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <title>리액트 공부</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-  </body>
-</html>
-```
+#### 1.1. 먼저 컴포넌트 구조에 대해서 생각하지 마세요.
 
-### src/index.js 살펴보기
-
-- index.html 에서 최초로 실행되는 js 파일
+- 와이어프레임 및 Figma 를 참조해서 그냥~~ App.js 에 html 작성한다.
 
 ```js
+// src/index.js (첫 실행 파일 : root 아이디에 내용 출력하라)
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
 import App from "./App";
-import reportWebVitals from "./reportWebVitals";
-
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(
-  //   <React.StrictMode>
-  //     <App />
-  //   </React.StrictMode>
-  <div className="wrap">
-    <h1>잘나오나요?</h1>
-  </div>
-);
-
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
-```
-
-- 일반적으로 render ( ) 사이에는 직접 html 태그를 배치하지는 않는다.
-- 하지만, React 에서는 관례상 `컴포넌트로 html 태그를 만들어 배치`한다.
-- 처음으로 볼수 있는 html 태그를 생성하는 컴포넌트는 App.js 이다.
-- React html 인 `컴포넌트의 이름을 대문자로 반드시 시작`한다.
-- React html 인 컴포넌트에 html 요소가 2개 이상이면 반드시 `<></>` 로 감싸준다.
-- 기본적인 컴포넌트의 모양새는 다음과 같다.
-
-```js
-const 컴포넌트변수 = function () {
-  return <>태그자리</>;
-};
-const 컴포넌트변수 = () => {
-  return <>태그자리</>;
-};
-```
-
-- 컴포넌트 샘플 코드
-
-```js
-import React from "react";
-import ReactDOM from "react-dom/client";
-import "./index.css";
-import App from "./App";
-import reportWebVitals from "./reportWebVitals";
-
-const Heading = function () {
-  return (
-    <div>
-      반가워요. <b>김도현</b> 컴포넌트로 HTML 만듦
-    </div>
-  );
-};
-
-const Heading02 = function () {
-  return <h1>반가워요.</h1>;
-};
-
-const Heading03 = function () {
-  return <h2>소제목입니다.</h2>;
-};
-
-const Heading04 = function () {
-  return <header>상단이에요.</header>;
-};
-
-const Heading05 = function () {
-  return (
-    <>
-      <p>1번 문장입니다.</p>
-      <p>2번 문장입니다.</p>
-    </>
-  );
-};
-
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <Heading />
-    <Heading02 />
-    <Heading03 />
-    <Heading04 />
-    <Heading05 />
     <App />
   </React.StrictMode>
 );
-reportWebVitals();
 ```
 
-- 컴포넌트는 관례적으로 파스칼케이스 컴포넌트.js 로 만든다.
-
 ```js
-// src/Heading.js
-const Heading = function () {
+// src/App.js
+function App() {
+  // js 코드 자리
   return (
-    <div>
-      반가워요. <b>김도현</b> 컴포넌트로 HTML 만듦
+    <div className="wrap">
+      <header>상단</header>
+      <div>이미지슬라이드</div>
+      <div>커뮤니티</div>
+      <footer>하단</footer>
     </div>
   );
-};
-export default Heading;
+}
+
+export default App;
 ```
 
-- 컴포넌트를 사용하는 곳에서는 import 를 활용한다.
+- 가상의 요구명세서를 고려해서 진행한 코드
 
 ```js
-import Heading from "Heading";
-```
-
-- 전체 코드
-
-```js
-import React from "react";
-import ReactDOM from "react-dom/client";
-import "./index.css";
-import App from "./App";
-import reportWebVitals from "./reportWebVitals";
-import { Heading } from "./Heading.js";
-
-// const Heading = function () {
-//   return (
-//     <div>
-//       반가워요. <b>김도현</b> 컴포넌트로 HTML 만듦
-//     </div>
-//   );
-// };
-
-const Heading02 = function () {
-  return <h1>반가워요.</h1>;
-};
-
-const Heading03 = function () {
-  return <h2>소제목입니다.</h2>;
-};
-
-const Heading04 = function () {
-  return <header>상단이에요.</header>;
-};
-
-const Heading05 = function () {
+// src/App.js
+function App() {
+  // js 코드 자리
   return (
-    <>
-      <p>1번 문장입니다.</p>
-      <p>2번 문장입니다.</p>
-    </>
+    <div>
+      {/* 상단 내용 고정 */}
+      <header>
+        <div>
+          <a href="#">로고</a>
+          <nav>메뉴</nav>
+        </div>
+      </header>
+      {/* 내용은 자주 변함 */}
+      <main>
+        <section>
+          <div>이미지슬라이드</div>
+        </section>
+        <section>
+          <div>커뮤니티</div>
+        </section>
+      </main>
+      {/* 하단 고정 */}
+      <footer>하단</footer>
+    </div>
   );
-};
+}
 
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(
-  <React.StrictMode>
-    <Heading />
-    <Heading02 />
-    <Heading03 />
-    <Heading04 />
-    <Heading05 />
-    <App />
-  </React.StrictMode>
-);
-reportWebVitals();
+export default App;
 ```
+
+- 요구명세서에 작성된 내용 진행 완료
+
+```js
+function App() {
+  // js 코드 자리
+  return (
+    <div>
+      {/* 상단 내용 고정 */}
+      <header>
+        <div>
+          <a href="#">로고</a>
+          <nav>
+            <ul>
+              <li>
+                <a href="#">Menu-1</a>
+                <ul>
+                  <li>
+                    <a href="#">SubMenu-1</a>
+                  </li>
+                  <li>
+                    <a href="#">SubMenu-2</a>
+                  </li>
+                  <li>
+                    <a href="#">SubMenu-3</a>
+                  </li>
+                  <li>
+                    <a href="#">SubMenu-4</a>
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <a href="#">Menu-2</a>
+                <ul>
+                  <li>
+                    <a href="#">SubMenu-1</a>
+                  </li>
+                  <li>
+                    <a href="#">SubMenu-2</a>
+                  </li>
+                  <li>
+                    <a href="#">SubMenu-3</a>
+                  </li>
+                  <li>
+                    <a href="#">SubMenu-4</a>
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <a href="#">Menu-3</a>
+                <ul>
+                  <li>
+                    <a href="#">SubMenu-1</a>
+                  </li>
+                  <li>
+                    <a href="#">SubMenu-2</a>
+                  </li>
+                  <li>
+                    <a href="#">SubMenu-3</a>
+                  </li>
+                  <li>
+                    <a href="#">SubMenu-4</a>
+                  </li>
+                </ul>
+              </li>
+              <li>
+                <a href="#">Menu-4</a>
+                <ul>
+                  <li>
+                    <a href="#">SubMenu-1</a>
+                  </li>
+                  <li>
+                    <a href="#">SubMenu-2</a>
+                  </li>
+                  <li>
+                    <a href="#">SubMenu-3</a>
+                  </li>
+                  <li>
+                    <a href="#">SubMenu-4</a>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </header>
+      {/* 내용은 자주 변함 */}
+      <main>
+        <section>
+          <div>이미지슬라이드</div>
+        </section>
+        <section>
+          <div>
+            <div>
+              <div>공지사항</div>
+              <div>갤러리</div>
+            </div>
+            <div>배너</div>
+            <div>바로가기</div>
+          </div>
+        </section>
+      </main>
+      {/* 하단 고정 */}
+      <footer>
+        <div>
+          <a href="#">로고</a>
+        </div>
+        <div>카피라이터</div>
+        <div>
+          <ul>
+            <li>
+              <a href="#">인스타그램</a>
+            </li>
+            <li>
+              <a href="#">페이스북</a>
+            </li>
+            <li>
+              <a href="#">카카오오픈채팅</a>
+            </li>
+            <li>
+              <a href="#">네이버블러그</a>
+            </li>
+            <li>
+              <a href="#">트위터(X)</a>
+            </li>
+          </ul>
+        </div>
+      </footer>
+    </div>
+  );
+}
+
+export default App;
+```
+
+#### 1.2. 컴포넌트 구조에 대해서 생각
+
+- 우선 각 내용영역 html (컴포넌트) 을 배치해서 화면(page)를 모아둔 src/pages 폴더가 있었으면 좋겠습니다.
+- 각 내용영역 html(컴포넌트)을 모아둘 src/components 폴더가 있었으면 좋겠습니다.
+- src/pages 폴더 생성
+- src/components 폴더 생성
+- 폴더명은 무조건 소문자로 컨벤션하겠습니다.
+
+#### 1.3. 데이터를 어디에 배치하면 효율적일까 고민해서 state 작성
