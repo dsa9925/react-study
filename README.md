@@ -10,101 +10,34 @@
 
 ### 1. 리액트 작업 (컴포넌트 작업 진행 순서)
 
-#### 1.2. 컴포넌트 구조에 대해서 생각
+#### 1.3. 데이터를 어디에 배치하면 효율적일까 고민해서 state 작성
 
-- 우선 각 내용영역 html (컴포넌트) 을 배치해서 화면(page) 를 모아둔 src/pages 폴더 가 있었으면 좋겠습니다.
-- 각 내용영역 html(컴포넌트) 을 모아둘 src/components 폴더가 있었으면 좋겠습니다.
-- src/pages 폴더 생성
-- src/components 폴더 생성
-- 폴더명은 무조건 소문자로 컨벤션하겠습니다.
+- 컴포넌트에 매개변수로 내용 html 전달하기
 
-- `src/pages/Main.js` 생성 후 App.js 코드를 이동해줌.
-- 이렇게 한 이유는 화면의 하나의 단위이기 때문입니다.
-- 사용자가 접속시에 보여지는 한 화면이기 때문에 pages 폴더에 생성
+- Footer 내용 html 전달하기
+
+```js
+// src/componets/Footer.js
+const Footer = (props) => {
+  console.log(props.children);
+  // js코드자리
+  const tags = "안녕";
+  return <footer>{props.children}</footer>;
+};
+
+export default Footer;
+```
 
 ```js
 // src/pages/Main.js
+import Footer from "../components/Footer";
+import Header from "../components/Header";
+
 const Main = () => {
   return (
     <div>
       {/* 상단 내용 고정 */}
-      <header>
-        <div>
-          <a href="#">로고</a>
-          <nav>
-            <ul>
-              <li>
-                <a href="#">Menu-1</a>
-                <ul>
-                  <li>
-                    <a href="#">SubMenu-1</a>
-                  </li>
-                  <li>
-                    <a href="#">SubMenu-2</a>
-                  </li>
-                  <li>
-                    <a href="#">SubMenu-3</a>
-                  </li>
-                  <li>
-                    <a href="#">SubMenu-4</a>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <a href="#">Menu-2</a>
-                <ul>
-                  <li>
-                    <a href="#">SubMenu-1</a>
-                  </li>
-                  <li>
-                    <a href="#">SubMenu-2</a>
-                  </li>
-                  <li>
-                    <a href="#">SubMenu-3</a>
-                  </li>
-                  <li>
-                    <a href="#">SubMenu-4</a>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <a href="#">Menu-3</a>
-                <ul>
-                  <li>
-                    <a href="#">SubMenu-1</a>
-                  </li>
-                  <li>
-                    <a href="#">SubMenu-2</a>
-                  </li>
-                  <li>
-                    <a href="#">SubMenu-3</a>
-                  </li>
-                  <li>
-                    <a href="#">SubMenu-4</a>
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <a href="#">Menu-4</a>
-                <ul>
-                  <li>
-                    <a href="#">SubMenu-1</a>
-                  </li>
-                  <li>
-                    <a href="#">SubMenu-2</a>
-                  </li>
-                  <li>
-                    <a href="#">SubMenu-3</a>
-                  </li>
-                  <li>
-                    <a href="#">SubMenu-4</a>
-                  </li>
-                </ul>
-              </li>
-            </ul>
-          </nav>
-        </div>
-      </header>
+      <Header></Header>
       {/* 내용은 자주 변함 */}
       <main>
         <section>
@@ -122,7 +55,7 @@ const Main = () => {
         </section>
       </main>
       {/* 하단 고정 */}
-      <footer>
+      <Footer>
         <div>
           <a href="#">로고</a>
         </div>
@@ -146,7 +79,7 @@ const Main = () => {
             </li>
           </ul>
         </div>
-      </footer>
+      </Footer>
     </div>
   );
 };
@@ -154,28 +87,30 @@ const Main = () => {
 export default Main;
 ```
 
-- src/Apps.js 는 Main 컴포넌트를 배치
-
-```js
-import Main from "./pages/Main";
-
-function App() {
-  // js 코드 자리
-  return <Main></Main>;
-}
-
-export default App;
-```
-
-- 컴포넌트를 구성하는 작업을 진행함
-- 상단영역 컴포넌트 생성 (src/components/Header.js)
+-Header 내용 html 전달하기
 
 ```js
 // src/components/Header.js
-const Header = () => {
+const Header = (props) => {
   return (
     <header>
-      <div>
+      <div>{props.children}</div>
+    </header>
+  );
+};
+export default Header;
+```
+
+```js
+// src/pages/Main.js
+import Footer from "../components/Footer";
+import Header from "../components/Header";
+
+const Main = () => {
+  return (
+    <div>
+      {/* 상단 내용 고정 */}
+      <Header>
         <a href="#">로고</a>
         <nav>
           <ul>
@@ -249,23 +184,7 @@ const Header = () => {
             </li>
           </ul>
         </nav>
-      </div>
-    </header>
-  );
-};
-
-export default Header;
-```
-
-```js
-// src/pages/Main.js
-import Header from "../components/Header";
-
-const Main = () => {
-  return (
-    <div>
-      {/* 상단 내용 고정 */}
-      <Header></Header>
+      </Header>
       {/* 내용은 자주 변함 */}
       <main>
         <section>
@@ -283,7 +202,7 @@ const Main = () => {
         </section>
       </main>
       {/* 하단 고정 */}
-      <footer>
+      <Footer>
         <div>
           <a href="#">로고</a>
         </div>
@@ -307,82 +226,10 @@ const Main = () => {
             </li>
           </ul>
         </div>
-      </footer>
+      </Footer>
     </div>
   );
 };
 
 export default Main;
 ```
-
-- 하단 영역 컴포넌트 생성(src/components/Footer.js)
-
-```js
-const Footer = () => {
-  return (
-    <footer>
-      <div>
-        <a href="#">로고</a>
-      </div>
-      <div>카피라이터</div>
-      <div>
-        <ul>
-          <li>
-            <a href="#">인스타그램</a>
-          </li>
-          <li>
-            <a href="#">페이스북</a>
-          </li>
-          <li>
-            <a href="#">카카오오픈채팅</a>
-          </li>
-          <li>
-            <a href="#">네이버블러그</a>
-          </li>
-          <li>
-            <a href="#">트위터(X)</a>
-          </li>
-        </ul>
-      </div>
-    </footer>
-  );
-};
-
-export default Footer;
-```
-
-```js
-import Footer from "../components/Footer";
-import Header from "../components/Header";
-
-const Main = () => {
-  return (
-    <div>
-      {/* 상단 내용 고정 */}
-      <Header></Header>
-      {/* 내용은 자주 변함 */}
-      <main>
-        <section>
-          <div>이미지슬라이드</div>
-        </section>
-        <section>
-          <div>
-            <div>
-              <div>공지사항</div>
-              <div>갤러리</div>
-            </div>
-            <div>배너</div>
-            <div>바로가기</div>
-          </div>
-        </section>
-      </main>
-      {/* 하단 고정 */}
-      <Footer></Footer>
-    </div>
-  );
-};
-
-export default Main;
-```
-
-#### 1.3. 데이터를 어디에 배치하면 효율적일까 고민해서 state 작성
