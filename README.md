@@ -10,78 +10,21 @@
 
 ### 1. 리액트 작업 (컴포넌트 작업 진행 순서)
 
-#### 1.1. 먼저 컴포넌트 구조에 대해서 생각하지 마세요.
+#### 1.2. 컴포넌트 구조에 대해서 생각
 
-- 와이어프레임 및 Figma 를 참조해서 그냥~~ App.js 에 html 작성한다.
+- 우선 각 내용영역 html (컴포넌트) 을 배치해서 화면(page) 를 모아둔 src/pages 폴더 가 있었으면 좋겠습니다.
+- 각 내용영역 html(컴포넌트) 을 모아둘 src/components 폴더가 있었으면 좋겠습니다.
+- src/pages 폴더 생성
+- src/components 폴더 생성
+- 폴더명은 무조건 소문자로 컨벤션하겠습니다.
 
-```js
-// src/index.js (첫 실행 파일 : root 아이디에 내용 출력하라)
-import React from "react";
-import ReactDOM from "react-dom/client";
-import App from "./App";
-const root = ReactDOM.createRoot(document.getElementById("root"));
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-);
-```
+- `src/pages/Main.js` 생성 후 App.js 코드를 이동해줌.
+- 이렇게 한 이유는 화면의 하나의 단위이기 때문입니다.
+- 사용자가 접속시에 보여지는 한 화면이기 때문에 pages 폴더에 생성
 
 ```js
-// src/App.js
-function App() {
-  // js 코드 자리
-  return (
-    <div className="wrap">
-      <header>상단</header>
-      <div>이미지슬라이드</div>
-      <div>커뮤니티</div>
-      <footer>하단</footer>
-    </div>
-  );
-}
-
-export default App;
-```
-
-- 가상의 요구명세서를 고려해서 진행한 코드
-
-```js
-// src/App.js
-function App() {
-  // js 코드 자리
-  return (
-    <div>
-      {/* 상단 내용 고정 */}
-      <header>
-        <div>
-          <a href="#">로고</a>
-          <nav>메뉴</nav>
-        </div>
-      </header>
-      {/* 내용은 자주 변함 */}
-      <main>
-        <section>
-          <div>이미지슬라이드</div>
-        </section>
-        <section>
-          <div>커뮤니티</div>
-        </section>
-      </main>
-      {/* 하단 고정 */}
-      <footer>하단</footer>
-    </div>
-  );
-}
-
-export default App;
-```
-
-- 요구명세서에 작성된 내용 진행 완료
-
-```js
-function App() {
-  // js 코드 자리
+// src/pages/Main.js
+const Main = () => {
   return (
     <div>
       {/* 상단 내용 고정 */}
@@ -206,17 +149,240 @@ function App() {
       </footer>
     </div>
   );
+};
+
+export default Main;
+```
+
+- src/Apps.js 는 Main 컴포넌트를 배치
+
+```js
+import Main from "./pages/Main";
+
+function App() {
+  // js 코드 자리
+  return <Main></Main>;
 }
 
 export default App;
 ```
 
-#### 1.2. 컴포넌트 구조에 대해서 생각
+- 컴포넌트를 구성하는 작업을 진행함
+- 상단영역 컴포넌트 생성 (src/components/Header.js)
 
-- 우선 각 내용영역 html (컴포넌트) 을 배치해서 화면(page)를 모아둔 src/pages 폴더가 있었으면 좋겠습니다.
-- 각 내용영역 html(컴포넌트)을 모아둘 src/components 폴더가 있었으면 좋겠습니다.
-- src/pages 폴더 생성
-- src/components 폴더 생성
-- 폴더명은 무조건 소문자로 컨벤션하겠습니다.
+```js
+// src/components/Header.js
+const Header = () => {
+  return (
+    <header>
+      <div>
+        <a href="#">로고</a>
+        <nav>
+          <ul>
+            <li>
+              <a href="#">Menu-1</a>
+              <ul>
+                <li>
+                  <a href="#">SubMenu-1</a>
+                </li>
+                <li>
+                  <a href="#">SubMenu-2</a>
+                </li>
+                <li>
+                  <a href="#">SubMenu-3</a>
+                </li>
+                <li>
+                  <a href="#">SubMenu-4</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a href="#">Menu-2</a>
+              <ul>
+                <li>
+                  <a href="#">SubMenu-1</a>
+                </li>
+                <li>
+                  <a href="#">SubMenu-2</a>
+                </li>
+                <li>
+                  <a href="#">SubMenu-3</a>
+                </li>
+                <li>
+                  <a href="#">SubMenu-4</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a href="#">Menu-3</a>
+              <ul>
+                <li>
+                  <a href="#">SubMenu-1</a>
+                </li>
+                <li>
+                  <a href="#">SubMenu-2</a>
+                </li>
+                <li>
+                  <a href="#">SubMenu-3</a>
+                </li>
+                <li>
+                  <a href="#">SubMenu-4</a>
+                </li>
+              </ul>
+            </li>
+            <li>
+              <a href="#">Menu-4</a>
+              <ul>
+                <li>
+                  <a href="#">SubMenu-1</a>
+                </li>
+                <li>
+                  <a href="#">SubMenu-2</a>
+                </li>
+                <li>
+                  <a href="#">SubMenu-3</a>
+                </li>
+                <li>
+                  <a href="#">SubMenu-4</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+  );
+};
+
+export default Header;
+```
+
+```js
+// src/pages/Main.js
+import Header from "../components/Header";
+
+const Main = () => {
+  return (
+    <div>
+      {/* 상단 내용 고정 */}
+      <Header></Header>
+      {/* 내용은 자주 변함 */}
+      <main>
+        <section>
+          <div>이미지슬라이드</div>
+        </section>
+        <section>
+          <div>
+            <div>
+              <div>공지사항</div>
+              <div>갤러리</div>
+            </div>
+            <div>배너</div>
+            <div>바로가기</div>
+          </div>
+        </section>
+      </main>
+      {/* 하단 고정 */}
+      <footer>
+        <div>
+          <a href="#">로고</a>
+        </div>
+        <div>카피라이터</div>
+        <div>
+          <ul>
+            <li>
+              <a href="#">인스타그램</a>
+            </li>
+            <li>
+              <a href="#">페이스북</a>
+            </li>
+            <li>
+              <a href="#">카카오오픈채팅</a>
+            </li>
+            <li>
+              <a href="#">네이버블러그</a>
+            </li>
+            <li>
+              <a href="#">트위터(X)</a>
+            </li>
+          </ul>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default Main;
+```
+
+- 하단 영역 컴포넌트 생성(src/components/Footer.js)
+
+```js
+const Footer = () => {
+  return (
+    <footer>
+      <div>
+        <a href="#">로고</a>
+      </div>
+      <div>카피라이터</div>
+      <div>
+        <ul>
+          <li>
+            <a href="#">인스타그램</a>
+          </li>
+          <li>
+            <a href="#">페이스북</a>
+          </li>
+          <li>
+            <a href="#">카카오오픈채팅</a>
+          </li>
+          <li>
+            <a href="#">네이버블러그</a>
+          </li>
+          <li>
+            <a href="#">트위터(X)</a>
+          </li>
+        </ul>
+      </div>
+    </footer>
+  );
+};
+
+export default Footer;
+```
+
+```js
+import Footer from "../components/Footer";
+import Header from "../components/Header";
+
+const Main = () => {
+  return (
+    <div>
+      {/* 상단 내용 고정 */}
+      <Header></Header>
+      {/* 내용은 자주 변함 */}
+      <main>
+        <section>
+          <div>이미지슬라이드</div>
+        </section>
+        <section>
+          <div>
+            <div>
+              <div>공지사항</div>
+              <div>갤러리</div>
+            </div>
+            <div>배너</div>
+            <div>바로가기</div>
+          </div>
+        </section>
+      </main>
+      {/* 하단 고정 */}
+      <Footer></Footer>
+    </div>
+  );
+};
+
+export default Main;
+```
 
 #### 1.3. 데이터를 어디에 배치하면 효율적일까 고민해서 state 작성
