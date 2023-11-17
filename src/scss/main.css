@@ -1,0 +1,55 @@
+.header {
+  position: relative;
+}
+
+.footer {
+  position: relative;
+}
+
+.wrap {
+  position: relative;
+  border: 5px solid red;
+  background: green;
+}
+.wrap .main {
+  position: relative;
+}
+.wrap .main .slide {
+  position: relative;
+}
+@media screen and (max-width: 760px) {
+  .wrap .main .slide {
+    position: absolute;
+  }
+}
+
+@media screen and (max-width: 1920px) {
+  .wrap {
+    position: relative;
+  }
+}
+@media screen and (max-width: 1280px) {
+  .wrap {
+    position: relative;
+  }
+}
+@media screen and (max-width: 1024px) {
+  .wrap {
+    position: relative;
+  }
+}
+@media screen and (max-width: 960px) {
+  .wrap {
+    position: relative;
+  }
+}
+@media screen and (max-width: 760px) {
+  .wrap {
+    position: relative;
+  }
+}
+@media screen and (max-width: 480px) {
+  .wrap {
+    position: relative;
+  }
+}/*# sourceMappingURL=main.css.map */

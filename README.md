@@ -10,39 +10,88 @@
 
 ### 2. 리액트 작업 (CSS 작업)
 
-#### 2.2. 파일(리액트 전용) : link moudle.css 방식
+- `npm i -D sass` 설치
+- /src/scss 폴더 생성후 .scss 파일들을 작성
+- Watch Sass 즉, 하단의 버튼을 클릭하여 Watching 을 시켜줌
+- 파일명.scss 를 저장하니까 파일명.css가 만들어 졌어요.
+- scss 로 저장해서 만들어진 css 갯수만큼 배치해야한다.
+- \_를 붙여준 .scss 는 저장을 해도 css 가 안만들어진다.
+- @import "파일명"을 할 때 \_기호를 제거하고 파일명만 넣어주면 하나의 파일로 합쳐진다.
 
-- 모듈(파일)별 로컬 Scope css 적용하기
-- css 덮어쒸우기가 아니므로 팀 프로젝트에 도입 가능
-- 컴포넌트명.module.css
-- Main.module.css
+`/src/scss/mian.scss`
 
-```js
-// src/components/Header.js
-import sytles from "../styles/Header.module.css";
-const Header = ({ children }) => {
-  // 내부 html을 전달받아서 내용을 변경한다.
-  // const children = props.children;
-  return (
-    <header className={sytles.wrap}>
-      <div>{children}</div>
-    </header>
-  );
-};
+```scss
+@import "variables";
+@import "mixin";
+@import "header";
+@import "footer";
 
-export default Header;
-```
-
-src/styles/Header.module.css
-
-```css
 .wrap {
   position: relative;
-  display: block;
-  width: 50%;
-  max-width: 1180px;
-  margin: 0 auto;
-  background: blue;
+  @include bt(red);
+  background: green;
+  .main {
+    position: relative;
+    .slide {
+      position: relative;
+    }
+
+    @media screen and (max-width: $mobile-screen) {
+      .slide {
+        position: absolute;
+      }
+    }
+  }
+}
+
+@media screen and (max-width: $wide_screen) {
+  .wrap {
+    position: relative;
+  }
+}
+@media screen and (max-width: $pc-screen) {
+  .wrap {
+    position: relative;
+  }
+}
+@media screen and (max-width: $notebook-screen) {
+  .wrap {
+    position: relative;
+  }
+}
+@media screen and (max-width: $tablet-screen) {
+  .wrap {
+    position: relative;
+  }
+}
+@media screen and (max-width: $mobile-screen) {
+  .wrap {
+    position: relative;
+  }
+}
+@media screen and (max-width: $min-mobile-screen) {
+  .wrap {
+    position: relative;
+  }
+}
+```
+
+`/src/scss/_variables.scss`
+
+```scss
+$wide-screen: 1920px;
+$pc-screen: 1280px;
+$notebook-screen: 1024px;
+$tablet-screen: 960px;
+$mobile-screen: 760px;
+$min-mobile-screen: 480px;
+```
+
+`/src/scss/_mixin.scss`
+
+```scss
+@mixin bt($cc) {
+  border: 5px solid $cc;
 }
 ```
 
