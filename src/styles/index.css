@@ -1,0 +1,39 @@
+/* css 에서 전역 변수 */
+:root {
+  --brand-color: #dee492;
+  --brand-color: #a9f58b;
+  --base-background-color: #d9fffd;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  outline-style: none;
+}
+ul,
+li {
+  list-style: none;
+}
+a {
+  color: #000;
+  text-decoration: none;
+}
+img {
+  vertical-align: middle;
+  border: 0;
+}
+html {
+  font-size: 10px;
+}
+body {
+  font-family: "Lucida Sans", "Lucida Sans Regular", "Lucida Grande",
+    "Lucida Sans Unicode", Geneva, Verdana, sans-serif;
+  font-size: 1rem;
+  color: #000;
+  line-height: 1.25;
+  letter-spacing: -0.25px;
+  word-break: break-all;
+  /* 변수 활용 */
+  background-color: var(--base-background-color);
+}

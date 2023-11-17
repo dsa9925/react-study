@@ -1,9 +1,10 @@
 import Footer from "../components/Footer";
 import Header from "../components/Header";
+import "../styles/main.css";
 
 const Main = () => {
   return (
-    <div>
+    <div className="wrap">
       {/* 상단 내용 고정 */}
       <Header>
         <a href="#">로고</a>
@@ -81,18 +82,18 @@ const Main = () => {
         </nav>
       </Header>
       {/* 내용은 자주 변함 */}
-      <main>
-        <section>
+      <main className="main">
+        <section className="slide">
           <div>이미지슬라이드</div>
         </section>
-        <section>
-          <div>
-            <div>
+        <section className="community">
+          <div className="inner">
+            <div className="community-notice">
               <div>공지사항</div>
               <div>갤러리</div>
             </div>
-            <div>배너</div>
-            <div>바로가기</div>
+            <div className="community-banner">배너</div>
+            <div className="community-link">바로가기</div>
           </div>
         </section>
       </main>
@@ -114,7 +115,7 @@ const Main = () => {
               <a href="#">카카오오픈채팅</a>
             </li>
             <li>
-              <a href="#">네이버블러그</a>
+              <a href="#">네이버블로그</a>
             </li>
             <li>
               <a href="#">트위터(X)</a>
