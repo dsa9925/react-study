@@ -10,54 +10,38 @@
 
 ### 2. 리액트 작업 (CSS 작업)
 
-#### 2.4. js 형식 : inline {} 방식
-
-```js
-  <div
-      className="wrap"
-      style={{
-        background: "yellowgreen",
-        fontSize: "10px",
-        width: "450px",
-        margin: "0 auto",
-      }}
-    >
-```
-
-- 컴포넌트에 css 에 적용을 직접할 수는 없습니다.
-
-#### 2.5. js 형식 : 변수 {} 방식
-
-```js
-
-const Main = () => {
-
-  const WrapCss = {
-    background: "yellowgreen",
-    fontSize: "10px",
-    width: "450px",
-    margin: "0 auto",
-  };
-
-return (
-  <div className="wrap" style={WrapCss}>...</div>
-```
-
-- css 오브젝트 외부 파일로 추출
-
-```js
-export const WrapCss = {
-  background: "yellowgreen",
-  fontSize: "10px",
-  width: "450px",
-  margin: "0 auto",
-};
-```
-
-```js
-import { WrapCss } from "../styles/sample";
-.....
-<div className="wrap" style={WrapCss}>
-```
-
 #### 2.6. CSS-in-JS 형식 : emotion.js 방식
+
+- `npm i @emotion/styled @emotion/react`
+- html 태그를 이용해서 내용을 구분하는 것은 한계가 있다.
+- html 태그에 이름을 변경하여 가독성/용도 활용을 수월하게 해준다.
+- html 태그에 이름을 변경하면서도 css 도 함께 적용한다.
+- html 태그 재활용(props 전달)을 수월하게 한다.
+- vscode 익스텐션 설치(플러그인) `vscode-styled-components`
+- `import styled from "@emotion/styled";`
+
+```js
+const SlideSection = styled.section``;
+...
+<SlideSection>
+  <div className="inner">이미지슬라이드</div>
+</SlideSection>;
+```
+
+- 변수 전달하기
+
+```js
+export const SlideSection = styled.section`
+  position: relative;
+  display: block;
+  width: 50%;
+  margin: 0 auto;
+  height: ${props => (props.h ? props.h + "px" : null)};
+  background: ${props => (props.bg ? props.bg : "orange")};
+`;
+
+....
+<SlideSection bg="yellow" h={200}>
+....
+</SlideSection>
+```
