@@ -1,11 +1,12 @@
 import Footer from "../components/Footer";
 import Header from "../components/Header";
 import "../scss/main.css";
+import { WrapCss } from "../styles/sample";
 
 const Main = () => {
   return (
     // <div className="wrap">
-    <div className={"wrap"}>
+    <div className="wrap" style={WrapCss}>
       {/* 상단 내용 고정 */}
       <Header>
         <a href="#">로고</a>
