@@ -1,8 +1,7 @@
-import Main from "./pages/Main";
+import React from "react";
 
-function App() {
-  // js 코드 자리
-  return <Main></Main>;
-}
+const App = () => {
+  return <div>App</div>;
+};
 
 export default App;

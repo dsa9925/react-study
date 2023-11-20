@@ -1,47 +1,139 @@
 # React 공부하기
 
-## 3. 컴포넌트 html의 이해
+## 4. 컴포넌트 js의 이해
 
-- 컴포넌트의 용도 1 은 html 을 출력한다.
-- 컴포넌트의 용도 2 은 여러번 재사용.
-- 컴포넌트의 용도 3 은 유지보수 편리.
-- 컴포넌트는 관례상 파일로 생성.
-- 컴포넌트는 반드시 파스칼케이스(대문자)로 파일 및 코드 생성.
-
-### 2. 리액트 작업 (CSS 작업)
-
-#### 2.6. CSS-in-JS 형식 : emotion.js 방식
-
-- `npm i @emotion/styled @emotion/react`
-- html 태그를 이용해서 내용을 구분하는 것은 한계가 있다.
-- html 태그에 이름을 변경하여 가독성/용도 활용을 수월하게 해준다.
-- html 태그에 이름을 변경하면서도 css 도 함께 적용한다.
-- html 태그 재활용(props 전달)을 수월하게 한다.
-- vscode 익스텐션 설치(플러그인) `vscode-styled-components`
-- `import styled from "@emotion/styled";`
+#### 4.1. js 출력하기 : 글자, 숫자(결과값이 있으면 출력)
 
 ```js
-const SlideSection = styled.section``;
-...
-<SlideSection>
-  <div className="inner">이미지슬라이드</div>
-</SlideSection>;
+function App() {
+  // const a = 1;
+  // return <>{a}</>;
+
+  // const b = "안녕";
+  // return <>{b}</>;
+
+  // const a = 1;
+  // const b = 2;
+  // return <>{a + b}</>;
+
+  // 화면 출력 결과물이 없을 시 미 출력
+  // const a = true;
+  // return <>{a}</>;
+
+  // 화면 출력 결과물이 없을 시 미 출력
+  // const a = undefined;
+  // return <>{a}</>;
+
+  // 화면 출력 결과물이 없을 시 미 출력
+  // const a = { age: 1, name: "홍길동", live: true };
+  // return (
+  // <>
+  // {/_ 객체 자체는 값이지만 글자, 숫자가 아니다. _/}
+  // {/_ {a} _/}
+  // <br />
+  // {a.age}
+  // <br />
+  // {a.name}
+  // <br />
+  // {a.live}
+  // </>
+  // );
+
+  // const arr = [1, 2, 3, 4];
+  // return (
+  // <>
+  // {arr}
+  // <br />
+  // {arr[0]}
+  // <br />
+  // {arr[1]}
+  // <br />
+  // {arr[2]}
+  // <br />
+  // {arr[3]}
+  // </>
+  // );
+
+  const arr = ["안", 20, true, null, undefined, "녕"];
+  return (
+    <>
+      {arr}
+      <br />
+      {arr[0]}
+      <br />
+      {arr[1]}
+      <br />
+      {arr[2]}
+      <br />
+      {arr[3]}
+      <br />
+      {arr[4]}
+      <br />
+      {arr[5]}
+      <br />
+      {arr.length}
+    </>
+  );
+}
 ```
 
-- 변수 전달하기
+export default App;
 
 ```js
-export const SlideSection = styled.section`
-  position: relative;
-  display: block;
-  width: 50%;
-  margin: 0 auto;
-  height: ${props => (props.h ? props.h + "px" : null)};
-  background: ${props => (props.bg ? props.bg : "orange")};
-`;
+function App() {
+  // const age = 18;
+  // return <>나이는 {age} 입니다.</>;
 
-....
-<SlideSection bg="yellow" h={200}>
-....
-</SlideSection>
+  // const age = 20;
+  // return <>{`나이는 ${age} 입니다`}</>;
+
+  const age = 25;
+  return <>{"나이는 " + age + "살 입니다"}</>;
+}
+
+export default App;
 ```
+
+```js
+function App() {
+  // function say() {
+  //   return "안녕";
+  // }
+  // return <>{say()}</>;
+
+  function say(who) {
+    // return "안녕" + who + "!";
+    return `안녕 ${who}!`;
+  }
+
+  return <>{say("경민")}</>;
+}
+
+export default App;
+```
+
+- 화살표 함수로 고치기
+
+```js
+const App = () => {
+  // const say= () => {
+  //   return "안녕";
+  // }
+  // return <>{say()}</>;
+
+  const say = who => {
+    // return "안녕" + who + "!";
+    return `안녕 ${who}!`;
+  };
+
+  return <>{say("경민")}</>;
+};
+
+export default App;
+```
+
+#### 4.2. 조건문의 이해
+
+#### 4.3. 반복문의 이해
+
+#### 4.4. 이벤트(onClick, onChange)의 이해
