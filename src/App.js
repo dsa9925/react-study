@@ -5,15 +5,34 @@ const App = () => {
   const handleChangeJoinForm = event => {
     // console.log(event.target);
     // console.log(event.type);
-    console.log(event.target.value);
     console.log(event.target.name);
+    console.log(event.target.value);
     // console.log(event.target.type);
     // console.log(event.target.id);
   };
 
+  // 데이터 전송 처리 함수
+  const handleSubmitJoinForm = event => {
+    // 기본 동작 막기
+    event.preventDefault();
+
+    console.log(event);
+    console.log(event.type);
+    console.log(event.target);
+    console.log(event.target.name);
+    console.log(event.target.action);
+    console.log(event.target.method);
+    console.log(event.target.onSubmitd);
+  };
+
   return (
     <div>
-      <form action="/path" method="get" name="join">
+      <form
+        action="/path"
+        method="get"
+        name="join"
+        onSubmit={event => handleSubmitJoinForm(event)}
+      >
         <fieldset>
           <legend>회원가입</legend>
           <label htmlFor="user">아이디</label>
@@ -141,7 +160,11 @@ const App = () => {
           <legend>버튼들</legend>
           <input type="reset" value="다시작성" />
           <input type="submit" value="작성완료" />
-          <button type="button">버튼 작성 완료</button>
+
+          {/* form 태그 안에 작성시 */}
+          <button type="submit"> type 이 없는 경우 버튼 작성 완료</button>
+          <button type="button"> type 이 있는 경우 버튼 작성 완료</button>
+
           <input type="image" src="images/a.jpg" />
         </fieldset>
       </form>
