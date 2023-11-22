@@ -1,51 +1,43 @@
-import React, { useState } from "react";
 import styled from "@emotion/styled";
-import Title from "./components/Title";
+import React, { useState } from "react";
+import Header from "./components/Header";
 import Input from "./components/Input";
 import List from "./components/List";
+import Footer from "./components/Footer";
 
 const App = () => {
-  const TodoApp = styled.div`
+  const Layout = styled.div`
     position: relative;
     display: block;
-    max-width: 760px;
+    max-width: 960px;
     min-width: 480px;
-    margin: 50px auto;
+    border-radius: 10px;
     background: skyblue;
     text-align: center;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
   `;
-
-  const showMessage = () => {
-    alert("안녕하세요. 퐛팅");
+  // Input으로 부터 글자를 전달 받는 함수
+  const getTitle = title => {
+    console.log(title);
+    // 배열 뜯어서 복사하기 (Spread)
+    const newDatas = [...datas];
+    // 새로운 요소 추가하기
+    newDatas.push(title);
+    // state 업데이트 하기
+    setDatas(newDatas);
   };
-  const sayHi = message => {
-    alert(`당신의 인사는 ${message}이군요`);
-  };
-  const showTodoTxt = title => {
-    alert(`전달받은 제목은 ${title} 입니다.`);
-    // 1. 목록 전체 배열을 복사하여서 새로운 배열을 만든다.
-    const newData = [...data];
-    newData.push(title); // 배열 요소 추가
-    // 2. setData에 복사한 배열로 교체한다.
-    setData(newData);
-  };
-  const [data, setData] = useState([]);
-
+  const [datas, setDatas] = useState([]);
   return (
-    <TodoApp>
-      <Title
-        today="수요일"
-        myname="김도현"
-        month={11}
-        day={22}
-        say={showMessage}
-        gogo={sayHi}
-      >
-        오늘 할일 샘플
-      </Title>
-      <Input showTodoTxt={showTodoTxt} />
-      <List data={data} />
-    </TodoApp>
+    <Layout>
+      <Header version="1.0">
+        <b>Todo App</b>
+      </Header>
+      <Input getTitle={getTitle} />
+      <List datas={datas}>목록</List>
+      <Footer>하단</Footer>
+    </Layout>
   );
 };
 

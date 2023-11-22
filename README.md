@@ -1,161 +1,174 @@
 # React 공부하기
 
-## 6. 총복습
+## 7. 자료 임시 저장 및 임시 불러오기
 
-### 6.1 컴포넌트 HTML 구성
-
-### 6.2 컴포넌트 CSS 구성
+### 7.1 컴포넌트 재구성
 
 ```js
-import React from "react";
 import styled from "@emotion/styled";
-// 타이틀 콤포넌트
-const Title = props => {
-  return <h1>{props.children}</h1>;
-};
-// 입력창 콤포넌트
-const Input = () => {
-  return <div>입력창</div>;
-};
-// 목록 콤포넌트
-const List = () => {
-  return <div>목록</div>;
-};
+import React from "react";
+import Header from "./components/Header";
+import Input from "./components/Input";
+import List from "./components/List";
+import Footer from "./components/Footer";
 
 const App = () => {
-  const TodoApp = styled.div`
+  const Layout = styled.div`
     position: relative;
     display: block;
-    max-width: 760px;
+    max-width: 960px;
     min-width: 480px;
-    margin: 50px auto;
+    border-radius: 10px;
     background: skyblue;
     text-align: center;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
   `;
   return (
-    <TodoApp>
-      <Title>오늘 할일 샘플</Title>
-      <Input />
-      <List />
-    </TodoApp>
+    <Layout>
+      <Header version="1.0">
+        <b>Todo App</b>
+      </Header>
+      <Input>입력창</Input>
+      <List>목록</List>
+      <Footer>하단</Footer>
+    </Layout>
   );
 };
 
 export default App;
 ```
 
-### 6.3 컴포넌트 state 구성
-
-- 각 컴포넌트마다 리랜더링을 위한 state 가 적절한 배치가 되었는지를 고민합니다.
-
 ```js
-import { useState } from "react";
+import React from "react";
 
-// 입력창 콤포넌트
-const Input = ({ showTodoTxt }) => {
-  const [txt, setTxt] = useState("");
-  const handleChangeTxt = e => {
-    // console.log(e.target)
-    setTxt(e.target.value);
-  };
-  const handleSubmit = e => {
-    if (txt === "") {
-      alert("내용을 입력하세요.");
-      return;
-    }
-
-    alert("데이터를 추가하였습니다.");
-    showTodoTxt(txt);
-
-    setTxt("");
-  };
+const Header = ({ children, version }) => {
   return (
-    <div>
-      <form onSubmit={e => handleSubmit(e)}>
-        <input
-          type="text"
-          name="txt"
-          value={txt}
-          onChange={e => handleChangeTxt(e)}
-        />
-        <button>할일추가</button>
-      </form>
-    </div>
+    <header>
+      {children} ({version})
+    </header>
   );
 };
+
+export default Header;
+```
+
+```js
+import React, { useState } from "react";
+
+const Input = () => {
+  // 화면 리랜더링을 위한 state 즉, 상태변경을 관리한다.
+  const [title, setTitle] = useState("");
+  const handleChange = e => {
+    setTitle(e.target.value);
+  };
+  const handleClick = e => {
+    // 반드시.. 절대로 잊지말자.
+    // 기본 기능 막기
+    e.preventDefault();
+    if (title === "") {
+      alert("제목을 입력하세요.");
+      return;
+    }
+    alert("제목을 등록하였습니다.");
+    setTitle("");
+  };
+  return (
+    <form>
+      <label htmlFor="title">제목</label>
+      <input
+        type="text"
+        name="title"
+        id="title"
+        value={title}
+        onChange={e => handleChange(e)}
+      />
+      <button type="submit" onClick={e => handleClick(e)}>
+        입력
+      </button>
+    </form>
+  );
+};
+
 export default Input;
 ```
 
 ```js
-  const showTodoTxt = title => {
-    alert(`전달받은 제목은 ${title} 입니다.`);
+import React, { useState } from "react";
+
+const Input = ({ getTitle }) => {
+  // 화면 리랜더링을 위한 state 즉, 상태변경을 관리한다.
+  const [title, setTitle] = useState("");
+  const handleChange = e => {
+    setTitle(e.target.value);
   };
-  ....
-  <Input showTodoTxt={showTodoTxt} />
-      ...
-
-```
-
-### 6.4 컴포넌트 props 구성
-
-```js
-<Title today="수요일" myname="김도현" month={11} day={22}>
-  오늘 할일 샘플
-</Title>
-```
-
-```js
-// 타이틀 콤포넌트
-const Title = function (props) {
-  console.log(props);
+  const handleClick = e => {
+    // 반드시.. 절대로 잊지말자.
+    // 기본 기능 막기
+    e.preventDefault();
+    if (title === "") {
+      alert("제목을 입력하세요.");
+      return;
+    }
+    getTitle(title);
+    alert("제목을 등록하였습니다.");
+    setTitle("");
+  };
   return (
-    <h1>
-      {props.month}월{props.day}일 {props.myname} {props.today} {props.children}
-    </h1>
+    <form>
+      <label htmlFor="title">제목</label>
+      <input
+        type="text"
+        name="title"
+        id="title"
+        value={title}
+        onChange={e => handleChange(e)}
+      />
+      <button type="submit" onClick={e => handleClick(e)}>
+        입력
+      </button>
+    </form>
   );
 };
-export default Title;
+
+export default Input;
 ```
 
 ```js
-import React from "react";
 import styled from "@emotion/styled";
-import Title from "./components/Title";
+import React from "react";
+import Header from "./components/Header";
 import Input from "./components/Input";
 import List from "./components/List";
+import Footer from "./components/Footer";
 
 const App = () => {
-  const TodoApp = styled.div`
+  const Layout = styled.div`
     position: relative;
     display: block;
-    max-width: 760px;
+    max-width: 960px;
     min-width: 480px;
-    margin: 50px auto;
+    border-radius: 10px;
     background: skyblue;
     text-align: center;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
   `;
-
-  const showMessage = () => {
-    alert("안녕하세요. 퐛팅");
-  };
-  const sayHi = message => {
-    alert(`당신의 인사는 ${message}이군요`);
+  // Input으로 부터 글자를 전달 받는 함수
+  const getTitle = title => {
+    console.log(title);
   };
   return (
-    <TodoApp>
-      <Title
-        today="수요일"
-        myname="김도현"
-        month={11}
-        day={22}
-        say={showMessage}
-        gogo={sayHi}
-      >
-        오늘 할일 샘플
-      </Title>
-      <Input />
-      <List />
-    </TodoApp>
+    <Layout>
+      <Header version="1.0">
+        <b>Todo App</b>
+      </Header>
+      <Input getTitle={getTitle} />
+      <List>목록</List>
+      <Footer />
+    </Layout>
   );
 };
 
@@ -163,44 +176,19 @@ export default App;
 ```
 
 ```js
-// 타이틀 콤포넌트
-const Title = function (props) {
-  console.log(props);
-  return (
-    <h1 onClick={() => props.gogo("반갑지롱!!!")}>
-      {props.month}월{props.day}일 {props.myname} {props.today} {props.children}
-    </h1>
-  );
-};
-export default Title;
-```
+import React from "react";
 
-```js
-// 타이틀 콤포넌트
-const Title = function ({ month, day, myname, gogo, say, today, children }) {
-  //   console.log(props);
+const List = ({ datas }) => {
   return (
-    <h1 onClick={() => gogo("반갑지롱!!!")}>
-      {month}월{day}일 {myname} {today} {children}
-    </h1>
-  );
-};
-export default Title;
-```
+    <ul>
+      {/* {배열.map(function(요소,순번){
+        return (JSX)
+    })} */}
 
-```js
-import { useState } from "react";
-
-// 목록 콤포넌트
-const List = ({ data }) => {
-  return (
-    <div>
-      <ul>
-        {data.map(function (item, index) {
-          return <li key={index}>{item}</li>;
-        })}
-      </ul>
-    </div>
+      {datas.map(function (item, index) {
+        return <li key={index}>{item}</li>;
+      })}
+    </ul>
   );
 };
 
@@ -208,61 +196,52 @@ export default List;
 ```
 
 ```js
-import React, { useState } from "react";
 import styled from "@emotion/styled";
-import Title from "./components/Title";
+import React, { useState } from "react";
+import Header from "./components/Header";
 import Input from "./components/Input";
 import List from "./components/List";
+import Footer from "./components/Footer";
 
 const App = () => {
-  const TodoApp = styled.div`
+  const Layout = styled.div`
     position: relative;
     display: block;
-    max-width: 760px;
+    max-width: 960px;
     min-width: 480px;
-    margin: 50px auto;
+    border-radius: 10px;
     background: skyblue;
     text-align: center;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
   `;
-
-  const showMessage = () => {
-    alert("안녕하세요. 퐛팅");
+  // Input으로 부터 글자를 전달 받는 함수
+  const getTitle = title => {
+    console.log(title);
+    // 배열 뜯어서 복사하기 (Spread)
+    const newDatas = [...datas];
+    // 새로운 요소 추가하기
+    newDatas.push(title);
+    // state 업데이트 하기
+    setDatas(newDatas);
   };
-  const sayHi = message => {
-    alert(`당신의 인사는 ${message}이군요`);
-  };
-  const showTodoTxt = title => {
-    alert(`전달받은 제목은 ${title} 입니다.`);
-    // 1. 목록 전체 배열을 복사하여서 새로운 배열을 만든다.
-    const newData = [...data];
-    newData.push(title); // 배열 요소 추가
-    // 2. setData에 복사한 배열로 교체한다.
-    setData(newData);
-  };
-
-  const [data, setData] = useState([]);
-
+  const [datas, setDatas] = useState([]);
   return (
-    <TodoApp>
-      <Title
-        today="수요일"
-        myname="김도현"
-        month={11}
-        day={22}
-        say={showMessage}
-        gogo={sayHi}
-      >
-        오늘 할일 샘플
-      </Title>
-      <Input showTodoTxt={showTodoTxt} />
-      <List data={data} />
-    </TodoApp>
+    <Layout>
+      <Header version="1.0">
+        <b>Todo App</b>
+      </Header>
+      <Input getTitle={getTitle} />
+      <List datas={datas}>목록</List>
+      <Footer>하단</Footer>
+    </Layout>
   );
 };
 
 export default App;
 ```
 
-### 6.5 컴포넌트 event 구성
+### 7.2 자료 임시 저장
 
-### 6.6 컴포넌트 출력 갱신 구성
+### 7.3 자료 임시 불러오기

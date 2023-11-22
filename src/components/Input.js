@@ -1,35 +1,37 @@
-import { useState } from "react";
+import React, { useState } from "react";
 
-// 입력창 콤포넌트
-const Input = ({ showTodoTxt }) => {
-  const [txt, setTxt] = useState("");
-  const handleChangeTxt = e => {
-    // console.log(e.target)
-    setTxt(e.target.value);
+const Input = ({ getTitle }) => {
+  // 화면 리랜더링을 위한 state 즉, 상태변경을 관리한다.
+  const [title, setTitle] = useState("");
+  const handleChange = e => {
+    setTitle(e.target.value);
   };
-  const handleSubmit = e => {
-    if (txt === "") {
-      alert("내용을 입력하세요.");
+  const handleClick = e => {
+    // 반드시.. 절대로 잊지말자.
+    // 기본 기능 막기
+    e.preventDefault();
+    if (title === "") {
+      alert("제목을 입력하세요.");
       return;
     }
-
-    alert("데이터를 추가하였습니다.");
-    showTodoTxt(txt);
-
-    setTxt("");
+    getTitle(title);
+    alert("제목을 등록하였습니다.");
+    setTitle("");
   };
   return (
-    <div>
-      <form onSubmit={e => handleSubmit(e)}>
-        <input
-          type="text"
-          name="txt"
-          value={txt}
-          onChange={e => handleChangeTxt(e)}
-        />
-        <button>할일추가</button>
-      </form>
-    </div>
+    <form>
+      <label htmlFor="title">제목</label>
+      <input
+        type="text"
+        name="title"
+        id="title"
+        value={title}
+        onChange={e => handleChange(e)}
+      />
+      <button type="submit" onClick={e => handleClick(e)}>
+        입력
+      </button>
+    </form>
   );
 };
 
