@@ -1,59 +1,51 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
+import styled from "@emotion/styled";
+import Title from "./components/Title";
+import Input from "./components/Input";
+import List from "./components/List";
 
 const App = () => {
-  // 사용자 아이디 보관 및 리랜더링
-  const [userId, setUserId] = useState("");
+  const TodoApp = styled.div`
+    position: relative;
+    display: block;
+    max-width: 760px;
+    min-width: 480px;
+    margin: 50px auto;
+    background: skyblue;
+    text-align: center;
+  `;
 
-  // 사용자 패스워드 보관 및 리랜더링
-  const [userPass, setUserPass] = useState("");
-
-  // 데이터 전송
-  const handleSubmit = e => {
-    // 반드시 기본 동작을 막아준다.
-    e.preventDefault();
-    console.log(userId, userPass);
-    if (userId === "") {
-      alert("아이디를 입력하세요.");
-      return;
-    }
-    if (userPass === "") {
-      alert("패스워드를 입력하세요.");
-      return;
-    }
-    alert("데이터가 등록되었습니다.");
-    setUserId("");
-    setUserPass("");
+  const showMessage = () => {
+    alert("안녕하세요. 퐛팅");
   };
-
-  // 폼 입력 처리
-  const handleChange = e => {
-    // console.log(e.target);
-    if (e.target.name === "user") {
-      setUserId(e.target.value);
-    }
-    if (e.target.name === "pw") {
-      setUserPass(e.target.value);
-    }
+  const sayHi = message => {
+    alert(`당신의 인사는 ${message}이군요`);
   };
+  const showTodoTxt = title => {
+    alert(`전달받은 제목은 ${title} 입니다.`);
+    // 1. 목록 전체 배열을 복사하여서 새로운 배열을 만든다.
+    const newData = [...data];
+    newData.push(title); // 배열 요소 추가
+    // 2. setData에 복사한 배열로 교체한다.
+    setData(newData);
+  };
+  const [data, setData] = useState([]);
+
   return (
-    <div>
-      <form action="path" method="get" onSubmit={e => handleSubmit(e)}>
-        <input
-          type="text"
-          name="user"
-          value={userId}
-          onChange={e => handleChange(e)}
-        />
-        <input
-          type="password"
-          name="pw"
-          value={userPass}
-          onChange={e => handleChange(e)}
-        />
-        <button type="submit">완료</button>
-      </form>
-    </div>
+    <TodoApp>
+      <Title
+        today="수요일"
+        myname="김도현"
+        month={11}
+        day={22}
+        say={showMessage}
+        gogo={sayHi}
+      >
+        오늘 할일 샘플
+      </Title>
+      <Input showTodoTxt={showTodoTxt} />
+      <List data={data} />
+    </TodoApp>
   );
 };
 
