@@ -1,119 +1,420 @@
 # React 공부하기
 
-## 7. 자료 임시 저장 및 임시 불러오기
+## 8. React Router
 
-### 7.2 자료 임시 저장( localStorage 활용 )
+- Router(라우터) : URI 경로를 동기화하여 화면의 전환, 흐름을 제어한다.
+- HTML 이동을 하지 않고 내용을 갱신합니다.
+- 밑에 2개를 설치해야 합니다.
+- `npm install react-router` 를 설치하고 활용합니다.
+- `npm install react-router-dom`를 설치하고 활용합니다.
 
-- 웹브라우저 저장소
-- 로그인 정보 및 현재 path 등등등..
-- 웹브라우저 F12 개발도구 > Application 탭
-- [localStorage](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
+### 8.1 리액트 라우터의 구조
+
+- Router 안쪽에 Routes 안쪽에 Route 로 구성한다.
+- Router > Routes > Route 로 구성합니다.
+- 여기서 Router는 2가지 종류가 있습니다.
+- 그 중에 통상 BrowserRouter를 사용합니다.
+- 결론적으로 BrowserRouter > Routes > Route 를 구성합니다.
+
+### 8.2 BrowserRouter > Routes >Route 샘플
+
+/src/App.js
 
 ```js
-import styled from "@emotion/styled";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import Header from "./components/Header";
-import Input from "./components/Input";
-import List from "./components/List";
-import Footer from "./components/Footer";
-import { getData, postData } from "./api/api";
+import About from "./pages/About";
+import Home from "./pages/Home";
+import Member from "./pages/Member";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 const App = () => {
-  // 컴포넌트가 화면에 완벽히 보여줄 준비가 완료되면
-  // 그때 자료를 호출하겠다.
-  useEffect(function () {
-    // localStorage 자료 가져오기
-    const arr = getData();
-    // 화면에 출력할 state 로 업데이트 한다.
-    // 1.원본 배열을 복사본으로 만들고
-    const newArr = [...arr];
-    // 2. 복사본 배열을 화면에 출력할 state 에 담아서 업데이트 한다.
-    setDatas(newArr);
-  }, []);
-
-  const Layout = styled.div`
-    position: relative;
-    display: block;
-    max-width: 960px;
-    min-width: 480px;
-    border-radius: 10px;
-    background: skyblue;
-    text-align: center;
-    margin-top: 20px;
-    margin-left: auto;
-    margin-right: auto;
-  `;
-  // Input 으로 부터 글자를 전달 받는 함수
-  const getTitle = title => {
-    console.log(title);
-    // 배열 뜯어서 복사하기 ( Spread )
-    const newDatas = [...datas];
-    // 새로운 요소 추가하기
-    newDatas.push(title);
-    // state 업데이트 하기
-    setDatas(newDatas);
-    // 저장하자.
-    // 저장하기 위한 글자를 만들자.
-    postData(newDatas);
-  };
-  const [datas, setDatas] = useState([]);
   return (
-    <Layout>
-      <Header version="1.0">
-        <b>Todo App</b>
-      </Header>
-      <Input getTitle={getTitle} />
-      <List datas={datas}>목록</List>
-      <Footer>하단</Footer>
-    </Layout>
+    <BrowserRouter>
+      <div>
+        {/* 항상 보여줄 컴포넌트는 Routes 밖에 */}
+        <Header />
+
+        <Routes>
+          {/* path는 경로를 뜻함 */}
+
+          <Route path="/" element={<Home />}></Route>
+          <Route path="/home" element={<Home />}></Route>
+          <Route path="/about" element={<About />}></Route>
+          <Route path="/member" element={<Member />}></Route>
+        </Routes>
+      </div>
+    </BrowserRouter>
   );
 };
 
 export default App;
 ```
 
+### 8.3 Link를 이용한 페이지 전환
+
 ```js
-// 추가하기
-export const postData = function (datas) {
-  console.log(datas);
-  // 1. 보관을 할 때는 문자열로 만들어서 보관합니다.
-  // 2. 로컬스토리지는 배열을 저장 못합니다.
-  // 3. 로컬스토리지는 숫자를 저장 못합니다.
-  // 4. 로컬스토리지는 객체를 저장 못합니다.
-  // 5. 로컬스토리지는 boolean 을 저장 못합니다.
-  // 6. 로컬스토리지는 []을 저장 못합니다.
-  // 7. 로컬스토리지는 function을 저장 못합니다.
-  // 8. 결론 그래서 문자열 형태로만 저장 됩니다.
-  const saveData = JSON.stringify(datas);
-  console.log(saveData);
-  localStorage.setItem("todo", saveData);
-};
-// 읽어오기
-export const getData = function () {
-  // 로컬에 저장해 둔 목록을 배열에 담아줌.
-  let todoArr;
-  //   먼저 "todo"라고 저장해둔 Key를 이용 해서 목록을 불러온다
-  const result = localStorage.getItem("todo");
+import { Link } from "react-router-dom";
+...
+<Link to="path"> 글자/그림 </Link>
 
-  if (!result) {
-    // "todo"라는 key 가 없을 경우,
-    // 강제로 생성 및 초기값을 셋팅
-    localStorage.setItem("todo", "[]");
-    // 사용할 목록 배열이 없다고 셋팅을 했어요.
-    todoArr = [];
-  } else {
-    // "todo" 라는 Key가 있으므로
-    // 현재 저장해 둔 값을 읽어서 모록으로 변환합니다.
-    // 왜 변환을 해야 하냐면...
-    //  저장된 값은 문자열이라서 입니다.
-    // JSON.parse 를 이용해서 JS 객체로 변환합니다.
-    todoArr = JSON.parse(result);
-  }
+```
 
-  return todoArr;
+- 위 코드의 결과로 실행시 html 태그의 a 태그로 변환된다.
+
+- 예제코드
+
+/src/components/Header.js
+
+```js
+import React from "react";
+import { Link } from "react-router-dom";
+
+const Header = () => {
+  return (
+    <div>
+      <h1 style={{ textAlign: "center" }}>Header</h1>
+      <div style={{ background: "white", textAlign: "center", fontSize: 20 }}>
+        <Link to="/home">Home </Link> | <Link to="/member">Member</Link> |{" "}
+        <Link to="/about">About</Link>
+        <Link to="http://www.naver.com" target="_blank" rel="noreferrer">
+          네이버
+        </Link>
+      </div>
+    </div>
+  );
 };
-// 수정하기
-export const putData = function () {};
-// 삭제하기
-export const deleteData = function () {};
+
+export default Header;
+```
+
+### 8.4. 라우팅 컴포넌트에 props 전달하기
+
+/src/App.js
+
+```js
+<Route path="/about" element={<About title="우리서비스소개" />}></Route>
+...
+```
+
+/src/pages/About.js
+
+```js
+import React from "react";
+
+const About = ({ title }) => {
+  return <div>About : {title}</div>;
+};
+
+export default About;
+```
+
+### 8.5. 라우팅 컴포넌트에 복잡한 state props 전달하기
+
+/src/App.js
+
+```js
+import React, { useState } from "react";
+import Header from "./components/Header";
+import About from "./pages/About";
+import Home from "./pages/Home";
+import Member from "./pages/Member";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+const App = () => {
+  const initMemberdata = [
+    { name: "송보경", level: 10, img: "a.jpg", part: "팀장: 프로젝트 구성" },
+    {
+      name: "김도현",
+      level: 5,
+      img: "a.jpg",
+      part: "팀장: 프로젝트 참여 및 파이팅 담당 ",
+    },
+    {
+      name: "김주영",
+      level: 5,
+      img: "a.jpg",
+      part: "팀장: 프로젝트 참여 및 간식 담당",
+    },
+    {
+      name: "정화섭",
+      level: 0,
+      img: "a.jpg",
+      part: "팀장: 프로젝트 참여 및 잔소리 담당",
+    },
+  ];
+  const [member, setMember] = useState(initMemberdata);
+  return (
+    <BrowserRouter>
+      <div>
+        {/* 항상 보여줄 컴포넌트는 Routes 밖에 */}
+        <Header />
+
+        <Routes>
+          {/* path는 경로를 뜻함 */}
+          <Route path="/home" element={<Home />}></Route>
+          <Route
+            path="/about"
+            element={<About title="우리서비스소개" />}
+          ></Route>
+          <Route path="/member" element={<Member member={member} />}></Route>
+        </Routes>
+      </div>
+    </BrowserRouter>
+  );
+};
+
+export default App;
+```
+
+/src/pages/Member;
+
+```js
+import React from "react";
+
+const Member = ({ member }) => {
+  return (
+    <div>
+      <h2>Member</h2>
+      <div>
+        <ul>
+          {member.map(function (item, index) {
+            return (
+              <li key={index}>
+                {item.name} : {item.part}
+                <img src={item.img} />
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+export default Member;
+```
+
+/src/pages/Member.js 개선
+
+```js
+import React from "react";
+
+const Member = ({ member }) => {
+  const showList = member.map(function (item, index) {
+    return (
+      <li key={index}>
+        {item.name} : {item.part}
+        <image src={item.img} />
+      </li>
+    );
+  });
+  return (
+    <div>
+      <h2>Member</h2>
+      <div>
+        <ul>
+          {member.map(function (item, index) {
+            return (
+              <li key={index}>
+                {item.name} : {item.part}
+                <img src={item.img} />
+              </li>
+            );
+          })}
+        </ul>
+      </div>
+    </div>
+  );
+};
+
+export default Member;
+```
+
+### 8.6. userParam 으로 변하는 값 받기
+
+/src/App.js
+
+```js
+...
+<Route path="/member/:id"
+            element={<MembersDetail member={member} />}
+          ></Route>
+...
+```
+
+/src/pages/MemberDetail.js
+
+```js
+import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+
+const MembersDetail = ({ member }) => {
+  // 주소뒤에 기재된 내용을 알아내야 한다.
+  // members/정화섭
+  // 정화섭 만을 알아내야한다.
+  //   const param = useParams();
+  // console.log(param);
+  const { id } = useParams();
+
+  // 배열에서 요소를 찾으면 for 문 중지
+  const findData = member.find(function (item) {
+    return item.name === id;
+  });
+  //   const findData2 = member.find(item => {
+  //     return item.name === id;
+  //   });
+  //   const findData3 = member.find(item => item.name === id);
+
+  console.log(findData);
+
+  return (
+    <div>
+      <h1>
+        {id}님의 상세정보 {findData?.hi}
+      </h1>
+      <div>
+        {findData.name} / {findData.level} / {findData.img} / {findData.part}
+      </div>
+    </div>
+  );
+};
+
+export default MembersDetail;
+```
+
+### 8.7. nested 와 Outlet 활용하기
+
+/src/App.js
+
+```js
+import React, { useState } from "react";
+import Header from "./components/Header";
+import Home from "./pages/Home";
+import About from "./pages/About";
+import Member from "./pages/Member";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import MembersDetail from "./pages/MembersDetail";
+import Ceo from "./pages/Ceo";
+import Map from "./pages/Map";
+
+const App = () => {
+  const initMemberData = [
+    { name: "송보경", level: 10, img: "a.jpg", part: "프로젝트 구성" },
+    {
+      name: "김도현",
+      level: 5,
+      img: "b.jpg",
+      part: "프로젝트 참여 및 파이팅 담당",
+    },
+    {
+      name: "김주영",
+      level: 5,
+      img: "c.png",
+      part: "프로젝트 참여 및 간식 담당",
+    },
+    {
+      name: "정화섭",
+      level: 0,
+      img: "d.gif",
+      part: "프로젝트 구경 및 잔소리 담당",
+    },
+  ];
+  const [member, setMember] = useState(initMemberData);
+
+  return (
+    <BrowserRouter>
+      <div>
+        {/* 항상 보여줄 컴포넌트는 Routes 에서 배제 */}
+        <Header />
+
+        <Routes>
+          <Route path="/" element={<Home />}></Route>
+          <Route path="/home" element={<Home />}></Route>
+
+          {/* Nested 라우터 */}
+          <Route path="/about" element={<About title="우리서비스소개" />}>
+            {/* Outelet 컴포넌트 초기화면은 index 로 셋팅 */}
+            <Route index element={<Ceo />}></Route>
+
+            <Route path="ceo" element={<Ceo />}></Route>
+            <Route path="map" element={<Map />}></Route>
+          </Route>
+
+          {/* Nested 활용하기 */}
+          <Route path="/member" element={<Member member={member} />}>
+            {/* Outlet 역할 */}
+            <Route
+              path=":id"
+              element={<MembersDetail member={member} />}
+            ></Route>
+          </Route>
+        </Routes>
+      </div>
+    </BrowserRouter>
+  );
+};
+
+export default App;
+```
+
+/src/pages/About.js
+
+```js
+import React from "react";
+import { Link, Outlet } from "react-router-dom";
+
+const About = ({ title }) => {
+  return (
+    <div>
+      <h2>About : {title}</h2>
+      <div>
+        <Link to="/about/ceo">Ceo 인사말</Link>
+        <Link to="/about/map">회사위치</Link>
+      </div>
+      <Outlet />
+    </div>
+  );
+};
+
+export default About;
+```
+
+/src/pages/Member.js
+
+```js
+import React from "react";
+import { Link, Outlet } from "react-router-dom";
+
+const Member = ({ member }) => {
+  // 멤버 목록 JSX 만들기
+  const showList = member.map(function (item, index) {
+    return (
+      <li key={index}>
+        {item.name}
+        <Link to={`/member/${item.name}`}>상세보기</Link>
+      </li>
+    );
+  });
+
+  return (
+    <div>
+      <h2>Member</h2>
+      <div>
+        <ul>{showList}</ul>
+      </div>
+      <Outlet />
+    </div>
+  );
+};
+
+export default Member;
+```
+
+### 8.8. NotFound 페이지 적용하기
+
+/src/App.js
+
+```js
+<Route path="*" element={<NotFound />}></Route>
 ```
