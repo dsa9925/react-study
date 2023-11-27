@@ -8,6 +8,7 @@ import MembersDetail from "./pages/MembersDetail";
 import Ceo from "./pages/Ceo";
 import Map from "./pages/Map";
 import NotFound from "./pages/NotFound";
+import Notice from "./pages/Notice";
 
 const App = () => {
   const initMemberData = [
@@ -50,6 +51,7 @@ const App = () => {
 
             <Route path="ceo" element={<Ceo />}></Route>
             <Route path="map" element={<Map />}></Route>
+            <Route path="notice" element={<Notice />}></Route>
           </Route>
 
           {/* Nested 활용하기 */}

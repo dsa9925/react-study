@@ -37,3 +37,8 @@ body {
   /* 변수 활용 */
   background-color: var(--base-background-color);
 }
+
+.activeMenu {
+  color: red;
+  font-weight: bold;
+}
