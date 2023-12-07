@@ -1,450 +1,616 @@
 # React 공부하기
 
-## 8. React Router
+## 9. Ant design
 
-- Router(라우터) : URI 경로를 동기화하여 화면의 전환, 흐름을 제어한다.
-- HTML 이동을 하지 않고 내용을 갱신합니다.
-- `npm install react-router` 를 설치하고 활용합니다.
-- `npm install react-router-dom`를 설치하고 활용합니다.
+- [Ant.design](https://ant.design/)
+- [Components](https://ant.design/components/overview/)
+  : `npm install antd --save`
+  : `npm install @ant-design/icons --save`
+- 시간 관련 npm 설치
+- [moment](https://momentjs.com/)
+  : `npm install moment --save`
+- [dayjs](https://day.js.org/)
+  : `npm install dayjs`
 
-### 8.9. useSearchParams 를 통해 쿼리스트링( Query String ) 활용하기
+## 코드샘플
 
-- http://127.0.0.1:3000?no=1&msg=안녕&id=hong
-- http://127.0.0.1:3000 는 URL
-- ? 는 쿼리 구분자
-- no=1&msg=안녕&id=hong 쿼리 스트링
-- & 는 쿼리 항목 구분자
-- 예) no=1 쿼리로서 no라는 변수에 값 1을 담아서 URL 로 전달
-
-/src/App.js
-
-```js
-<Route path="/about" element={<About title="우리서비스소개" />}>
-  {/* Outelet 컴포넌트 초기화면은 index 로 셋트 */}
-  <Route index element={<Ceo />}></Route>
-  <Route path="ceo" element={<Ceo />}></Route>
-  <Route path="map" element={<Map />}></Route>
-  <Route path="notice" element={<Notice />}></Route>
-</Route>
-```
-
-/src/pages/About.js
+- App.js
+  : 반드시 API 의 common props 체크해 보자.
 
 ```js
 import React from "react";
-import { Link, Outlet } from "react-router-dom";
-
-const About = ({ title }) => {
-  return (
-    <div>
-      <h2>About : {title}</h2>
-      <div>
-        <Link to="/about/ceo">Ceo 인사말</Link>
-        <br />
-        <Link to="/about/map">회사위치</Link>
-        <br />
-        <Link to="/about/notice">공지사항</Link>
-      </div>
-      <Outlet />
-    </div>
-  );
-};
-
-export default About;
+import { Button } from "antd";
+const App = () => (
+  <div>
+    <Button type="primary" shape="circle">
+      Primary Button
+    </Button>
+  </div>
+);
+export default App;
 ```
 
-/src/pages/Notice.js
+- style 적용하기(객체 리터럴 방식)
 
 ```js
 import React from "react";
+import { Button } from "antd";
+// 이전 버전은 5.4 이전은 css 를 직접 수정가능
+// import 'antd/dist/antd.css';
+// 현재 최신 버전을 설치한경우
 
-const Notice = () => {
-  return <div>Notice</div>;
-};
-
-export default Notice;
-```
-
-- useSearchParams 의 get 메서드를 이용해서 쿼리 출력하기
-
-```js
-import React from "react";
-import { useSearchParams } from "react-router-dom";
-
-const Notice = () => {
-  // 쿼리 스트링 처리하기
-  const [searchParams, setSearchParams] = useSearchParams();
-  console.log(searchParams);
-  // 쿼리 중에 page 를 알고싶다.
-  const page = searchParams.get("page");
-  console.log(page);
-  // 쿼리 중에 user 를 알고 싶다.
-  const user = searchParams.get("user");
-  console.log(user);
-  // 쿼리 중에 total 을 알고 싶다.
-  const total = searchParams.get("total");
-  console.log(total);
-  return (
-    <div>
-      <h2>Notice</h2>
-      <p>
-        현재 페이지 {page} / 총페이지 {total}
-      </p>
-      <div>공지사항의 {user} 목록</div>
-      <div>
-        <button>이전페이지</button>
-        <div>페이지번호 출력</div>
-        <button>다음페이지</button>
-      </div>
-    </div>
-  );
-};
-
-export default Notice;
-```
-
-- 이전/다음버튼 눌러서 페이지 값 변경
-
-```js
-import React from "react";
-import { useSearchParams } from "react-router-dom";
-
-const Notice = () => {
-  // 쿼리 스트링 처리하기
-  const [searchParams, setSearchParams] = useSearchParams();
-  console.log(searchParams);
-  // 쿼리 중에 page 를 알고싶다.
-  let page = searchParams.get("page");
-  page = parseInt(page);
-  console.log(page);
-  // 쿼리 중에 user 를 알고 싶다.
-  const user = searchParams.get("user");
-  console.log(user);
-  // 쿼리 중에 total 을 알고 싶다.
-  let total = searchParams.get("total");
-  total = parseInt(total);
-
-  console.log(total);
-
-  const handleClickPrev = () => {
-    console.log("이전목록");
-    // 현재 page 에서 1 을 빼서 1보다 작으면 1
-    // 그렇지 않으면 1을 뺀 값을 출력한다.
-
-    // page = page - 1;
-    // page -= 1;
-    // page --;
-    // if (page < 1) {
-    //   page = 1;
-    // }
-
-    page = page < 1 ? 1 : page--;
-    console.log(page);
-  };
-  const handleClickNext = () => {
-    console.log("다음목록");
-    // 만약에 현재 page 가 total 보다 작다면
-    // page 에 1 증가한 결과를 반영한다.
-    // if (page < total) {
-    //   page = page + 1;
-    // }
-    // page += 1;
-    // page = page + 1;
-    // page ++;
-    page = page < total ? ++page : total;
-    console.log(page);
+const App = () => {
+  const btStyle = {
+    backgroundColor: "red",
+    color: "yellow",
   };
 
   return (
     <div>
-      <h2>Notice</h2>
-      <p>
-        현재 페이지 {page} / 총페이지 {total}
-      </p>
-      <div>공지사항의 {user} 목록</div>
-      <div>
-        <button
-          onClick={() => {
-            handleClickPrev();
-          }}
-        >
-          이전페이지
-        </button>
-        <div>페이지번호 출력</div>
-        <button
-          onClick={() => {
-            handleClickNext();
-          }}
-        >
-          다음페이지
-        </button>
-      </div>
+      <Button type="primary" shape="circle" style={btStyle}>
+        Primary Button
+      </Button>
     </div>
   );
 };
-
-export default Notice;
+export default App;
 ```
 
-8.10. useNavigate() 로 주소전달하여 이동하기
+- class 적용하기(안되면 !important)
+  : App.css
+
+```css
+.bg {
+  background: green !important;
+}
+```
+
+: App.js
 
 ```js
 import React from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { Button } from "antd";
+// 이전 버전은 5.4 이전은 css 를 직접 수정가능
+// import 'antd/dist/antd.css';
+// 현재 최신 버전을 설치한경우
+import "./App.css";
 
-const Notice = () => {
-  // 주소창에 쿼리 전달하기 및 페이지이동하기
-  const navigate = useNavigate();
-  // 쿼리 스트링 처리하기
-  const [searchParams, setSearchParams] = useSearchParams();
-  console.log(searchParams);
-  // 쿼리 중에 page 를 알고싶다.
-  let page = searchParams.get("page");
-  page = parseInt(page);
-  console.log(page);
-  // 쿼리 중에 user 를 알고 싶다.
-  const user = searchParams.get("user");
-  console.log(user);
-  // 쿼리 중에 total 을 알고 싶다.
-  let total = searchParams.get("total");
-  total = parseInt(total);
-
-  console.log(total);
-
-  const handleClickPrev = () => {
-    console.log("이전목록");
-    // 현재 page 에서 1 을 빼서 1보다 작으면 1
-    // 그렇지 않으면 1을 뺀 값을 출력한다.
-
-    // page = page - 1;
-    // page -= 1;
-    // page --;
-    // if (page < 1) {
-    //   page = 1;
-    // }
-
-    // page = page <= 1 ? 1 : --page;
-    page -= 1;
-    if (page == 0) {
-      page = 1;
-    }
-
-    console.log(page + "페이지 보여줘");
-    // 샘플 코드
-    navigate(`/about/notice?page=${page}&user=${user}&total=${total}`);
-  };
-  const handleClickNext = () => {
-    console.log("다음목록");
-    // 만약에 현재 page 가 total 보다 작다면
-    // page 에 1 증가한 결과를 반영한다.
-    // if (page < total) {
-    //   page = page + 1;
-    // }
-    // page += 1;
-    // page = page + 1;
-    // page ++;
-    page = page < total ? ++page : total;
-    console.log(page);
-    // 샘플 코드
-    navigate(`/about/notice?page=${page}&user=${user}&total=${total}`);
+const App = () => {
+  const btStyle = {
+    backgroundColor: "red",
+    color: "yellow",
   };
 
   return (
     <div>
-      <h2>Notice</h2>
-      <p>
-        현재 페이지 {page} / 총페이지 {total}
-      </p>
-      <div>공지사항의 {user} 목록</div>
-      <div>
-        <button
-          onClick={() => {
-            handleClickPrev();
-          }}
-        >
-          이전페이지
-        </button>
-        <div>페이지번호 출력</div>
-        <button
-          onClick={() => {
-            handleClickNext();
-          }}
-        >
-          다음페이지
-        </button>
-      </div>
+      <Button type="primary" shape="circle" style={btStyle} className="bg">
+        Primary Button
+      </Button>
     </div>
   );
 };
-
-export default Notice;
+export default App;
 ```
 
-8.11. useLocation() 으로 주소 경로 정보 분석하기
+- Ant 컴포넌트 에 styled 적용하기
 
 ```js
 import React from "react";
-import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+import { Button } from "antd";
+import styled from "@emotion/styled";
 
-const Notice = () => {
-  // 주소창에 전달된 정보를 분석하기
-  const location = useLocation();
-  console.log(location);
-  // 주소창에 쿼리 전달하기 및 페이지이동하기
-  const navigate = useNavigate();
-  // 쿼리 스트링 처리하기
-  const [searchParams, setSearchParams] = useSearchParams();
-  console.log(searchParams);
-  // 쿼리 중에 page 를 알고싶다.
-  let page = searchParams.get("page");
-  page = parseInt(page);
-  console.log(page);
-  // 쿼리 중에 user 를 알고 싶다.
-  const user = searchParams.get("user");
-  console.log(user);
-  // 쿼리 중에 total 을 알고 싶다.
-  let total = searchParams.get("total");
-  total = parseInt(total);
-
-  console.log(total);
-
-  const handleClickPrev = () => {
-    console.log("이전목록");
-    // 현재 page 에서 1 을 빼서 1보다 작으면 1
-    // 그렇지 않으면 1을 뺀 값을 출력한다.
-
-    // page = page - 1;
-    // page -= 1;
-    // page --;
-    // if (page < 1) {
-    //   page = 1;
-    // }
-
-    // page = page <= 1 ? 1 : --page;
-    page -= 1;
-    if (page == 0) {
-      page = 1;
-    }
-
-    console.log(page + "페이지 보여줘");
-    // 샘플 코드
-    navigate(`${location.pathname}?page=${page}&user=${user}&total=${total}`);
-  };
-  const handleClickNext = () => {
-    console.log("다음목록");
-    // 만약에 현재 page 가 total 보다 작다면
-    // page 에 1 증가한 결과를 반영한다.
-    // if (page < total) {
-    //   page = page + 1;
-    // }
-    // page += 1;
-    // page = page + 1;
-    // page ++;
-    page = page < total ? ++page : total;
-    console.log(page);
-    // 샘플 코드
-    navigate(`${location.pathname}?page=${page}&user=${user}&total=${total}`);
-  };
-
+const App = () => {
+  // 태그인 경우
+  const MyDiv = styled.div`
+    background-color: hotpink;
+  `;
+  // Ant 또는 컴포넌트인 경우
+  const MyButton = styled(Button)`
+    background-color: yellowgreen;
+  `;
   return (
-    <div>
-      <h2>Notice</h2>
-      <p>
-        현재 페이지 {page} / 총페이지 {total}
-      </p>
-      <div>공지사항의 {user} 목록</div>
-      <div>
-        <button
-          onClick={() => {
-            handleClickPrev();
-          }}
-        >
-          이전페이지
-        </button>
-        <div>페이지번호 출력</div>
-        <button
-          onClick={() => {
-            handleClickNext();
-          }}
-        >
-          다음페이지
-        </button>
-      </div>
-    </div>
+    <MyDiv>
+      <MyButton type="primary">Primary Button</MyButton>
+    </MyDiv>
   );
 };
-
-export default Notice;
+export default App;
 ```
 
-8.12. NavLink 활성화된 Link 쉽게 css 적용하기
-/src/components/Header.js
+- Emotion 에 props 전달하기
 
 ```js
 import React from "react";
-import { Link } from "react-router-dom";
-const Header = () => {
+import { Button } from "antd";
+import styled from "@emotion/styled";
+
+const App = () => {
+  // 태그인 경우 (백틱이므로  ${ }   )
+  const MyDiv = styled.div`
+    background-color: ${props => {
+      return props.aaa;
+    }};
+  `;
+  // Ant 또는 컴포넌트인 경우
+  const MyButton = styled(Button)`
+    background-color: ${props => {
+      return props.bbb;
+    }};
+  `;
+
+  /* background-color: ${(props) =>  return props.aaa}; */
+  /* background-color: ${(props) =>  props.aaa}; */
+
   return (
-    <div>
-      <h1 style={{ textAlign: "center" }}>Header</h1>
-      <div style={{ background: "skyblue", textAlign: "center", fontSize: 20 }}>
-        <Link to="/home">Home</Link>|<Link to="/members">Members</Link>|
-        <Link to="/about">About</Link>|
-        <a href="http://www.naver.com" target="_blank">
-          네이버
-        </a>
-      </div>
-    </div>
+    <MyDiv aaa="hotpink">
+      <MyButton type="primary" bbb="yellowgreen">
+        Primary Button
+      </MyButton>
+    </MyDiv>
   );
 };
-
-export default Header;
+export default App;
 ```
 
-- 적용 후
+- icon 적용 및 변경하기 (https://ant.design/components/icon)
 
 ```js
 import React from "react";
-import { Link, NavLink } from "react-router-dom";
-const Header = () => {
-  const ActiveLink = {
-    color: "red",
-    fontWeight: "bold",
-  };
+import { Button } from "antd";
+import styled from "@emotion/styled";
+
+const App = () => {
+  // Ant 또는 컴포넌트인 경우
+  const MyButton = styled(Button)`
+    background-color: ${props => {
+      return props.bbb;
+    }};
+  `;
 
   return (
     <div>
-      <h1 style={{ textAlign: "center" }}>Header</h1>
-      <div style={{ background: "skyblue", textAlign: "center", fontSize: 20 }}>
-        <NavLink
-          className={({ isActive }) => {
-            return isActive ? "activeMenu" : "";
-          }}
-          to="/home"
-        >
-          Home
-        </NavLink>
-        |<NavLink
-          className={({ isActive }) => {
-            return isActive ? "activeMenu" : "";
-          }}
-          to="/member"
-        >
-          Member
-        </NavLink>|<NavLink
-          className={({ isActive }) => {
-            return isActive ? "activeMenu" : "";
-          }}
-          to="/about"
-        >
-          About
-        </NavLink>|<a href="http://www.naver.com" target="_blank">
-          네이버
-        </a>
-      </div>
+      {/* styled 적용 */}
+      <MyButton type="primary" bbb="yellowgreen">
+        Primary Button
+      </MyButton>
+
+      {/* Ant 오리지널 */}
+      <Button type="primary">버튼</Button>
     </div>
   );
 };
+export default App;
+```
 
-export default Header;
+- 수정된 내용
+
+```js
+import React from "react";
+import { Button } from "antd";
+import styled from "@emotion/styled";
+import { AppleOutlined, AndroidOutlined } from "@ant-design/icons";
+
+const App = () => {
+  // Ant 또는 컴포넌트인 경우
+  const MyButton = styled(Button)`
+    background-color: ${props => {
+      return props.bbb;
+    }};
+  `;
+
+  return (
+    <div>
+      {/* styled 적용 */}
+      <MyButton type="primary" bbb="yellowgreen" icon={<AppleOutlined />}>
+        Primary Button
+      </MyButton>
+
+      {/* Ant 오리지널 */}
+      <Button type="primary" icon={<AndroidOutlined />}>
+        버튼
+      </Button>
+    </div>
+  );
+};
+export default App;
+```
+
+```js
+import React from "react";
+import { Button } from "antd";
+import styled from "@emotion/styled";
+import { AppleOutlined, AndroidOutlined } from "@ant-design/icons";
+
+const MyComButton = props => {
+  return (
+    <button
+      onClick={() => {
+        props.say();
+      }}
+    >
+      {props.children} {props.txt}
+    </button>
+  );
+};
+
+const App = () => {
+  // Ant 또는 컴포넌트인 경우
+  const MyButton = styled(Button)`
+    background-color: ${props => {
+      return props.bbb;
+    }};
+  `;
+
+  // 전달할 기능
+  const say = () => {
+    alert("안녕하세요.");
+  };
+  const hello = () => {
+    alert("Hello");
+  };
+  const 울라라 = () => {
+    alert("울라라라");
+  };
+  return (
+    <div>
+      <MyComButton txt="안녕" say={say}>
+        <AppleOutlined />
+      </MyComButton>
+
+      <MyComButton txt="로그인하세요." say={hello}>
+        <AppleOutlined />
+      </MyComButton>
+
+      <MyComButton txt="가입하세요" say={울라라}>
+        <AndroidOutlined />
+      </MyComButton>
+    </div>
+  );
+};
+export default App;
+```
+
+- props 객체 구조 분해 할당 적용하기
+
+```js
+import React from "react";
+import { Button } from "antd";
+import styled from "@emotion/styled";
+import { AppleOutlined, AndroidOutlined } from "@ant-design/icons";
+
+const MyComButton = ({ say, txt, children }) => {
+  return (
+    <button
+      onClick={() => {
+        say();
+      }}
+    >
+      {children} {txt}
+    </button>
+  );
+};
+
+const App = () => {
+  // Ant 또는 컴포넌트인 경우
+  const MyButton = styled(Button)`
+    background-color: ${props => {
+      return props.bbb;
+    }};
+  `;
+
+  // 전달할 기능
+  const say = () => {
+    alert("안녕하세요.");
+  };
+  const hello = () => {
+    alert("Hello");
+  };
+  const 울라라 = () => {
+    alert("울라라라");
+  };
+  return (
+    <div>
+      <MyComButton txt="안녕" say={say}>
+        <AppleOutlined />
+      </MyComButton>
+
+      <MyComButton txt="로그인하세요." say={hello}>
+        <AppleOutlined />
+      </MyComButton>
+
+      <MyComButton txt="가입하세요" say={울라라}>
+        <AndroidOutlined />
+      </MyComButton>
+    </div>
+  );
+};
+export default App;
+```
+
+## Form의 이해(https://ant.design/components/form)
+
+```js
+import React from "react";
+import { Button, Checkbox, Form, Input } from "antd";
+
+const onFinish = values => {
+  // 데이터 모아서 전송하는 자리
+  // onSubmit 이벤트 자리
+  console.log("Success:", values);
+};
+
+const onFinishFailed = errorInfo => {
+  // Error 처리하기
+  console.log("Failed:", errorInfo);
+};
+
+const App = () => (
+  <Form
+    name="basic"
+    labelCol={{
+      span: 8,
+    }}
+    wrapperCol={{
+      span: 16,
+    }}
+    style={{
+      maxWidth: 600,
+    }}
+    initialValues={{
+      remember: true,
+      username: "hohoho",
+    }}
+    onFinish={onFinish}
+    onFinishFailed={onFinishFailed}
+    autoComplete="off"
+  >
+    <Form.Item
+      label="Username"
+      name="username"
+      rules={[
+        {
+          required: true,
+          message: "Please input your username!",
+        },
+      ]}
+    >
+      <Input />
+    </Form.Item>
+
+    <Form.Item
+      label="Email"
+      name="email"
+      rules={[
+        {
+          required: true,
+          message: "제발 이메일 좀 넣어주세요.",
+        },
+        {
+          type: "email",
+          message: "이메일형식으로 넣어야 해요",
+        },
+      ]}
+    >
+      <Input />
+    </Form.Item>
+
+    <Form.Item
+      label="Password"
+      name="password"
+      rules={[
+        {
+          required: true,
+          message: "Please input your password!",
+        },
+      ]}
+    >
+      <Input.Password />
+    </Form.Item>
+
+    <Form.Item
+      name="remember"
+      valuePropName="checked"
+      wrapperCol={{
+        offset: 8,
+        span: 16,
+      }}
+    >
+      <Checkbox>Remember me</Checkbox>
+    </Form.Item>
+
+    <Form.Item
+      wrapperCol={{
+        offset: 8,
+        span: 16,
+      }}
+    >
+      <Button type="primary" htmlType="submit">
+        Submit
+      </Button>
+    </Form.Item>
+  </Form>
+);
+export default App;
+```
+
+### Calendar의 이해(https://ant.design/components/calendar)
+
+```js
+import React from "react";
+import { Calendar } from "antd";
+const App = () => {
+  const onPanelChange = (value, mode) => {
+    console.log(value);
+    console.log(value.format("YYYY-MM-DD"), mode);
+  };
+
+  // function(date: Dayjs)
+  const onChange = (value, mode) => {
+    console.log(value.format("YYYY-MM-DD HH:mm:ss"));
+  };
+  return <Calendar onPanelChange={onPanelChange} onChange={onChange} />;
+};
+export default App;
+```
+
+- 특정 날짜 제한
+
+```js
+import React from "react";
+import { Calendar } from "antd";
+import dayjs from "dayjs";
+const App = () => {
+  const onPanelChange = (value, mode) => {
+    console.log(value);
+    console.log(value.format("YYYY-MM-DD"), mode);
+  };
+
+  // function(date: Dayjs)
+  const onChange = value => {
+    console.log(value.format("YYYY-MM-DD HH-mm-ss"));
+  };
+  // 특정기간 만 가능
+  const limitDay = [dayjs("2023-12-23"), dayjs("2023-12-26")];
+  return (
+    <Calendar
+      onPanelChange={onPanelChange}
+      onChange={onChange}
+      validRange={limitDay}
+    />
+  );
+};
+export default App;
+```
+
+- 일정 출력하기
+
+```js
+import React from "react";
+import { Badge, Calendar } from "antd";
+const getListData = value => {
+  let listData;
+  switch (value.date()) {
+    case 8:
+      listData = [
+        {
+          type: "warning",
+          content: "This is warning event.",
+        },
+        {
+          type: "success",
+          content: "This is usual event.",
+        },
+      ];
+      break;
+    case 10:
+      listData = [
+        {
+          type: "warning",
+          content: "This is warning event.",
+        },
+        {
+          type: "success",
+          content: "This is usual event.",
+        },
+        {
+          type: "error",
+          content: "This is error event.",
+        },
+      ];
+      break;
+    case 15:
+      listData = [
+        {
+          type: "warning",
+          content: "This is warning event",
+        },
+        {
+          type: "success",
+          content: "This is very long usual event......",
+        },
+        {
+          type: "error",
+          content: "This is error event 1.",
+        },
+        {
+          type: "error",
+          content: "This is error event 2.",
+        },
+        {
+          type: "error",
+          content: "This is error event 3.",
+        },
+        {
+          type: "error",
+          content: "This is error event 4.",
+        },
+      ];
+      break;
+    default:
+  }
+  return listData || [];
+};
+const getMonthData = value => {
+  if (value.month() === 8) {
+    return 1394;
+  }
+};
+const App = () => {
+  const monthCellRender = value => {
+    const num = getMonthData(value);
+    return num ? (
+      <div className="notes-month">
+        <section>{num}</section>
+        <span>Backlog number</span>
+      </div>
+    ) : null;
+  };
+  const dateCellRender = value => {
+    const listData = getListData(value);
+    return (
+      <ul className="events">
+        {listData.map(item => (
+          <li key={item.content}>
+            <Badge status={item.type} text={item.content} />
+          </li>
+        ))}
+      </ul>
+    );
+  };
+  const cellRender = (current, info) => {
+    console.log(current.format("YYYY-MM-DD"));
+    console.log(info);
+    if (info.type === "date") return dateCellRender(current);
+    if (info.type === "month") return monthCellRender(current);
+    return info.originNode;
+  };
+  return <Calendar cellRender={cellRender} />;
+};
+export default App;
+```
+
+## DatePicker (일정설정 달력)
+
+```js
+import React from "react";
+import { DatePicker, Space } from "antd";
+import customParseFormat from "dayjs/plugin/customParseFormat";
+import dayjs from "dayjs";
+dayjs.extend(customParseFormat);
+
+const { RangePicker } = DatePicker;
+const App = () => (
+  <Space direction="vertical" size={12}>
+    <RangePicker />
+    <RangePicker
+      open={true}
+      disabled
+      defaultValue={[
+        dayjs("2023-12-20", "YYY-MM-DD"),
+        dayjs("2023-12-26", "YYY-MM-DD"),
+      ]}
+    />
+  </Space>
+);
+export default App;
 ```
