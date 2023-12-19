@@ -5,9 +5,9 @@ import App from "./App";
 import "./styles/normalize.css";
 // index.css 파일 배치
 import "./styles/index.css";
-import Meal from "./pages/meal/Meal";
-import Product from "./pages/product/Product";
+import FileIndex from "./pages/file/FileIndex";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 // root.render(<App />);
-root.render(<Product />);
+// root.render(<Meal />);
+root.render(<FileIndex />);
