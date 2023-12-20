@@ -1,8 +1,3 @@
-# React
-
-## 12. firebase (이미지 기준) 관리
-
-```js
 import moment from "moment/moment";
 import React, { useState } from "react";
 import {
@@ -194,4 +189,3 @@ const Board = () => {
 };
 
 export default Board;
-```
