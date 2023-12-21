@@ -1,17 +1,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import App from "./App";
 // normalize.css 파일 배치
 import "./styles/normalize.css";
 // index.css 파일 배치
 import "./styles/index.css";
-import FileIndex from "./pages/file/FileIndex";
-import Board from "./pages/board/Board";
-import Chart from "./pages/chart/Chart";
+import Schedule from "./pages/schedule/Schedule";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
-// root.render(<App />);
-// root.render(<Meal />);
-// root.render(<FileIndex />);
-// root.render(<Board />);
-root.render(<Chart />);
+root.render(<Schedule />);
