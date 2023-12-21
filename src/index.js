@@ -7,9 +7,11 @@ import "./styles/normalize.css";
 import "./styles/index.css";
 import FileIndex from "./pages/file/FileIndex";
 import Board from "./pages/board/Board";
+import Chart from "./pages/chart/Chart";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 // root.render(<App />);
 // root.render(<Meal />);
 // root.render(<FileIndex />);
-root.render(<Board />);
+// root.render(<Board />);
+root.render(<Chart />);

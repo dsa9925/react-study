@@ -1,15 +1,3 @@
-# React
-
-## [Nivo](https://nivo.rocks/)
-
-- [Nivo NPM](https://www.npmjs.com/package/nivo)
-- `npm install @nivo/core`
-
-- npm install @nivo/bar // bar 차트 사용
-- npm install @nivo/pie // pie 차트 사용
-- npm install @nivo/line // line 차트 사용
-
-```javascript
 import React from "react";
 import { ResponsiveLine } from "@nivo/line";
 
@@ -153,4 +141,3 @@ const Chart = () => {
 };
 
 export default Chart;
-```
