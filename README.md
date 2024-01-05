@@ -1,166 +1,143 @@
-# React
+1.  작업의 과정에 대해서 스스로 정의 해본다면..
+    1.1. 폴더구조 (pages, api, layouts, component, util, hooks, routers, reducers, slices )
+    1.2. Page 구성 /src/pages/~~~.jsx
+    1.3. Router 구조
+    1.4. Page 공통 레이아웃 제작 /src/laouts/Layout.js
+    1.5. 각 Page에 레이아웃 적용
+    1.6. 각 Page에 {children}를 활용 props 전달하기
+    정확하게 정리해 두시면 좋겠어요.
 
-## Calendar 활용해보기
+         <컴포넌트>
+           HTML 결과물
+              종류 1    :  텍스트 (Text Node)
+              종류 2    :  HTML 태그 (Elements Node)
+              종류 3    :   js 로 만든 JSX 컴포넌트
+         </컴포넌트>
 
-- [Ant.design](https://ant.design/components/calendar)
-- [React-calendar](https://www.npmjs.com/package/react-calendar)
-- [FullCalendar](https://fullcalendar.io/)
-- [Toast UI](https://ui.toast.com/tui-calendar)
+1.7. Page 별로 공통 레이아웃을 적용 후 내용은 각 페이지에 children 전달
 
-### AntDesing 캘린더 활용하기
+1.8. 각 페이지별로 별도의 레이아웃이 필요하다.
 
-#### 1. 설치
+1.9. 라우터 경로상 기능이 공통적인 것은 중첩 라우터를 적용하자.
 
-- `npm install antd --save`
-- `npm install @ant-design/icons --save`
-- moment `npm install moment --save`
-- dayjs `npm install dayjs`
+        예)
+            /about/ceo
+            /about/history
+            /about/partner
+            /about/location
 
-```js
-import React, { useState } from "react";
-import { Modal, Calendar } from "antd";
-// 외부 데이터 가져오기
-// - 일별데이터
-//     "todos": [
-//       {
-//         "itodo": 1,
-//         "todoUser": 1,
-//          "todoTitle": "크리스마스 할일",
-//         "todoContent": "todoContent",
-//         "todoComplete": 1,
-//         "todoDate": "2023-12-24",
-//         "todoPic": "https://cdn.mediatoday.co.kr/news/photo/202311/313885_438531_4716.jpg"
-//       }
-//     ]
+            /todo/list
+            /todo/read
+            /todo/modify
+            /todo/add
 
-const getListData = () => {
-  let listData = [
-    {
-      itodo: 1,
-      todoUser: 1,
-      todoTitle: "크리스마스 할일",
-      todoContent: "todoContent",
-      todoComplete: 1,
-      todoDate: "2023-12-24",
-      todoPic:
-        "https://cdn.mediatoday.co.kr/news/photo/202311/313885_438531_4716.jpg",
-    },
-    {
-      itodo: 2,
-      todoUser: 1,
-      todoTitle: "혼자 바다구경 ㅠㅠ",
-      todoContent: "todoContent",
-      todoComplete: 1,
-      todoDate: "2023-12-24",
-      todoPic:
-        "https://cdn.mediatoday.co.kr/news/photo/202311/313885_438531_4716.jpg",
-    },
-    {
-      itodo: 3,
-      todoUser: 1,
-      todoTitle: "혼자 바다구경 ㅠㅠ",
-      todoContent: "todoContent",
-      todoComplete: 1,
-      todoDate: "2023-12-21",
-      todoPic:
-        "https://cdn.mediatoday.co.kr/news/photo/202311/313885_438531_4716.jpg",
-    },
-  ];
+            /member/join
+            /member/login
+            /member/modify
 
-  return listData;
-};
+            /products/list
+            /products/read
+            /products/modify
+            /products/add
 
-const Schedule = () => {
-  // 자바스크립트 자리
-  // 모달 관련
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalCon, setModalCon] = useState({});
-  const showModal = _todo => {
-    setModalCon(_todo);
-    setIsModalOpen(true);
-  };
-  const handleOk = () => {
-    setIsModalOpen(false);
-  };
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
+    2.0. 중첩 라우터
 
-  // 일별 자료 출력하기
-  const dateCellRender = value => {
-    // console.log("dateCellRender 일별자료 : jsx 만듦", value);
-    const listData = getListData();
-    const selectDate = `${value.year()}-${value.month() + 1}-${value.date()}`;
-    // 모든 목록에서 selectDate 와 같은 날짜들을 찾아요.
-    // 그리고 모아요.
-    // 그리고 출력해요. JSX 로
-    // (trim으로 앞뒤 공백제거)
-    const findeShowList = listData.filter(
-      item => item.todoDate.trim() === selectDate,
-    );
+       <route path="/about/">
+          <route path="ceo"></route>
+          <route path="history"></route>
+          <route path="partner"></route>
+          <route path="location"></route>
+       </route>
 
-    console.log("데이터가 있는 날짜 ", findeShowList);
+       <route path="/todo/">
+          <route path="list"></route>
+          <route path="read"></route>
+          <route path="add"></route>
+          <route path="modify"></route>
+       </route>
 
-    // console.log("listData 출력할 자료", listData);
-    // console.log("날짜 정보 ", selectDate);
-    // console.log("날짜", value.year(), value.month() + 1, value.date());
-    // 아래에서 Cell 에 출력할 자료를 만든다.
-    return (
-      <ul className="events">
-        {/* 배열 반복 JSX 만들기 : map */}
-        {findeShowList.map(item => (
-          <li
-            key={item.itodo}
-            onClick={() => {
-              showModal(item);
-            }}
-          >
-            {/* <Badge status={item.type} text={item.content} /> */}
-            <span>{item.todoTitle}</span>
-            {/* 이미지가 있을지 아닐지 몰라 */}
-            {/* {item.todoPic ? (
-              <img src={item.todoPic} alt="" style={{ width: "100%" }} />
-            ) : (
-              ""
-            )} */}
-          </li>
-        ))}
-      </ul>
-    );
-  };
+       <route path="/member/">
+          <route path="join"></route>
+          <route path="login"></route>
+          <route path="modify"></route>
+          <route path="info"></route>
+       </route>
 
-  // 각각의 셀의 날짜를 보고, 정보를 출력하는 역할
-  const cellRender = (current, info) => {
-    // console.log("cellRender 칸 채우기 : ", current, info);
-    if (info.type === "date") {
-      return dateCellRender(current);
-    }
-    return info.originNode;
-  };
+       <route path="/products/">
+          <route path="list"></route>
+          <route path="read"></route>
+          <route path="add"></route>
+          <route path="modify"></route>
+       </route>
+       .......
 
-  return (
-    <div>
-      <h1>캘린더 연습</h1>
-      <div style={{ width: "80%", margin: "0 auto" }}>
-        {/* 캘린더 컴포넌트가 그려질때 밑에꺼가 실행이 됨 {}괄호한에 있는 cellRenderdms Props로 전달하는거임*/}
-        <Calendar cellRender={cellRender} />
-      </div>
-      {/* 모달 */}
-      <Modal
-        title="Basic Modal"
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-      >
-        <div>
-          {modalCon.todoTitle}
-          <hr />
-          <img src={modalCon.todoPic} alt="" style={{ width: "100%" }} />
-        </div>
-      </Modal>
-    </div>
-  );
-};
+    2.1. Outlet 을 활용하는 경우의 필수 조건은 중첩 라우터여야 된다.
 
-export default Schedule;
-```
+
+        : 라우터의 path 에 의해 출력된 컴포넌트
+
+        <컴포넌트>
+             : 라우터의 path 에 의해 출력될 컴포넌트
+        </컴포넌트>
+
+
+
+    2.2. Spinner 활용(로딩시 활용하려고)
+
+         npm i react-spinners
+
+         /src/components/loading 폴더
+         /src/components/loading/Loading.js
+
+
+    3. react-router-dom 의 활용
+
+    3.1. 주소 경우수 (웹브라우저의 path)
+
+         page 라우터               : http://localhost:3000/todo/
+
+         중첩(Nested) 라우터       : http://localhost:3000/todo/list
+
+         params                   : http://localhost:3000/todo/read/14
+                                  : 만들수도 있어야 하고 (14)
+                                  : 읽어들여서 사용할 수도 있어야 합니다.(14)
+
+
+         쿼리스트링 (Query String) : http://localhost:3000/todo/list?page=1&size=10
+                                  : 만들수도 있어야 하고 (?page=1&size=10)
+                                  : 읽어들여서 사용할 수도 있어야 합니다.(page=1, size=10)
+
+         http://localhost:3000/todo/read/14?page=1&size=10
+                                  : 만들수도 있어야 하고 (14?page=1&size=10)
+                                  : 읽어들여서 사용할 수도 있어야 합니다.(14, page=1, size=10)
+
+
+    3.1. params 관련
+
+     - http://localhost:3000/todo/read/30
+
+     - 만들기
+            <Route path="/todo/" />
+
+                <Route path="read/:tno" />
+
+            </route>
+
+     - 읽기
+            const { tno } = useParams();
+
+    3.2. 쿼리스트링 (Query String)
+
+    http://localhost:3000/todo/list?page=1&size=10
+
+     - 읽기    : ?page=1&size=10
+
+        const [urlSearchParams, setUrlSearchParams] = useSearchParams();
+        const page = urlSearchParams.get("page");
+        const size = urlSearchParams.get("size");
+
+     - 만들기  : ?page=1&size=10
+
+       const queryStr = createSearchParams({ page: 1, size: 10 }).toString();
+
+       navigate({ pathname: "list", search: queryStr });

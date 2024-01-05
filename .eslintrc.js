@@ -25,6 +25,6 @@ module.exports = {
     "react/prop-types": "off",
     "no-unused-vars": "off",
     "react/jsx-no-target-blank": "off",
-    "no-undef": "off",
+    // "no-undef": "off",
   },
 };
