@@ -9,6 +9,20 @@ const LazyTodoListPage = lazy(() => import("./pages/todo/ListPage"));
 const LazyTodoReadPage = lazy(() => import("./pages/todo/ReadPage"));
 const LazyTodoModifyPage = lazy(() => import("./pages/todo/ModifyPage"));
 const LazyTodoAddPage = lazy(() => import("./pages/todo/AddPage"));
+// 제품관련
+const LazyProductPage = lazy(() => import("./pages/products/ProductPage"));
+const LazyProductListPage = lazy(() =>
+  import("./pages/products/ProductListPage"),
+);
+const LazyProductAddPage = lazy(() =>
+  import("./pages/products/ProductAddPage"),
+);
+const LazyProductReadPage = lazy(() =>
+  import("./pages/products/ProductReadPage"),
+);
+const LazyProductModifyPage = lazy(() =>
+  import("./pages/products/ProductModifyPage"),
+);
 
 const App = () => {
   return (
@@ -30,6 +44,8 @@ const App = () => {
             </Suspense>
           }
         />
+
+        {/* ---Start todo */}
         <Route
           path="/todo/"
           element={
@@ -75,7 +91,58 @@ const App = () => {
             }
           ></Route>
         </Route>
+        {/* ---End todo */}
+        {/* ---Start product */}
+        <Route
+          path="/product/"
+          element={
+            <Suspense fallback={<Loading />}>
+              <LazyProductPage />
+            </Suspense>
+          }
+        >
+          {/* 리다이렉트(강제이동) */}
+          <Route index element={<Navigate to="list" />}></Route>
+          {/* <Route path="" element={<Navigate to="list" />}></Route> */}
 
+          {/* 목록 */}
+          <Route
+            path="list"
+            element={
+              <Suspense fallback={<Loading />}>
+                <LazyProductListPage />
+              </Suspense>
+            }
+          ></Route>
+          {/* 추가 */}
+          <Route
+            path="add"
+            element={
+              <Suspense fallback={<Loading />}>
+                <LazyProductAddPage />
+              </Suspense>
+            }
+          ></Route>
+          {/* 읽기 */}
+          <Route
+            path="read/:pno"
+            element={
+              <Suspense fallback={<Loading />}>
+                <LazyProductReadPage />
+              </Suspense>
+            }
+          ></Route>
+          {/* 수정 */}
+          <Route
+            path="modify/:pno"
+            element={
+              <Suspense fallback={<Loading />}>
+                <LazyProductModifyPage />
+              </Suspense>
+            }
+          ></Route>
+        </Route>
+        {/* ---End product */}
         <Route path="*" element={<h1>페이지가 없어요</h1>}></Route>
       </Routes>
     </BrowserRouter>

@@ -20,6 +20,9 @@ const BasicMenu = () => {
           </a>
           {/* target 은 새로운 탭 띄워주기 */}
         </li>
+        <li>
+          <Link to="/product/">Product</Link>
+        </li>
       </ul>
     </nav>
   );
