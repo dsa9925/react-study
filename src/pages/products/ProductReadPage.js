@@ -1,7 +1,15 @@
 import React from "react";
+import ProductReadComponent from "../../components/product/ProductReadComponent";
+import { useParams } from "react-router";
 
 const ProductReadPage = () => {
-  return <div>ProductReadPage</div>;
+  const { pno } = useParams();
+  return (
+    <div>
+      <h1>제품 상세페이지</h1>
+      <ProductReadComponent pno={pno} />
+    </div>
+  );
 };
 
 export default ProductReadPage;
