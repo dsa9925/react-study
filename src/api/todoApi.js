@@ -52,7 +52,7 @@ export const getList = async param => {
 };
 
 // 할일 등록하기 (객체로 전달)
-export const postAdd = async ({ todo, successFn, failFn, errFn }) => {
+export const postAdd = async ({ todo, successFn, failFn, errorFn }) => {
   try {
     const res = await axios.post(`${prefix}/`, { ...todo });
 
@@ -63,12 +63,12 @@ export const postAdd = async ({ todo, successFn, failFn, errFn }) => {
       failFn("데이터 에러");
     }
   } catch (error) {
-    errFn(error);
+    errorFn(error);
   }
 };
 
 // 수정하기
-export const putOne = async ({ todo, successFn, failFn, errFn }) => {
+export const putOne = async ({ todo, successFn, failFn, errorFn }) => {
   try {
     const { tno } = todo;
     const res = await axios.put(`${prefix}/${tno}`, { ...todo });
@@ -80,12 +80,12 @@ export const putOne = async ({ todo, successFn, failFn, errFn }) => {
       failFn("데이터 에러");
     }
   } catch (error) {
-    errFn(error);
+    errorFn(error);
   }
 };
 
 // 삭제하기
-export const deleteOne = async ({ tno, successFn, failFn, errFn }) => {
+export const deleteOne = async ({ tno, successFn, failFn, errorFn }) => {
   try {
     const res = await axios.delete(`${prefix}/${tno}`);
 
@@ -96,6 +96,6 @@ export const deleteOne = async ({ tno, successFn, failFn, errFn }) => {
       failFn("데이터 에러");
     }
   } catch (error) {
-    errFn(error);
+    errorFn(error);
   }
 };

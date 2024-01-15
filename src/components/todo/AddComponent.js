@@ -17,7 +17,7 @@ const AddComponent = () => {
   };
   const handleClick = () => {
     // console.log(todo);
-    postAdd({ todo, successFn, failFn, errFN });
+    postAdd({ todo, successFn, failFn, errorFN });
   };
   const successFn = result => {
     setReDirect(0); // 0 : 목록  1 : 가만히
@@ -31,7 +31,7 @@ const AddComponent = () => {
     setPopTitle("새글 등록 실패");
     setContent("새로운 할일이 실패 하였습니다. 다시 등록해주세요.");
   };
-  const errFN = result => {
+  const errorFN = result => {
     setReDirect(1);
     setResult(true);
     setPopTitle("새글 등록 성공");
@@ -99,7 +99,7 @@ const AddComponent = () => {
         <ResultModal
           title={popTitle}
           content={popContent}
-          callFN={closeModal}
+          callFn={closeModal}
         />
       ) : null}
     </div>

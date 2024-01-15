@@ -41,7 +41,7 @@ const ModifyComponent = ({ tno }) => {
       tno,
       successFn: successFnDelete,
       failFn: failFnDelete,
-      errFn: errFnDelete,
+      errorFn: errorFnDelete,
     });
   };
   // 삭제관련 함수
@@ -58,7 +58,7 @@ const ModifyComponent = ({ tno }) => {
     setPopConent("게시물 삭제에 실패하였습니다. 다시 시도하세요.");
     setReDirect(1);
   };
-  const errFnDelete = result => {
+  const errorFnDelete = result => {
     setResult(true);
     setPoptitle("게시물 삭제");
     setPopConent("게시물 삭제에 실패하였습니다. 서버가 오류입니다.");
@@ -70,7 +70,7 @@ const ModifyComponent = ({ tno }) => {
       todo,
       successFn: successFnModify,
       failFn: failFnModify,
-      errFn: errFnModify,
+      errorFn: errorFnModify,
     });
   };
   // 수정관련 함수
@@ -87,7 +87,7 @@ const ModifyComponent = ({ tno }) => {
     setPopConent("게시물 수정에 실패하였습니다. 다시 시도해주세요.");
     setReDirect(1);
   };
-  const errFnModify = result => {
+  const errorFnModify = result => {
     setResult(true);
     setPoptitle("게시물 수정");
     setPopConent("서버가 불안정합니다. 다시 시도해주세요.");
@@ -126,7 +126,7 @@ const ModifyComponent = ({ tno }) => {
         <ResultModal
           title={popTitle}
           content={popContent}
-          callFN={closeModal}
+          callFn={closeModal}
         />
       ) : null}
 

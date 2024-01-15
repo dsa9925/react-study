@@ -106,7 +106,7 @@ const ProductAddComponent = () => {
         <ResultModal
           title={resultTitle}
           content={resultContent}
-          callFN={closeModal}
+          callFn={closeModal}
         />
       ) : null}
       {fetching ? <Fetching /> : null}

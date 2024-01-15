@@ -1,6 +1,6 @@
 import React from "react";
 // 타이틀, 내용, 확인버튼 클릭시 콜백 함수
-const ResultModal = ({ title, content, callFN }) => {
+const ResultModal = ({ title, content, callFn }) => {
   const popstyle = {
     position: "fixed",
     display: "flex",
@@ -19,7 +19,7 @@ const ResultModal = ({ title, content, callFN }) => {
         <div>{title}</div>
         <div>{content}</div>
         <div>
-          <button onClick={callFN}>창 닫기</button>
+          <button onClick={callFn}>창 닫기</button>
         </div>
       </div>
     </div>
