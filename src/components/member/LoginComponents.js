@@ -4,8 +4,8 @@ import { login, loginPostAsync } from "../../slices/loginSlice";
 
 // 초기값
 const initState = {
-  email: "user0@aaa.com",
-  pw: "1111",
+  email: "",
+  pw: "",
 };
 const LoginComponents = () => {
   const [loginParam, setLoginParam] = useState(initState);

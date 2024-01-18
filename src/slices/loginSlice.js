@@ -4,6 +4,7 @@ import { createSlice } from "@reduxjs/toolkit";
 // reducer (store 상태 변경) 를 호출할때 지금은 API 호출
 import { loginPost } from "../api/memberApi";
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { getCookie, removeCookie, setCookie } from "../util/cookieUtil";
 
 // export const 외부함수 = createAsyncThunk("이름", 리듀서함수);
 export const loginPostAsync = createAsyncThunk(
@@ -23,9 +24,17 @@ export const loginPostAsync = createAsyncThunk(
 const initState = {
   email: "",
 };
+
+// 쿠키 정보 읽어와서 initState 변경하기
+const loadMemberCookie = () => {
+  const memberInfo = getCookie("member");
+  console.log(memberInfo);
+  return memberInfo;
+};
+
 const loginSlice = createSlice({
   name: "loginSlice",
-  initialState: initState,
+  initialState: loadMemberCookie() || initState,
 
   // store 의 state 를 업데이트 하는 함수 모음
   reducers: {
@@ -36,6 +45,7 @@ const loginSlice = createSlice({
     // 로그아웃
     logout: (state, action) => {
       console.log("logout.....");
+      removeCookie("member", "/");
       return { ...initState };
     },
   },
@@ -50,9 +60,11 @@ const loginSlice = createSlice({
         // console.log(action);
         const payload = action.payload;
         console.log("payload", payload);
-        // if (!payload.error) {
-        //   // 이때 필요한 정보를 보관한다.
-        // }
+        if (!payload.error) {
+          // 이때 필요한 정보를 보관한다.
+          // 쿠키는 문자열입니다. 객체를 JSON 문자로 변환
+          setCookie("member", JSON.stringify(payload));
+        }
         return payload;
       })
       .addCase(loginPostAsync.pending, (state, action) => {
