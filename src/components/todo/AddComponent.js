@@ -17,29 +17,29 @@ const AddComponent = () => {
   };
   const handleClick = () => {
     // console.log(todo);
-    postAdd({ todo, successFn, failFn, errorFN });
+    postAdd({ todo, successFn, failFn, errFN });
   };
   const successFn = result => {
-    setReDirect(0); // 0 : 목록  1 : 가만히
+    setReDirct(0); // 0 : 목록   1: 가만있어
     setResult(true);
     setPopTitle("새글 등록 성공");
-    setContent("새로운 할일이 등록 되었습니다. 목록으로 이동합니다.");
+    setContent("새로운 할일이 등록되었습니다. 목록으로 이동합니다.");
   };
   const failFn = result => {
-    setReDirect(1);
+    setReDirct(1);
     setResult(true);
     setPopTitle("새글 등록 실패");
-    setContent("새로운 할일이 실패 하였습니다. 다시 등록해주세요.");
+    setContent("새로운 할일이 등록에 실패하였습니다. 다시 등록해주세요.");
   };
-  const errorFN = result => {
-    setReDirect(1);
+  const errFN = result => {
+    setReDirct(1);
     setResult(true);
-    setPopTitle("새글 등록 성공");
-    setContent("서버가 불안정합니다. 다시 등록해주세요.");
+    setPopTitle("새글 등록 실패");
+    setContent("서버가 불안정합니다. 잠시후 다시 등록해주세요.");
   };
 
   const { moveToList } = useCustomMove();
-  // 팝업창 닫을 경우 실행 할 함수
+  // 팝업창 닫을 경우 실행할 함수
   const closeModal = () => {
     // 팝업창 숨기기
     setResult(false);
@@ -47,7 +47,7 @@ const AddComponent = () => {
       // 목록가기
       moveToList();
     } else {
-      // 그대로 있기
+      // 고대로 있어
     }
   };
 
@@ -55,7 +55,7 @@ const AddComponent = () => {
   const [result, setResult] = useState(false);
   const [popTitle, setPopTitle] = useState("");
   const [popContent, setContent] = useState("");
-  const [popRedrect, setReDirect] = useState(0);
+  const [popRedrect, setReDirct] = useState(0);
 
   return (
     <div>

@@ -7,7 +7,7 @@ const ModifyPage = () => {
   return (
     <div>
       ModifyPage 글 번호 {tno}
-      <ModifyComponent tno={tno} />
+      <ModifyComponent tno={tno}/>
     </div>
   );
 };

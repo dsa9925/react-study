@@ -168,7 +168,6 @@ const ProductModifyComponent = ({ pno }) => {
   const { moveToList, moveToRead, page, size } = useCustomMove();
 
   const closeModal = () => {
-    console.log("창닫기");
     // 팝업닫기
     setPopTitle("");
 

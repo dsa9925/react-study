@@ -56,40 +56,42 @@ const ProductAddComponent = () => {
     formData.append("pdesc", product.pdesc);
     formData.append("price", product.price);
 
-    console.log(product);
+    // console.log(product);
     // 제품 정보 전송하기
-    setFetching(true); // 로딩창 보여주기
+    setFetching(true);
     postAdd({ product: formData, successFn, failFn, errorFn });
   };
 
   const [resultTitle, setResultTitle] = useState("");
   const [resultContent, setResultContent] = useState("");
   const [reDirect, setReDirect] = useState(0);
+
   const successFn = result => {
-    setFetching(false); // 로딩창 숨기기
+    setFetching(false);
     setResultTitle("이미지 업로드");
     setResultContent("이미지 업로드에 성공하였습니다.");
     setReDirect(0);
     console.log(result);
   };
   const failFn = result => {
-    setFetching(false); // 로딩창 숨기기
+    setFetching(false);
     setResultTitle("이미지 업로드 오류");
     setResultContent("오류가 발생하였습니다. 잠시 후 시도해주세요.");
     setReDirect(1);
     console.log(result);
   };
   const errorFn = result => {
-    setFetching(false); // 로딩창 숨기기
+    setFetching(false);
     setResultTitle("서버 오류");
     setResultContent("오류가 발생하였습니다. 관리자에게 문의해 주세요.");
     setReDirect(1);
     console.log(result);
   };
+
   // 커스텀 훅 활용하기
   const { moveToList } = useCustomMove();
   const closeModal = () => {
-    // 팝업 닫기
+    // 팝업닫기
     setResultTitle("");
 
     if (reDirect === 0) {
@@ -109,6 +111,7 @@ const ProductAddComponent = () => {
           callFn={closeModal}
         />
       ) : null}
+
       {fetching ? <Fetching /> : null}
       <div>
         <div>제품 이름</div>

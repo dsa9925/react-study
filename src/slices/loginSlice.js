@@ -28,7 +28,6 @@ const initState = {
 // 쿠키 정보 읽어와서 initState 변경하기
 const loadMemberCookie = () => {
   const memberInfo = getCookie("member");
-  console.log(memberInfo);
   return memberInfo;
 };
 

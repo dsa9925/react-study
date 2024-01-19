@@ -19,7 +19,7 @@ const PageComponent = ({ serverData }) => {
         <button
           key={item}
           onClick={() => {
-            moveToList({ page: item, size: 10 });
+            moveToList({ page: item });
           }}
         >
           {item}

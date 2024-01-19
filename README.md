@@ -232,28 +232,239 @@ loginSlice.js;
 
 ```js
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
+import { loginPostAsync, logout } from "../slices/loginSlice";
 
 const useCustomLogin = () => {
   // 패스 이동하기
   const navigate = useNavigate();
+
   // RTK 상태값 업데이트
   const dispatch = useDispatch();
+
   // RTK 상태값 읽기
   const loginState = useSelector(state => state.loginState);
+
   // 로그인 상태값 파악
   const isLogin = loginState.email ? true : false;
+
   // 로그인 기능
-  const doLogin = () => {};
+  const doLogin = async ({ loginParam, successFn, failFn, errorFn }) => {
+    // 로그인 어느화면에서 실행이 될 소지가 높아요.
+    // 로그인 상태 업데이트
+    const action = await dispatch(
+      loginPostAsync({ loginParam, successFn, failFn, errorFn }),
+    );
+    // 결과값
+    return action.payload;
+  };
+
   // 로그아웃 기능
-  const doLogout = () => {};
+  const doLogout = () => {
+    dispatch(logout());
+  };
+
   // 패스이동 기능
-  const moveToPath = () => {};
+  const moveToPath = path => {
+    // 패스로 이동 후에 replace:ture 를 적용시 뒤로 가기 화면
+    // 이전 페이지 기록을 남기지 않는다.
+    navigate({ pathname: path }, { replace: true });
+  };
+
   // 로그인 페이동 기능
-  const moveToLogin = () => {};
+  const moveToLogin = () => {
+    return <Navigate replace to="/member/login" />;
+  };
 
   return { loginState, isLogin, doLogin, doLogout, moveToPath, moveToLogin };
 };
 
 export default useCustomLogin;
+```
+
+### 4.1 RTK 훅 사용하기
+
+- /src/components/member/LoginComponent.js
+
+```js
+import React, { useState } from "react";
+import useCustomLogin from "../../hooks/useCustomLogin";
+
+// 초기값
+const initState = {
+  email: "",
+  pw: "",
+};
+const LoginComponents = () => {
+  const [loginParam, setLoginParam] = useState(initState);
+  const handleChange = e => {
+    // e.target.name
+    // e.target.value
+    loginParam[e.target.name] = e.target.value;
+    setLoginParam({ ...loginParam });
+  };
+
+  // 커스터훅 사용하기
+  const { doLogin, moveToPath } = useCustomLogin();
+
+  // slice 값(state)을 읽을때        useSelector
+  // slice 값(state)를 업데이트할때  useDispatch()
+  // const dispatch = useDispatch();
+  const handleClick = e => {
+    // // loginSlice 의  state 업데이트
+    // // dispatch(login(loginParam));
+    // dispatch(loginPostAsync({ loginParam, successFn, failFn, errorFn }));
+
+    // 아래 구문을 실행하고 나면 Promise 돌려 받아요
+    doLogin({ loginParam, successFn, failFn, errorFn });
+  };
+
+  const successFn = result => {
+    console.log("성공", result);
+    moveToPath("/");
+  };
+
+  const failFn = result => {
+    console.log("실패", result);
+    alert("이메일 및 비밀번호 확인하세요.");
+  };
+
+  const errorFn = result => {
+    console.log("서버 에러", result);
+  };
+
+  return (
+    <div>
+      <div>
+        <div>이메일</div>
+        <div>
+          <input
+            type="email"
+            name="email"
+            value={loginParam.email}
+            onChange={e => handleChange(e)}
+          />
+        </div>
+      </div>
+
+      <div>
+        <div>비밀번호</div>
+        <div>
+          <input
+            type="password"
+            name="pw"
+            value={loginParam.pw}
+            onChange={e => handleChange(e)}
+          />
+        </div>
+      </div>
+
+      <div>
+        <button onClick={handleClick}>로그인</button>
+      </div>
+    </div>
+  );
+};
+
+export default LoginComponents;
+```
+
+- /src/components/menus/BasicMenu.js
+
+```js
+import React from "react";
+import { Link } from "react-router-dom";
+import useCustomLogin from "../../hooks/useCustomLogin";
+const BasicMenu = () => {
+  // 로그인 슬라이스에서 email 읽는다.
+  // loginSlice 값을 읽으려고 접근하기
+  // const loginState = useSelector(state => state.loginSlice);
+  // console.log(loginState);
+  const { isLogin } = useCustomLogin();
+
+  return (
+    <nav>
+      <ul>
+        <li>
+          <Link to="/">Home</Link>
+        </li>
+        <li>
+          <Link to="/about">About</Link>
+        </li>
+        {/* 로그인 상태 체크 후 내용 출력 */}
+        {isLogin ? (
+          <>
+            <li>
+              <Link to="/todo/">Todo</Link>
+            </li>
+            <li>
+              <Link to="/product/">Product</Link>
+            </li>
+          </>
+        ) : null}
+      </ul>
+
+      {/* 로그인 / 로그아웃버튼  */}
+      <div>
+        {isLogin ? (
+          <Link to="/member/logout">로그아웃</Link>
+        ) : (
+          <Link to="/member/login">로그인</Link>
+        )}
+      </div>
+    </nav>
+  );
+};
+
+export default BasicMenu;
+```
+
+- /src/pasges/members/LogoutPage.js
+
+```js
+import React from "react";
+import useCustomLogin from "../../hooks/useCustomLogin";
+
+const LogoutPage = () => {
+  // const dispatch = useDispatch();
+  const { moveToPath, doLogout } = useCustomLogin();
+  const handleClick = () => {
+    doLogout();
+    moveToPath("/member/login");
+  };
+
+  return (
+    <div>
+      <h2>로그아웃하시겠습니까?</h2>
+      <div>
+        <button onClick={handleClick}>로그아웃</button>
+      </div>
+    </div>
+  );
+};
+
+export default LogoutPage;
+```
+
+- /src/pages/member/AboutPage.js
+
+```js
+import React from "react";
+import BasicLayout from "../layouts/BasicLayout";
+import useCustomLogin from "../hooks/useCustomLogin";
+
+const AboutPage = () => {
+  const { isLogin, moveToLogin } = useCustomLogin();
+  if (!isLogin) {
+    moveToLogin();
+  }
+
+  return (
+    <BasicLayout>
+      <h1>AboutPage</h1>
+    </BasicLayout>
+  );
+};
+
+export default AboutPage;
 ```

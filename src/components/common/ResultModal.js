@@ -19,7 +19,7 @@ const ResultModal = ({ title, content, callFn }) => {
         <div>{title}</div>
         <div>{content}</div>
         <div>
-          <button onClick={callFn}>창 닫기</button>
+          <button onClick={callFn}>확인</button>
         </div>
       </div>
     </div>

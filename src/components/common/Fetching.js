@@ -1,5 +1,6 @@
 import React from "react";
 import { ClipLoader } from "react-spinners";
+
 const Fetching = () => {
   const laodingCss = {
     position: "fixed",

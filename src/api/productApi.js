@@ -72,18 +72,21 @@ export const putOne = async ({ pno, product, successFn, failFn, errorFn }) => {
     errorFn(error);
   }
 };
+
 // 상품 삭제
 export const deleteOne = async ({ pno, successFn, failFn, errorFn }) => {
   try {
+    // 여기서도 이미지가 추가될 수 있어요.
+    // header 가 필요합니다.
     const res = await axios.delete(`${host}/${pno}`);
-    const status = res.status.toString();
 
+    const status = res.status.toString();
     if (status.charAt(0) === "2") {
       successFn(res.data);
     } else {
-      failFn("제품 삭제 호출 오류입니다.");
+      failFn("제품삭제 호출 오류입니다.");
     }
   } catch (error) {
-    errorFn("error");
+    errorFn(error);
   }
 };

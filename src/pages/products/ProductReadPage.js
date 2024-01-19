@@ -6,7 +6,7 @@ const ProductReadPage = () => {
   const { pno } = useParams();
   return (
     <div>
-      <h1>제품 상세페이지</h1>
+      <h1>제품상세페이지</h1>
       <ProductReadComponent pno={pno} />
     </div>
   );

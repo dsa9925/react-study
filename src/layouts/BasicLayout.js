@@ -1,6 +1,5 @@
 import React from "react";
 import BasicMenu from "../components/menus/BasicMenu";
-import Loading from "../components/loading/Loading";
 
 // 객체 구조 분해 할당
 const BasicLayout = ({ children }) => {

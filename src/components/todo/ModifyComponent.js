@@ -41,7 +41,7 @@ const ModifyComponent = ({ tno }) => {
       tno,
       successFn: successFnDelete,
       failFn: failFnDelete,
-      errorFn: errorFnDelete,
+      errFn: errFnDelete,
     });
   };
   // 삭제관련 함수
@@ -58,7 +58,7 @@ const ModifyComponent = ({ tno }) => {
     setPopConent("게시물 삭제에 실패하였습니다. 다시 시도하세요.");
     setReDirect(1);
   };
-  const errorFnDelete = result => {
+  const errFnDelete = result => {
     setResult(true);
     setPoptitle("게시물 삭제");
     setPopConent("게시물 삭제에 실패하였습니다. 서버가 오류입니다.");
@@ -70,7 +70,7 @@ const ModifyComponent = ({ tno }) => {
       todo,
       successFn: successFnModify,
       failFn: failFnModify,
-      errorFn: errorFnModify,
+      errFn: errFnModify,
     });
   };
   // 수정관련 함수
@@ -87,7 +87,7 @@ const ModifyComponent = ({ tno }) => {
     setPopConent("게시물 수정에 실패하였습니다. 다시 시도해주세요.");
     setReDirect(1);
   };
-  const errorFnModify = result => {
+  const errFnModify = result => {
     setResult(true);
     setPoptitle("게시물 수정");
     setPopConent("서버가 불안정합니다. 다시 시도해주세요.");
@@ -113,7 +113,7 @@ const ModifyComponent = ({ tno }) => {
     if (reDirect === 0) {
       // 목록으로 : 페이지 상태 유지하면서 이동
       moveToList({ page: 1 });
-    } else if (result === 2) {
+    } else if (reDirect === 2) {
       // 읽기로 페이지 이동한다.
       moveToRead(tno);
     }

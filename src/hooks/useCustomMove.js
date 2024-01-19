@@ -12,24 +12,27 @@ const useCustomMove = () => {
   const [urlSearchParams, setUrlSearchParams] = useSearchParams();
 
   // 현재 목록의 페이지 번호
-  const page = parseInt(urlSearchParams.get("page")) || 1;
+  const page = urlSearchParams.get("page")
+    ? parseInt(urlSearchParams.get("page"))
+    : 1;
 
   // 페이지당 보여줄 개수
-  const size = parseInt(urlSearchParams.get("size")) || 10;
+  const size = urlSearchParams.get("size")
+    ? parseInt(urlSearchParams.get("size"))
+    : 10;
 
   // 쿼리스트링 만들기
   const queryStrDefault = createSearchParams({ page, size }).toString();
 
   // 목록으로 가기 기능 만들기
-  // pageParam이 있으면 pageParam으로 이동.
-  // 즉 5페이지 있으면 5페이지로 이동
-  // 없으면 1 페이지로 이동
+  // pageParam 이 있으면 pageParam 으로 이동
+  // pageParam 이 없으면 1 페이지로 이동
+
   const moveToList = pageParam => {
-    console.log(pageParam);
     let queryStr = "";
 
     if (pageParam) {
-      // page 와 size 가 있다면
+      // page 와  size 가 있다면
       const pageNum = getNum(pageParam.page, page);
       const sizeNum = getNum(pageParam.size, size);
       // 쿼리만들기
@@ -40,7 +43,6 @@ const useCustomMove = () => {
     } else {
       queryStr = queryStrDefault;
     }
-    console.log(queryStr);
 
     navigate({ pathname: "../list", search: queryStr });
   };

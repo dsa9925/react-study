@@ -3,16 +3,10 @@ import axios from "axios";
 export const API_SERVER_HOST = "http://192.168.0.66:8080";
 const prefix = `${API_SERVER_HOST}/api/todo`;
 
-// 자료를 가지고 온다.
-// 한 개만 가져오기
-// axios.get("http://192.168.0.66:8080/api/todo/5");
 export const getOne = async tno => {
   try {
     const res = await axios.get(`${prefix}/${tno}`);
-
-    // HTTP 상태 코드 파악하기
     const status = res.status.toString();
-    // 문자열 예) "200" 또는 "404" 의 0번 위치 글자를 알아낸다.
     const httpSt = status.charAt(0);
     if (httpSt === "2") {
       return res.data;
@@ -23,6 +17,7 @@ export const getOne = async tno => {
     console.log(error);
   }
 };
+
 // 목록당 페이지와 일정 개수를 가져오기
 export const getList = async param => {
   try {
@@ -39,7 +34,7 @@ export const getList = async param => {
 
     const httpSt = status.charAt(0);
     if (httpSt === "2") {
-      //   console.log("성공");
+      // console.log("성공");
       return res.data;
     } else {
       console.log("에러");
@@ -51,11 +46,10 @@ export const getList = async param => {
   }
 };
 
-// 할일 등록하기 (객체로 전달)
-export const postAdd = async ({ todo, successFn, failFn, errorFn }) => {
+// 할일 등록하기 (객체{}로 전달)
+export const postAdd = async ({ todo, successFn, failFn, errFn }) => {
   try {
     const res = await axios.post(`${prefix}/`, { ...todo });
-
     const status = res.status.toString();
     if (status.charAt(0) === "2") {
       successFn(res.data);
@@ -63,16 +57,15 @@ export const postAdd = async ({ todo, successFn, failFn, errorFn }) => {
       failFn("데이터 에러");
     }
   } catch (error) {
-    errorFn(error);
+    errFn(error);
   }
 };
 
 // 수정하기
-export const putOne = async ({ todo, successFn, failFn, errorFn }) => {
+export const putOne = async ({ todo, successFn, failFn, errFn }) => {
   try {
     const { tno } = todo;
     const res = await axios.put(`${prefix}/${tno}`, { ...todo });
-
     const status = res.status.toString();
     if (status.charAt(0) === "2") {
       successFn(res.data);
@@ -80,15 +73,13 @@ export const putOne = async ({ todo, successFn, failFn, errorFn }) => {
       failFn("데이터 에러");
     }
   } catch (error) {
-    errorFn(error);
+    errFn(error);
   }
 };
-
 // 삭제하기
-export const deleteOne = async ({ tno, successFn, failFn, errorFn }) => {
+export const deleteOne = async ({ tno, successFn, failFn, errFn }) => {
   try {
     const res = await axios.delete(`${prefix}/${tno}`);
-
     const status = res.status.toString();
     if (status.charAt(0) === "2") {
       successFn(res.data);
@@ -96,6 +87,6 @@ export const deleteOne = async ({ tno, successFn, failFn, errorFn }) => {
       failFn("데이터 에러");
     }
   } catch (error) {
-    errorFn(error);
+    errFn(error);
   }
 };
