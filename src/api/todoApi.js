@@ -1,11 +1,12 @@
 import axios from "axios";
+import jwtAxios from "../util/jwtUtil";
 
 export const API_SERVER_HOST = "http://192.168.0.66:8080";
 const prefix = `${API_SERVER_HOST}/api/todo`;
 
 export const getOne = async tno => {
   try {
-    const res = await axios.get(`${prefix}/${tno}`);
+    const res = await jwtAxios.get(`${prefix}/${tno}`);
     const status = res.status.toString();
     const httpSt = status.charAt(0);
     if (httpSt === "2") {
@@ -24,7 +25,7 @@ export const getList = async param => {
     // "http://192.168.0.66:8080/api/todo/list?page=3&size=10"
     // const res = await axios.get(`${prefix}/list?page=${page}&size=${size}`);
 
-    const res = await axios.get(`${prefix}/list`, {
+    const res = await jwtAxios.get(`${prefix}/list`, {
       params: { ...param },
     });
 
@@ -49,7 +50,7 @@ export const getList = async param => {
 // 할일 등록하기 (객체{}로 전달)
 export const postAdd = async ({ todo, successFn, failFn, errFn }) => {
   try {
-    const res = await axios.post(`${prefix}/`, { ...todo });
+    const res = await jwtAxios.post(`${prefix}/`, { ...todo });
     const status = res.status.toString();
     if (status.charAt(0) === "2") {
       successFn(res.data);
@@ -65,7 +66,7 @@ export const postAdd = async ({ todo, successFn, failFn, errFn }) => {
 export const putOne = async ({ todo, successFn, failFn, errFn }) => {
   try {
     const { tno } = todo;
-    const res = await axios.put(`${prefix}/${tno}`, { ...todo });
+    const res = await jwtAxios.put(`${prefix}/${tno}`, { ...todo });
     const status = res.status.toString();
     if (status.charAt(0) === "2") {
       successFn(res.data);
@@ -79,7 +80,7 @@ export const putOne = async ({ todo, successFn, failFn, errFn }) => {
 // 삭제하기
 export const deleteOne = async ({ tno, successFn, failFn, errFn }) => {
   try {
-    const res = await axios.delete(`${prefix}/${tno}`);
+    const res = await jwtAxios.delete(`${prefix}/${tno}`);
     const status = res.status.toString();
     if (status.charAt(0) === "2") {
       successFn(res.data);
