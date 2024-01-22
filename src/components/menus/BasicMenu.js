@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import useCustomLogin from "../../hooks/useCustomLogin";
 const BasicMenu = () => {
@@ -17,7 +18,10 @@ const BasicMenu = () => {
         <li>
           <Link to="/about">About</Link>
         </li>
-        {/* 로그인 상태 체크 후 내용 출력 */}
+        <li>
+          <Link to="/form">Form</Link>
+        </li>
+        {/* 로그인 상태 체크 후 내용출력 */}
         {isLogin ? (
           <>
             <li>
@@ -29,15 +33,17 @@ const BasicMenu = () => {
           </>
         ) : null}
       </ul>
-
-      {/* 로그인 / 로그아웃버튼  */}
-      <div>
+      <ul>
         {isLogin ? (
-          <Link to="/member/logout">로그아웃</Link>
+          <li>
+            <Link to="/member/logout">로그아웃</Link>
+          </li>
         ) : (
-          <Link to="/member/login">로그인</Link>
+          <li>
+            <Link to="/member/login">로그인</Link>
+          </li>
         )}
-      </div>
+      </ul>
     </nav>
   );
 };

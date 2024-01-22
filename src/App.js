@@ -28,6 +28,8 @@ const LazyProductModifyPage = lazy(() =>
 const MemberPage = lazy(() => import("./pages/members/MemberPage"));
 const LoginPage = lazy(() => import("./pages/members/LoginPage"));
 const LogoutPage = lazy(() => import("./pages/members/LogoutPage"));
+// Form 페이지
+const LazyFormPage = lazy(() => import("./pages/forms/FormPage"));
 
 const App = () => {
   return (
@@ -178,9 +180,20 @@ const App = () => {
               </Suspense>
             }
           />
-
         </Route>
         {/* ---End Member */}
+
+        {/* Form 연습 */}
+        {/* --- Start Form 연습 */}
+        <Route
+          path="/form"
+          element={
+            <Suspense fallback={<Loading />}>
+              <LazyFormPage />
+            </Suspense>
+          }
+        />
+        {/* --- END Form 연습 */}
         <Route path="*" element={<h1>페이지가 없어요</h1>}></Route>
       </Routes>
     </BrowserRouter>

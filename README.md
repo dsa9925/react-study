@@ -1,327 +1,846 @@
-# JWT 인증
+# AntDesign Form / Daum Post 활용
 
-- JSON Web Token 의 줄임말
-- Token 은 복잡한 문자열
-- Access Token
-  : 자료 요청(axios) 시 먼저 전달
-  : 약속된 Access Token 이 없으면 거부 합니다.
+- [AntForm](https://ant.design/components/form)
+- `npm install antd --save`
 
-- Refresh Token
-  : Access Token 은 만료시간이 있어요. (30분 ~1시간)
-  : Access Token 이 거부되면 Refresh Token 프론트 전달
-  : 다시 Access Token 과 Referesh Token 재발근
+## 1. 페이지 생성
 
-- axios에서 intecepter 설정
-  : API 백엔드 서버에 전달하기 전과 후에 미리 토큰 전달
-
-## 1. intercepter 셋팅
-
-- /src/util/jwtUtil.js
-  : jwt 인증 전용 axios
+- /src/pages/forms/ 폴더
+- /src/pages/forms/FormPage.js
+- 라우터 적용 / 레이아웃 적용 / 기능담당 컴포넌트생성
 
 ```js
-import axios from "axios";
-// intercepter 전용 axios 생성
-// 로그인 제외 및 일반적 api 요청등을 제외
-// 인증이 필요한 경우에 활용하는 용도
-const jwtAxios = axios.create();
+import React from "react";
+import BasicLayout from "../../layouts/BasicLayout";
 
-// 요청(request) intercepter
-// request 가 문제가 있든, 없든 실행될 내용 작성
-const beforeReq = config => {
-  console.log("요청전 전달 .... ", config);
-  return config;
+const FormPage = () => {
+  return (
+    <BasicLayout>
+      <h1>FormPage</h1>
+    </BasicLayout>
+  );
 };
 
-// fail Request 요청보내서 실패했을 때
-const requestFail = err => {
-  console.log("요청후 실패시 .... ", err);
-  return Promise.reject(err);
-};
-
-// 응답(Response) 처리 코드
-// Response 전처리
-const beforeRes = async res => {
-  console.log("Response 전처리 ....", res);
-  return res;
-};
-// Response Fail 처리
-const responseFail = err => {
-  console.log("Response Fail Err", err);
-  return Promise.reject(err);
-};
-
-// axios 인터셉터 적용
-jwtAxios.interceptors.request.use(beforeReq, requestFail);
-jwtAxios.interceptors.response.use(beforeRes, responseFail);
-
-export default jwtAxios;
+export default FormPage;
 ```
 
-## 2. todo 적용
-
-- /src/todoApi.js
+- 라우터 연결
+  : /src/App.js
 
 ```js
-import axios from "axios";
-import jwtAxios from "../util/jwtUtil";
+// Form 페이지
+const LazyFormPage = lazy(() => import("./pages/forms/FormPage"));
 
-export const API_SERVER_HOST = "http://192.168.0.66:8080";
-const prefix = `${API_SERVER_HOST}/api/todo`;
-
-export const getOne = async tno => {
-  try {
-    const res = await jwtAxios.get(`${prefix}/${tno}`);
-    const status = res.status.toString();
-    const httpSt = status.charAt(0);
-    if (httpSt === "2") {
-      return res.data;
-    } else {
-      return "잘못된 정보를 전달함";
-    }
-  } catch (error) {
-    console.log(error);
+<Route
+  path="/form"
+  element={
+    <Suspense fallback={<Loading />}>
+      <LazyFormPage />
+    </Suspense>
   }
-};
-
-// 목록당 페이지와 일정 개수를 가져오기
-export const getList = async param => {
-  try {
-    // "http://192.168.0.66:8080/api/todo/list?page=3&size=10"
-    // const res = await axios.get(`${prefix}/list?page=${page}&size=${size}`);
-
-    const res = await jwtAxios.get(`${prefix}/list`, {
-      params: { ...param },
-    });
-
-    console.log(res.data);
-    // HTTP 상태 코드 파악하여 별도로 처리하기
-    const status = res.status.toString();
-
-    const httpSt = status.charAt(0);
-    if (httpSt === "2") {
-      // console.log("성공");
-      return res.data;
-    } else {
-      console.log("에러");
-      return status.error;
-    }
-  } catch (error) {
-    // HTTP 500 류의 오류 (서버에러)
-    console.log(error);
-  }
-};
-
-// 할일 등록하기 (객체{}로 전달)
-export const postAdd = async ({ todo, successFn, failFn, errFn }) => {
-  try {
-    const res = await jwtAxios.post(`${prefix}/`, { ...todo });
-    const status = res.status.toString();
-    if (status.charAt(0) === "2") {
-      successFn(res.data);
-    } else {
-      failFn("데이터 에러");
-    }
-  } catch (error) {
-    errFn(error);
-  }
-};
-
-// 수정하기
-export const putOne = async ({ todo, successFn, failFn, errFn }) => {
-  try {
-    const { tno } = todo;
-    const res = await jwtAxios.put(`${prefix}/${tno}`, { ...todo });
-    const status = res.status.toString();
-    if (status.charAt(0) === "2") {
-      successFn(res.data);
-    } else {
-      failFn("데이터 에러");
-    }
-  } catch (error) {
-    errFn(error);
-  }
-};
-// 삭제하기
-export const deleteOne = async ({ tno, successFn, failFn, errFn }) => {
-  try {
-    const res = await jwtAxios.delete(`${prefix}/${tno}`);
-    const status = res.status.toString();
-    if (status.charAt(0) === "2") {
-      successFn(res.data);
-    } else {
-      failFn("데이터 에러");
-    }
-  } catch (error) {
-    errFn(error);
-  }
-};
+/>;
 ```
 
-## 3. product 적용
+## 2. 컴포넌트 생성
 
-- /src/productApi.js
+- /src/components/forms/FormComponent.js
 
 ```js
-import axios from "axios";
-import { API_SERVER_HOST } from "./todoApi";
-import jwtAxios from "../util/jwtUtil";
+import React from "react";
 
-// 제품 API
-const host = `${API_SERVER_HOST}/api/products`;
-
-// 파일 업로드 비동기 통신
-export const postAdd = async ({ product, successFn, failFn, errorFn }) => {
-  try {
-    // 파일 업로드시 준비할 것이 있습니다.
-    // 반드시 복수형으로 { headers } 작성 필요
-    const header = { headers: { "Content-Type": "multipart/form-data" } };
-    const res = await jwtAxios.post(`${host}/`, product, header);
-
-    const status = res.status.toString();
-    if (status.charAt(0) === "2") {
-      successFn(res.data);
-    } else {
-      failFn("전송 오류입니다.");
-    }
-  } catch (error) {
-    errorFn("서버에러에요");
-  }
+const FormComponent = () => {
+  return <div>FormComponent</div>;
 };
 
-// 제품 목록가져오기
-export const getList = async ({ param, successFn, failFn, errorFn }) => {
-  try {
-    const res = await jwtAxios.get(`${host}/list`, { params: param });
-
-    const status = res.status.toString();
-    if (status.charAt(0) === "2") {
-      successFn(res.data);
-    } else {
-      failFn("목록 호출 오류입니다.");
-    }
-  } catch (error) {
-    errorFn("목록 호출 서버 에러에요");
-  }
-};
-
-// 하나의 제품 정보 가져오기
-export const getOne = async ({ pno, successFn, failFn, errorFn }) => {
-  try {
-    const res = await jwtAxios.get(`${host}/${pno}`);
-    const status = res.status.toString();
-    if (status.charAt(0) === "2") {
-      successFn(res.data);
-    } else {
-      failFn("상세정보 호출 오류입니다.");
-    }
-  } catch (error) {
-    errorFn("상세정보 호출 서버 에러에요");
-  }
-};
-
-// 제품 수정하기
-export const putOne = async ({ pno, product, successFn, failFn, errorFn }) => {
-  try {
-    // 여기서도 이미지가 추가될 수 있어요.
-    // header 가 필요합니다.
-    const header = { headers: { "Content-Type": "multipart/form-data" } };
-    const res = await jwtAxios.put(`${host}/${pno}`, product, header);
-
-    const status = res.status.toString();
-    if (status.charAt(0) === "2") {
-      successFn(res.data);
-    } else {
-      failFn("상세정보 호출 오류입니다.");
-    }
-  } catch (error) {
-    errorFn(error);
-  }
-};
-
-// 상품 삭제
-export const deleteOne = async ({ pno, successFn, failFn, errorFn }) => {
-  try {
-    // 여기서도 이미지가 추가될 수 있어요.
-    // header 가 필요합니다.
-    const res = await jwtAxios.delete(`${host}/${pno}`);
-
-    const status = res.status.toString();
-    if (status.charAt(0) === "2") {
-      successFn(res.data);
-    } else {
-      failFn("제품삭제 호출 오류입니다.");
-    }
-  } catch (error) {
-    errorFn(error);
-  }
-};
+export default FormComponent;
 ```
 
-## 4. jwt Access Token 적용 및 업데이트
+## 3. Link 연결
 
-- /src/util/jwtUtil.js
+- /src/components/menus/BasicMenu.js
 
 ```js
-import axios from "axios";
-import { getCookie } from "./cookieUtil";
-// intercepter 전용 axios 생성
-// 로그인 제외 및 일반적 api 요청등을 제외
-// 인증이 필요한 경우에 활용하는 용도
-const jwtAxios = axios.create();
+import React from "react";
+import { Link } from "react-router-dom";
+import useCustomLogin from "../../hooks/useCustomLogin";
+const BasicMenu = () => {
+  // 로그인 슬라이스에서 email 읽는다.
+  // loginSlice 값을 읽으려고 접근하기
+  // const loginState = useSelector(state => state.loginSlice);
+  // console.log(loginState);
+  const { isLogin } = useCustomLogin();
 
-// 요청(request) intercepter
-// request 가 문제가 있든, 없든 실행될 내용 작성
-const beforeReq = config => {
-  console.log("1. 요청전 전달 .... ", config);
-  console.log("2. 쿠키로 토큰가져오기");
-  const memberInfo = getCookie("member");
+  return (
+    <nav>
+      <ul>
+        <li>
+          <Link to="/">Home</Link>
+        </li>
+        <li>
+          <Link to="/about">About</Link>
+        </li>
+        <li>
+          <Link to="/form">Form</Link>
+        </li>
+        {/* 로그인 상태 체크 후 내용 출력 */}
+        {isLogin ? (
+          <>
+            <li>
+              <Link to="/todo/">Todo</Link>
+            </li>
+            <li>
+              <Link to="/product/">Product</Link>
+            </li>
+          </>
+        ) : null}
+      </ul>
 
-  if (!memberInfo) {
-    console.log("쿠키 정보 없네요.");
-    // axios 요청을 중단합니다.
-    return Promise.reject({ response: { data: { error: "Login 하세요." } } });
-  }
-
-  console.log("3. 쿠키에서 토큰 정보를 뜯는다");
-  const { accessToken } = memberInfo;
-  console.log("4. 액세스토큰 정보", accessToken);
-  // 요청한 Request 에 headers 에 형식이 있어요.
-  // jwt 액세스토큰을 붙일때 형식이 있어요.
-  // config 는 요청한 axios 이고
-  // 이곳에서는  요청한 axios 의 전처리를 합니다.
-  // 이때 추가내용을 headers에 추가합니다.
-  config.headers.Authorization = `Bearer ${accessToken}`;
-
-  return config;
+      {/* 로그인 / 로그아웃버튼  */}
+      <div>
+        {isLogin ? (
+          <Link to="/member/logout">로그아웃</Link>
+        ) : (
+          <Link to="/member/login">로그인</Link>
+        )}
+      </div>
+    </nav>
+  );
 };
 
-// fail Request 요청보내서 실패했을 때
-const requestFail = err => {
-  console.log("요청후 실패시 .... ", err);
-  return Promise.reject(err);
-};
-
-// 응답(Response) 처리 코드
-// Response 전처리
-const beforeRes = async res => {
-  console.log("Response 전처리 ....", res);
-  return res;
-};
-// Response Fail 처리
-const responseFail = err => {
-  console.log("Response Fail Err", err);
-  return Promise.reject(err);
-};
-
-// axios 인터셉터 적용
-jwtAxios.interceptors.request.use(beforeReq, requestFail);
-jwtAxios.interceptors.response.use(beforeRes, responseFail);
-
-export default jwtAxios;
+export default BasicMenu;
 ```
 
-## 5. jwt Refresh Token 적용 및 업데이트
+## 4. 컴포넌트 배치
 
-- Access Token 으로 요청해서 에러메시지 리턴시 무조건 Refresh Token 을 전달해서 시도한다.
-- /src/util/jwtUtil.js
+- /src/pages/forms/FormPage.js
+
+```js
+import React from "react";
+import BasicLayout from "../../layouts/BasicLayout";
+import FormComponent from "../../components/forms/FormComponent";
+
+const FormPage = () => {
+  return (
+    <BasicLayout>
+      <h1>FormPage</h1>
+      <FormComponent />
+    </BasicLayout>
+  );
+};
+
+export default FormPage;
+```
+
+## 5. 폼 컴포넌트 진행
+
+- 폼의 초기 기본 값 셋팅하기
+- 값 검증(오류, 형식, 길이......)
+- 폼 이벤트 (완료 전송등..)
+- Daum Post 설치 후 주소검색
+- react-hook-form / yup
+  : 실무활용, 리액트 폼 성능개선, 디자인 자유롭다
+- React-Quill 에디터 작성
+- React-Quill 이미지 업로드 붙이기
+
+### 5.1. 폼의 초기 기본 값 셋팅하기
+
+- 반드시 Form 컴포넌트 안에 있어야 해요.
+
+```js
+<Form
+  initialValues={{
+    Input: "안녕하세요.",
+  }}
+></Form>
+```
+
+- 반드시 Form.Item 컴포넌트에 이름(name)이 있어야 한다.
+- 반드시 Form.Item 컴포넌트안에 컴포넌트 배치한다.
+
+```js
+import { Button, Form, Input } from "antd";
+import React from "react";
+
+const FormComponent = () => (
+  <Form
+    style={{ width: "600px" }}
+    initialValues={{
+      userid: "홍길동",
+      userpass: 1234,
+      nickname: "닉네임",
+      email: "aaa@aaa.net",
+    }}
+  >
+    <Form.Item name="userid">
+      <Input />
+    </Form.Item>
+    <Form.Item name="userpass">
+      <Input.Password />
+    </Form.Item>
+    <Form.Item name="nickname">
+      <Input />
+    </Form.Item>
+    <Form.Item name="email">
+      <Input />
+    </Form.Item>
+    <Form.Item>
+      <Button>확인</Button>
+    </Form.Item>
+  </Form>
+);
+export default FormComponent;
+```
+
+### 5.2. 폼 요소의 각 입력중인 값 알아내기
+
+- onFieldsChange 활용
+
+```js
+import { Button, Form, Input } from "antd";
+import React from "react";
+
+// 현재 입력되고있는 필드명, 필드값 출력
+const onChangeFiled = (_필드, _필드값) => {
+  console.log(_필드, _필드값);
+};
+const FormComponent = () => (
+  <Form
+    style={{ width: "600px" }}
+    initialValues={{
+      userid: "홍길동",
+      userpass: 1234,
+      nickname: "닉네임",
+      email: "aaa@aaa.net",
+    }}
+    onFieldsChange={(changedFields, allFields) => {
+      onChangeFiled(changedFields[0].name, changedFields[0].value);
+      //console.log(allFields);
+    }}
+  >
+    <Form.Item name="userid">
+      <Input />
+    </Form.Item>
+    <Form.Item name="userpass">
+      <Input.Password />
+    </Form.Item>
+    <Form.Item name="nickname">
+      <Input />
+    </Form.Item>
+    <Form.Item name="email">
+      <Input />
+    </Form.Item>
+    <Form.Item>
+      <Button>확인</Button>
+    </Form.Item>
+  </Form>
+);
+export default FormComponent;
+```
+
+### 5.3. 확인 버튼 선택시 전체 폼의 입력 값 알아내기
+
+- onFinish
+- <Button htmlType="submit">확인</Button>
+
+```js
+import { Button, Form, Input } from "antd";
+import React from "react";
+
+// 현재 입력되고있는 필드명, 필드값 출력
+const onChangeFiled = (_필드, _필드값) => {
+  console.log(_필드, _필드값);
+};
+// 확인 버튼 선택시 전체 값 출력(json 형태)
+const onFinshed = _전체값 => {
+  console.log(_전체값);
+};
+const FormComponent = () => (
+  <Form
+    style={{ width: "600px" }}
+    initialValues={{
+      userid: "홍길동",
+      userpass: 1234,
+      nickname: "닉네임",
+      email: "aaa@aaa.net",
+    }}
+    onFieldsChange={(changedFields, allFields) => {
+      // onChangeFiled(changedFields[0].name, changedFields[0].value);
+      //console.log(allFields);
+    }}
+    onFinish={values => {
+      onFinshed(values);
+    }}
+  >
+    <Form.Item name="userid">
+      <Input />
+    </Form.Item>
+    <Form.Item name="userpass">
+      <Input.Password />
+    </Form.Item>
+    <Form.Item name="nickname">
+      <Input />
+    </Form.Item>
+    <Form.Item name="email">
+      <Input />
+    </Form.Item>
+    <Form.Item>
+      <Button htmlType="submit">확인</Button>
+    </Form.Item>
+  </Form>
+);
+export default FormComponent;
+```
+
+### 5.4. 필드 입력 변경시 입력 값 알아내기
+
+- onValuesChange
+
+```js
+import { Button, Form, Input } from "antd";
+import React from "react";
+
+// 현재 입력되고있는 필드명, 필드값 출력
+const onChangeFiled = (_필드, _필드값) => {
+  console.log(_필드, _필드값);
+};
+// 확인 버튼 선택시 전체 값 출력(json 형태)
+const onFinshed = _전체값 => {
+  console.log(_전체값);
+};
+// 사용자 입력시 변경된 값 출력
+const onValuesChanged = (_필드값, _전체값) => {
+  console.log(_필드값);
+  console.log(_전체값);
+};
+const FormComponent = () => (
+  <Form
+    style={{ width: "600px" }}
+    initialValues={{
+      userid: "홍길동",
+      userpass: 1234,
+      nickname: "닉네임",
+      email: "aaa@aaa.net",
+    }}
+    onFieldsChange={(changedFields, allFields) => {
+      // onChangeFiled(changedFields[0].name, changedFields[0].value);
+      //console.log(allFields);
+    }}
+    onFinish={values => {
+      onFinshed(values);
+    }}
+    onValuesChange={(changedValues, allValues) => {
+      onValuesChanged(changedValues, allValues);
+      // console.log(changedValues);
+      // console.log(allValues);
+    }}
+  >
+    <Form.Item name="userid">
+      <Input />
+    </Form.Item>
+    <Form.Item name="userpass">
+      <Input.Password />
+    </Form.Item>
+    <Form.Item name="nickname">
+      <Input />
+    </Form.Item>
+    <Form.Item name="email">
+      <Input />
+    </Form.Item>
+    <Form.Item>
+      <Button htmlType="submit">확인</Button>
+    </Form.Item>
+  </Form>
+);
+export default FormComponent;
+```
+
+### 5.5. 확인 버튼 클릭시 오류 알아내기
+
+- onFinishFailed
+
+```js
+import { Button, Form, Input } from "antd";
+import React from "react";
+
+// 현재 입력되고있는 필드명, 필드값 출력
+const onChangeFiled = (_필드, _필드값) => {
+  console.log(_필드, _필드값);
+};
+// 확인 버튼 선택시 전체 값 출력(json 형태)
+const onFinshed = _전체값 => {
+  console.log(_전체값);
+};
+// 사용자 입력시 변경된 값 출력
+const onValuesChanged = (_필드값, _전체값) => {
+  console.log(_필드값);
+  console.log(_전체값);
+};
+const FormComponent = () => (
+  <Form
+    style={{ width: "600px" }}
+    initialValues={{
+      userid: "홍길동",
+      userpass: 1234,
+      nickname: "닉네임",
+      email: "aaa@aaa.net",
+    }}
+    onFieldsChange={(changedFields, allFields) => {
+      // onChangeFiled(changedFields[0].name, changedFields[0].value);
+      //console.log(allFields);
+    }}
+    onFinish={values => {
+      onFinshed(values);
+    }}
+    onValuesChange={(changedValues, allValues) => {
+      onValuesChanged(changedValues, allValues);
+      // console.log(changedValues);
+      // console.log(allValues);
+    }}
+    onFinishFailed={({ values, errorFields, outOfDate }) => {
+      console.log("onFinishFailed", values, errorFields, outOfDate);
+    }}
+  >
+    <Form.Item name="userid">
+      <Input />
+    </Form.Item>
+    <Form.Item name="userpass">
+      <Input.Password />
+    </Form.Item>
+    <Form.Item name="nickname">
+      <Input />
+    </Form.Item>
+    <Form.Item name="email">
+      <Input />
+    </Form.Item>
+    <Form.Item>
+      <Button htmlType="submit">확인</Button>
+    </Form.Item>
+  </Form>
+);
+export default FormComponent;
+```
+
+### 5.6. useState 연동하기
+
+- 변경전
+
+```js
+import { Button, Form, Input } from "antd";
+import React, { useState } from "react";
+
+// 현재 입력되고있는 필드명, 필드값 출력
+const onChangeFiled = (_필드, _필드값) => {
+  console.log(_필드, _필드값);
+};
+// 확인 버튼 선택시 전체 값 출력(json 형태)
+const onFinshed = _전체값 => {
+  console.log(_전체값);
+};
+// 사용자 입력시 변경된 값 출력
+const onValuesChanged = (_필드값, _전체값) => {
+  console.log(_필드값);
+  console.log(_전체값);
+};
+// 초기값
+const initState = {
+  userid: "",
+  userpass: "",
+  nickname: "",
+  email: "",
+};
+const FormComponent = () => {
+  const [userInfo, setUserInfo] = useState(initState);
+  return (
+    <Form
+      style={{ width: "600px" }}
+      initialValues={{
+        userid: "홍길동",
+        userpass: 1234,
+        nickname: "닉네임",
+        email: "aaa@aaa.net",
+      }}
+      onFieldsChange={(changedFields, allFields) => {
+        // onChangeFiled(changedFields[0].name, changedFields[0].value);
+        //console.log(allFields);
+      }}
+      onFinish={values => {
+        onFinshed(values);
+      }}
+      onValuesChange={(changedValues, allValues) => {
+        onValuesChanged(changedValues, allValues);
+        // console.log(changedValues);
+        // console.log(allValues);
+      }}
+      onFinishFailed={({ values, errorFields, outOfDate }) => {
+        console.log("onFinishFailed", values, errorFields, outOfDate);
+      }}
+    >
+      <Form.Item name="userid">
+        <Input />
+      </Form.Item>
+      <Form.Item name="userpass">
+        <Input.Password />
+      </Form.Item>
+      <Form.Item name="nickname">
+        <Input />
+      </Form.Item>
+      <Form.Item name="email">
+        <Input />
+      </Form.Item>
+      <Form.Item>
+        <Button htmlType="submit">확인</Button>
+      </Form.Item>
+    </Form>
+  );
+};
+export default FormComponent;
+```
+
+- 초기값 사용하기
+
+```js
+import { Button, Form, Input } from "antd";
+import React, { useState } from "react";
+
+// 현재 입력되고있는 필드명, 필드값 출력
+const onChangeFiled = (_필드, _필드값) => {
+  console.log(_필드, _필드값);
+};
+// 확인 버튼 선택시 전체 값 출력(json 형태)
+const onFinshed = _전체값 => {
+  console.log(_전체값);
+};
+// 사용자 입력시 변경된 값 출력
+const onValuesChanged = (_필드값, _전체값) => {
+  console.log(_필드값);
+  console.log(_전체값);
+};
+// 초기값
+const initState = {
+  userid: "",
+  userpass: "",
+  nickname: "",
+  email: "",
+};
+const FormComponent = () => {
+  const [userInfo, setUserInfo] = useState(initState);
+  return (
+    <Form
+      style={{ width: "600px" }}
+      initialValues={{
+        userid: userInfo.userid,
+        userpass: userInfo.userpass,
+        nickname: userInfo.nickname,
+        email: userInfo.email,
+      }}
+      onFieldsChange={(changedFields, allFields) => {
+        // onChangeFiled(changedFields[0].name, changedFields[0].value);
+        //console.log(allFields);
+      }}
+      onFinish={values => {
+        onFinshed(values);
+      }}
+      onValuesChange={(changedValues, allValues) => {
+        onValuesChanged(changedValues, allValues);
+        // console.log(changedValues);
+        // console.log(allValues);
+      }}
+      onFinishFailed={({ values, errorFields, outOfDate }) => {
+        console.log("onFinishFailed", values, errorFields, outOfDate);
+      }}
+    >
+      <Form.Item name="userid">
+        <Input />
+      </Form.Item>
+      <Form.Item name="userpass">
+        <Input.Password />
+      </Form.Item>
+      <Form.Item name="nickname">
+        <Input />
+      </Form.Item>
+      <Form.Item name="email">
+        <Input />
+      </Form.Item>
+      <Form.Item>
+        <Button htmlType="submit">확인</Button>
+      </Form.Item>
+    </Form>
+  );
+};
+export default FormComponent;
+```
+
+- 내용입력시 state set하기
+  : onValuesChange 활용 추천
+
+  ```js
+  const onValuesChanged = (_필드값, _전체값) => {
+    // console.log(_필드값);
+    // console.log(_전체값);
+    setUserInfo({ ..._전체값 });
+  };
+  ```
+
+  ```js
+  import { Button, Form, Input } from "antd";
+  import React, { useState } from "react";
+
+  // 초기값
+  const initState = {
+    userid: "",
+    userpass: "",
+    nickname: "",
+    email: "",
+  };
+  const FormComponent = () => {
+    const [userInfo, setUserInfo] = useState(initState);
+
+    // 현재 입력되고있는 필드명, 필드값 출력
+    const onChangeFiled = (_필드, _필드값) => {
+      // console.log(_필드, _필드값);
+    };
+    // 확인 버튼 선택시 전체 값 출력(json 형태)
+    const onFinshed = _전체값 => {
+      console.log(_전체값);
+    };
+    // 사용자 입력시 변경된 값 출력
+    const onValuesChanged = (_필드값, _전체값) => {
+      // console.log(_필드값);
+      // console.log(_전체값);
+      setUserInfo({ ..._전체값 });
+    };
+
+    return (
+      <Form
+        style={{ width: "600px" }}
+        initialValues={{
+          userid: userInfo.userid,
+          userpass: userInfo.userpass,
+          nickname: userInfo.nickname,
+          email: userInfo.email,
+        }}
+        onFieldsChange={(changedFields, allFields) => {
+          // onChangeFiled(changedFields[0].name, changedFields[0].value);
+          //console.log(allFields);
+        }}
+        onFinish={values => {
+          onFinshed(values);
+        }}
+        onValuesChange={(changedValues, allValues) => {
+          onValuesChanged(changedValues, allValues);
+          // console.log(changedValues);
+          // console.log(allValues);
+        }}
+        onFinishFailed={({ values, errorFields, outOfDate }) => {
+          console.log("onFinishFailed", values, errorFields, outOfDate);
+        }}
+      >
+        <Form.Item name="userid">
+          <Input />
+        </Form.Item>
+        <Form.Item name="userpass">
+          <Input.Password />
+        </Form.Item>
+        <Form.Item name="nickname">
+          <Input />
+        </Form.Item>
+        <Form.Item name="email">
+          <Input />
+        </Form.Item>
+        <Form.Item>
+          <Button htmlType="submit">확인</Button>
+        </Form.Item>
+      </Form>
+    );
+  };
+  export default FormComponent;
+  ```
+
+- 확인 버튼 선택시 state set하기
+
+```js
+import { Button, Form, Input } from "antd";
+import React, { useState } from "react";
+
+// 초기값
+const initState = {
+  userid: "",
+  userpass: "",
+  nickname: "",
+  email: "",
+};
+const FormComponent = () => {
+  const [userInfo, setUserInfo] = useState(initState);
+
+  // 현재 입력되고있는 필드명, 필드값 출력
+  const onChangeFiled = (_필드, _필드값) => {
+    // console.log(_필드, _필드값);
+  };
+  // 확인 버튼 선택시 전체 값 출력(json 형태)
+  const onFinshed = _전체값 => {
+    console.log("전체값", _전체값);
+    setUserInfo({ ..._전체값 });
+  };
+  // 사용자 입력시 변경된 값 출력
+  const onValuesChanged = (_필드값, _전체값) => {
+    // console.log(_필드값);
+    // console.log(_전체값);
+    setUserInfo({ ..._전체값 });
+  };
+
+  return (
+    <Form
+      style={{ width: "600px" }}
+      initialValues={{
+        userid: userInfo.userid,
+        userpass: userInfo.userpass,
+        nickname: userInfo.nickname,
+        email: userInfo.email,
+      }}
+      onFieldsChange={(changedFields, allFields) => {
+        // onChangeFiled(changedFields[0].name, changedFields[0].value);
+        //console.log(allFields);
+      }}
+      onFinish={values => {
+        onFinshed(values);
+      }}
+      onValuesChange={(changedValues, allValues) => {
+        onValuesChanged(changedValues, allValues);
+        // console.log(changedValues);
+        // console.log(allValues);
+      }}
+      onFinishFailed={({ values, errorFields, outOfDate }) => {
+        console.log("onFinishFailed", values, errorFields, outOfDate);
+      }}
+    >
+      <Form.Item name="userid">
+        <Input />
+      </Form.Item>
+      <Form.Item name="userpass">
+        <Input.Password />
+      </Form.Item>
+      <Form.Item name="nickname">
+        <Input />
+      </Form.Item>
+      <Form.Item name="email">
+        <Input />
+      </Form.Item>
+      <Form.Item>
+        <Button htmlType="submit">확인</Button>
+      </Form.Item>
+    </Form>
+  );
+};
+export default FormComponent;
+```
+
+## 6. Form.Item 활용하기
+
+### 6.1. label 붙이기
+
+```js
+ <Form.Item name="userid" label="아이디">
+        <Input />
+      </Form.Item>
+      <Form.Item name="userpass" label="비밀번호">
+        <Input.Password />
+      </Form.Item>
+      <Form.Item name="nickname" label="별칭">
+        <Input />
+      </Form.Item>
+      <Form.Item name="email" label="이메일">
+        <Input />
+      </Form.Item>
+      <Form.Item label="필요없을 듯">
+        <Button htmlType="submit">확인</Button>
+      </Form.Item>
+```
+
+### 6.2. placeholder 출력하기(값 비었을 때)
+
+```js
+<Form.Item name="userid" label="아이디">
+        <Input placeholder="아이디를 입력하세요." />
+      </Form.Item>
+      <Form.Item name="userpass" label="비밀번호">
+        <Input.Password placeholder="비밀번호를 입력하세요." />
+      </Form.Item>
+      <Form.Item name="nickname" label="별칭">
+        <Input placeholder="별칭을 입력하세요." />
+      </Form.Item>
+      <Form.Item name="email" label="이메일">
+        <Input placeholder="이메일을 입력하세요." />
+      </Form.Item>
+      <Form.Item label="필요없을 듯">
+        <Button htmlType="submit">확인</Button>
+      </Form.Item>
+```
+
+### 6.3. 필수값 표현하기
+
+```js
+  <Form.Item name="userid" label="아이디" required={true}>
+    <Input placeholder="아이디를 입력하세요." />
+  </Form.Item>
+  <Form.Item name="userpass" label="비밀번호" required={true}>
+    <Input.Password placeholder="비밀번호를 입력하세요." />
+  </Form.Item>
+  <Form.Item name="nickname" label="별칭">
+    <Input placeholder="별칭을 입력하세요." />
+  </Form.Item>
+  <Form.Item name="email" label="이메일" required={true}>
+    <Input placeholder="이메일을 입력하세요." />
+  </Form.Item>
+  <Form.Item label="필요없을 듯">
+    <Button htmlType="submit">확인</Button>
+  </Form.Item>
+```
+
+### 6.4. 필수값 표현 및 안내메시지 보여주기
+
+```js
+<Form.Item
+        name="userid"
+        label="아이디"
+        rules={[
+          { required: true, message: "아이디는 필수항목입니다." },
+          // {
+          //   pattern: /^[\s]/,
+          //   message: "공백만 입력하시면 안됩니다.",
+          // },
+          {
+            min: 4,
+            message: "아이디는 4자 이상 입력하세요.",
+          },
+          {
+            max: 8,
+            message: "아이디는 8자 이하로 입력하세요.",
+          },
+        ]}
+      >
+        <Input placeholder="아이디를 입력하세요." />
+      </Form.Item>
+      <Form.Item
+        name="userpass"
+        label="비밀번호"
+        rules={[{ required: true, message: "비밀번호는 필수항목입니다." }]}
+      >
+        <Input.Password placeholder="비밀번호를 입력하세요." />
+      </Form.Item>
+      <Form.Item name="nickname" label="별칭" rules={[]}>
+        <Input placeholder="별칭을 입력하세요." />
+      </Form.Item>
+      <Form.Item
+        name="email"
+        label="이메일"
+        rules={[
+          { required: true, message: "이메일은 필수항목입니다." },
+          { type: "email", message: "이메일 형식에 맞지않습니다." },
+        ]}
+      >
+        <Input placeholder="이메일을 입력하세요." />
+      </Form.Item>
+      <Form.Item label="필요없을 듯">
+        <Button htmlType="submit">확인</Button>
+      </Form.Item>
+```
