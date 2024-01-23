@@ -1,467 +1,406 @@
-# react-hook-form
+# react-quill ( WYSIWYG Editor)
 
-- [react-hook-form](https://www.react-hook-form.com/)
-- `npm install react-hook-form`
-- Ant Design 은 관리자 쪽만 활용
-  : 커스터마이징 힘듭니다. (디자이너와 협업 어렵다)
-  : 주어진 대로 활용해야 한다.
+- [CKEditor](https://ckeditor.com/)
+- [Toast Editor(npm 말고 yarn 설치)](https://ui.toast.com/tui-editor)
+- [react-quill](https://quilljs.com/)
+- [github](https://www.npmjs.com/package/react-quill)
 
-## 1. 기본코드
+## 1. 설치 및 초기화
+
+- `npm i react-quill`
 
 ```js
 import React from "react";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const FormComponent = () => {
-  const handleSubmit = e => {
-    // 새로 고침 막기
-    e.preventDefault();
-  };
   return (
-    <>
-      <form onSubmit={e => handleSubmit(e)}>
-        <input type="text" name="userid" />
-        <br />
-        <input type="password" name="userpass" />
-        <br />
-        <input type="email" name="useremail" />
-        <br />
-        <textarea name="usermemo"></textarea>
-        <br />
-        <button>확인</button>
-      </form>
-    </>
+    <div>
+      <div>
+        <ReactQuill />
+      </div>
+    </div>
   );
 };
 
 export default FormComponent;
 ```
 
-## 2. useState 적용하기
+## 2. 출력결과 필요
+
+- 실제로 입력되는 값은 html 태그 형식입니다.
+- 내용이 없을 때는 <br> 태그 들어갑니다.
 
 ```js
-import React from "react";
-import { useState } from "react";
-
-// 초기값
-const initState = {
-  userid: "",
-  userpass: "",
-  useremail: "",
-  usermemo: "",
-};
+import React, { useEffect, useState } from "react";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 
 const FormComponent = () => {
-  const [userInfo, setUserInfo] = useState(initState);
-  const handleSubmit = e => {
-    // 새로 고침 막기
-    e.preventDefault();
-  };
-  const handleChange = e => {
-    // e.target.name, e.target.value
-    userInfo[e.target.name] = e.target.value;
-    setUserInfo({ ...userInfo });
-  };
+  const [value, setValue] = useState("");
+  useEffect(() => {
+    console.log(value);
+  }, [value]);
+
   return (
-    <>
-      <form onSubmit={e => handleSubmit(e)}>
-        <input
-          type="text"
-          name="userid"
-          value={userInfo.userid}
-          onChange={e => handleChange(e)}
-        />
-        <br />
-        <input
-          type="password"
-          name="userpass"
-          value={userInfo.userpass}
-          onChange={e => handleChange(e)}
-        />
-        <br />
-        <input
-          type="email"
-          name="useremail"
-          value={userInfo.useremail}
-          onChange={e => handleChange(e)}
-        />
-        <br />
-        <textarea
-          name="usermemo"
-          value={userInfo.useremail}
-          onChange={e => handleChange(e)}
-        ></textarea>
-        <br />
-        <button>확인</button>
-      </form>
-    </>
+    <div>
+      <div>
+        <ReactQuill onChange={setValue} />
+      </div>
+      <div>{value}</div>
+    </div>
   );
 };
 
 export default FormComponent;
 ```
 
-## 3. 심각한 문제 발생 (리 랜더링 문제)
+## 3. 위험한 태그(크로스 사이트 스크립트(XSS)) 막아주기
 
-- 특별한 경우가 아니면 useState 활요
-- 실무적으로 가면 문제가 되요.
-- 디자인 적용시에 Ant Design 문제
-  : 디자인 편하고, 검증 코드(yup)도 쉽게 활용
-- react-hook-form 을 사용
-
-## 4. react-hook-form 적용
-
-- form 의 입력요소의 name을 읽거나 작성하기
+- 추가 설치해 주어야 하는 라이브러리
+- [dumprify](https://www.npmjs.com/package/dompurify)
+- `npm i dompurify`
 
 ```js
-import React from "react";
-import { useForm } from "react-hook-form";
-
-// 초기값
-const initState = {
-  userid: "",
-  userpass: "",
-  useremail: "",
-  usermemo: "",
-};
+import React, { useEffect, useState } from "react";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import DOMPurify from "dompurify";
 
 const FormComponent = () => {
-  console.log("리랜더링");
-  // 1. useForm 을 활용
-  // register 는 폼의 name 값 셋팅 및 읽기기능
-  const { register } = useForm();
+  const [value, setValue] = useState("");
+  useEffect(() => {
+    console.log(value);
+  }, [value]);
 
-  const handleSubmit = e => {
-    // 새로 고침 막기
-    e.preventDefault();
-  };
   return (
-    <>
-      <form onSubmit={e => handleSubmit(e)}>
-        <input type="text" {...register("userid")} />
-        <br />
-        <input type="password" {...register("userpass")} />
-        <br />
-        <input type="email" {...register("useremail")} />
-        <br />
-        <textarea {...register("usermemo")}></textarea>
-        <br />
-        <button>확인</button>
-      </form>
-    </>
+    <div>
+      <div>
+        <ReactQuill onChange={setValue} />
+      </div>
+      <h2>내용 출력 하기</h2>
+      <div>{value}</div>
+      <div dangerouslySetInnerHTML={{ __html: value }} />
+      ! 올바르게 html 출력하는 방법 !
+      <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(value) }} />
+    </div>
   );
 };
 
 export default FormComponent;
 ```
 
-### 4.1. 완료시 데이터 출력
+## 4. 옵션(모듈)들
+
+- toolbar : 에디터에서 사용할 툴바 목록 설정
+- useMemo : 렌더링 될때 마다 입력이 끊기는 버그를 해결
 
 ```js
-import React from "react";
-import { useForm } from "react-hook-form";
-
-// 초기값
-const initState = {
-  userid: "",
-  userpass: "",
-  useremail: "",
-  usermemo: "",
-};
+import React, { useEffect, useState } from "react";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import DOMPurify from "dompurify";
 
 const FormComponent = () => {
-  console.log("리랜더링");
-  // 1. useForm 을 활용
-  // register 는 폼의 name 값 셋팅 및 읽기기능
-  // handleSubmit 은 폼의 상태 변화 및 완료시 실행이 됩니다.
-  const { register, handleSubmit } = useForm();
+  const [value, setValue] = useState("");
+  useEffect(() => {
+    console.log(value);
+  }, [value]);
 
-  // 확인 버튼 선택시 실행
-  const handleSubmitMy = data => {
-    console.log(data);
+  const modules = {
+    toolbar: {
+      container: [
+        [{ header: [1, 2, 3, 4, 5, 6, false] }],
+        [{ font: [] }],
+        [{ align: [] }],
+        ["bold", "italic", "underline", "strike", "blockquote"],
+        [{ list: "ordered" }, { list: "bullet" }, "link"],
+        [
+          {
+            color: [
+              "#000000",
+              "#e60000",
+              "#ff9900",
+              "#ffff00",
+              "#008a00",
+              "#0066cc",
+              "#9933ff",
+              "#ffffff",
+              "#facccc",
+              "#ffebcc",
+              "#ffffcc",
+              "#cce8cc",
+              "#cce0f5",
+              "#ebd6ff",
+              "#bbbbbb",
+              "#f06666",
+              "#ffc266",
+              "#ffff66",
+              "#66b966",
+              "#66a3e0",
+              "#c285ff",
+              "#888888",
+              "#a10000",
+              "#b26b00",
+              "#b2b200",
+              "#006100",
+              "#0047b2",
+              "#6b24b2",
+              "#444444",
+              "#5c0000",
+              "#663d00",
+              "#666600",
+              "#003700",
+              "#002966",
+              "#3d1466",
+              "custom-color",
+            ],
+          },
+          { background: [] },
+        ],
+        ["image", "video"],
+        ["clean"],
+      ],
+    },
   };
 
   return (
-    <>
-      <form onSubmit={handleSubmit(handleSubmitMy)}>
-        <input type="text" {...register("userid")} />
-        <br />
-        <input type="password" {...register("userpass")} />
-        <br />
-        <input type="email" {...register("useremail")} />
-        <br />
-        <textarea {...register("usermemo")}></textarea>
-        <br />
-        <button type="submit">확인</button>
-      </form>
-    </>
+    <div>
+      <div>
+        <ReactQuill onChange={setValue} modules={modules} />
+      </div>
+      <h2>내용 출력 하기</h2>
+      <div>{value}</div>
+      <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(value) }} />
+    </div>
   );
 };
 
 export default FormComponent;
 ```
 
-### 4.2. 초기값 셋팅
+## 5. 핸들러 활용하기
 
 ```js
-import React from "react";
-import { useForm } from "react-hook-form";
-
-// 초기값
-const initState = {
-  userid: "",
-  userpass: "",
-  useremail: "",
-  usermemo: "",
-};
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import DOMPurify from "dompurify";
 
 const FormComponent = () => {
-  console.log("리랜더링");
-  // 1. useForm 을 활용
-  // register 는 폼의 name 값 셋팅 및 읽기기능
-  // handleSubmit 은 폼의 상태 변화 및 완료시 실행이 됩니다.
-  const { register, handleSubmit } = useForm({
-    defaultValues: initState,
-  });
+  // 1. React Quill 태그 를 저장한다.
+  const quillRef = useRef(null);
+  // 2. 이미지 핸들링
+  const imageHandler = () => {};
 
-  // 확인 버튼 선택시 실행
-  const handleSubmitMy = data => {
-    console.log(data);
-  };
+  const [value, setValue] = useState("");
+  useEffect(() => {
+    console.log(value);
+  }, [value]);
+
+  // 화면이 갱신이 될때 마다 아래 모듈이 적용
+  const modules = useMemo(
+    () => ({
+      toolbar: {
+        container: [
+          [{ header: [1, 2, 3, 4, 5, 6, false] }],
+          [{ font: [] }],
+          [{ align: [] }],
+          ["bold", "italic", "underline", "strike", "blockquote"],
+          [{ list: "ordered" }, { list: "bullet" }, "link"],
+          [
+            {
+              color: [
+                "#000000",
+                "#e60000",
+                "#ff9900",
+                "#ffff00",
+                "#008a00",
+                "#0066cc",
+                "#9933ff",
+                "#ffffff",
+                "#facccc",
+                "#ffebcc",
+                "#ffffcc",
+                "#cce8cc",
+                "#cce0f5",
+                "#ebd6ff",
+                "#bbbbbb",
+                "#f06666",
+                "#ffc266",
+                "#ffff66",
+                "#66b966",
+                "#66a3e0",
+                "#c285ff",
+                "#888888",
+                "#a10000",
+                "#b26b00",
+                "#b2b200",
+                "#006100",
+                "#0047b2",
+                "#6b24b2",
+                "#444444",
+                "#5c0000",
+                "#663d00",
+                "#666600",
+                "#003700",
+                "#002966",
+                "#3d1466",
+                "custom-color",
+              ],
+            },
+            { background: [] },
+          ],
+          ["image", "video"],
+          ["clean"],
+        ],
+        // 이미지 관련해서는 내가 직접 처리할께.
+        handlers: { image: imageHandler },
+      },
+    }),
+    [],
+  );
 
   return (
-    <>
-      <form onSubmit={handleSubmit(handleSubmitMy)}>
-        <input type="text" {...register("userid")} />
-        <br />
-        <input type="password" {...register("userpass")} />
-        <br />
-        <input type="email" {...register("useremail")} />
-        <br />
-        <textarea {...register("usermemo")}></textarea>
-        <br />
-        <button type="submit">확인</button>
-      </form>
-    </>
+    <div>
+      <div>
+        <ReactQuill ref={quillRef} onChange={setValue} modules={modules} />
+      </div>
+      <h2>내용 출력 하기</h2>
+      <div>{value}</div>
+      <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(value) }} />
+    </div>
   );
 };
 
 export default FormComponent;
 ```
 
-## 3. 폼의 값 검증 라이브러리 yup
+## 6. 핸들러 활용하기 (이미지처리하기)
 
-- [yup](https://github.com/jquense/yup)
-- `npm i yup`
-- react-hook-form 에서 yup 을 사용하려면 추가 설치 필요
-- [resolver](https://www.npmjs.com/package/@hookform/resolvers)
-- `npm i @hookform/resolvers`
-
-### 3.1. 기본 셋팅
+- 우선 백엔드로 이미지 보내고, 주소 받아서 처리 필요
 
 ```js
-import React from "react";
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-
-// 초기값
-const initState = {
-  userid: "",
-  userpass: "",
-  useremail: "",
-  usermemo: "",
-};
+import React, { useEffect, useMemo, useRef, useState } from "react";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
+import DOMPurify from "dompurify";
 
 const FormComponent = () => {
-  console.log("리랜더링");
-  // 1. useForm 을 활용
-  // register 는 폼의 name 값 셋팅 및 읽기기능
-  // handleSubmit 은 폼의 상태 변화 및 완료시 실행이 됩니다.
-  const { register, handleSubmit } = useForm({
-    defaultValues: initState,
-    resolver: yupResolver(),
-  });
+  // 1. React Quill 태그 를 저장한다.
+  const quillRef = useRef(null);
+  // 2. 이미지 핸들링
+  const imageHandler = () => {
+    // 1. 에디터를 저장한다.
+    const editor = quillRef.current.getEditor();
+    // 2. 이미지 업로드를 위한 트릭
+    //   image를 저장할 html 태그를 즉시 생성한다.
+    const input = document.createElement("input");
+    input.setAttribute("type", "file");
+    input.setAttribute("accept", "image/*");
+    input.click(); // 강제클릭
 
-  // 확인 버튼 선택시 실행
-  const handleSubmitMy = data => {
-    console.log(data);
+    // 이미지 선택을 한다면 처리를 진행한다.
+    input.addEventListener("change", () => {
+      // console.log("파일체인지");
+      // 일반적인 파일 처리과정을 진행한다.
+      const file = input.files[0];
+      console.log(file);
+      const formData = new FormData();
+      formData.append("img", file);
+      // 백엔드 이미지 서버로 전송해서 이미지 경로 받아야 합니다.
+      try {
+        console.log("서버로 이미지 전송 axio 실행");
+      } catch (err) {
+        console.log("err");
+      }
+    });
   };
 
+  const [value, setValue] = useState("");
+  useEffect(() => {
+    console.log(value);
+  }, [value]);
+
+  // 화면이 갱신이 될때 마다 아래 모듈이 적용
+  const modules = useMemo(
+    () => ({
+      toolbar: {
+        container: [
+          [{ header: [1, 2, 3, 4, 5, 6, false] }],
+          [{ font: [] }],
+          [{ align: [] }],
+          ["bold", "italic", "underline", "strike", "blockquote"],
+          [{ list: "ordered" }, { list: "bullet" }, "link"],
+          [
+            {
+              color: [
+                "#000000",
+                "#e60000",
+                "#ff9900",
+                "#ffff00",
+                "#008a00",
+                "#0066cc",
+                "#9933ff",
+                "#ffffff",
+                "#facccc",
+                "#ffebcc",
+                "#ffffcc",
+                "#cce8cc",
+                "#cce0f5",
+                "#ebd6ff",
+                "#bbbbbb",
+                "#f06666",
+                "#ffc266",
+                "#ffff66",
+                "#66b966",
+                "#66a3e0",
+                "#c285ff",
+                "#888888",
+                "#a10000",
+                "#b26b00",
+                "#b2b200",
+                "#006100",
+                "#0047b2",
+                "#6b24b2",
+                "#444444",
+                "#5c0000",
+                "#663d00",
+                "#666600",
+                "#003700",
+                "#002966",
+                "#3d1466",
+                "custom-color",
+              ],
+            },
+            { background: [] },
+          ],
+          ["image", "video"],
+          ["clean"],
+        ],
+        // 이미지 관련해서는 내가 직접 처리할께.
+        handlers: { image: imageHandler },
+      },
+    }),
+    [],
+  );
+
   return (
-    <>
-      <form onSubmit={handleSubmit(handleSubmitMy)}>
-        <input type="text" {...register("userid")} />
-        <br />
-        <input type="password" {...register("userpass")} />
-        <br />
-        <input type="email" {...register("useremail")} />
-        <br />
-        <textarea {...register("usermemo")}></textarea>
-        <br />
-        <button type="submit">확인</button>
-      </form>
-    </>
+    <div>
+      <div>
+        <ReactQuill ref={quillRef} onChange={setValue} modules={modules} />
+      </div>
+      <h2>내용 출력 하기</h2>
+      <div>{value}</div>
+      <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(value) }} />
+    </div>
   );
 };
 
 export default FormComponent;
 ```
 
-### 3.2. 검증 코드 만들기
+## 7. 백엔드에서 URL 받은 이후 처리
 
-- [레퍼런스](https://www.react-hook-form.com/advanced-usage/#CustomHookwithResolver)
-
-```js
-import React from "react";
-import { useForm } from "react-hook-form";
-
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-
-// 초기값
-const initState = {
-  userid: "",
-  userpass: "",
-  useremail: "",
-  usermemo: "",
-};
-
-const FormComponent = () => {
-  console.log("리랜더링");
-
-  // yup 검증 코드
-  const validationSchema = yup.object({
-    userid: yup.string("내용을 입력하세요.").required("아이디는 필수입니다."),
-    userpass: yup
-      .string("내용을 입력하세요.")
-      .required("비밀번호는 필수입니다.")
-      .min("4자 이상 입력하세요.")
-      .max(16, "16자까지만 입력하세요 "),
-    useremail: yup
-      .string("내용을 입력하세요.")
-      .required("이메일은 필수입니다.")
-      .email("이메일 형식에 맞지 않습니다"),
-    usermemo: yup.string("내용을 입력하세요.").required("메모 필수입니다."),
-  });
-
-  // 1. useForm 을 활용
-  // register 는 폼의 name 값 셋팅 및 읽기기능
-  // handleSubmit 은 폼의 상태 변화 및 완료시 실행이 됩니다.
-  const { register, handleSubmit } = useForm({
-    defaultValues: initState,
-    resolver: yupResolver(validationSchema),
-  });
-
-  // 확인 버튼 선택시 실행
-  const handleSubmitMy = data => {
-    console.log(data);
-  };
-
-  return (
-    <>
-      <form onSubmit={handleSubmit(handleSubmitMy)}>
-        <input type="text" {...register("userid")} />
-        <br />
-        <input type="password" {...register("userpass")} />
-        <br />
-        <input type="email" {...register("useremail")} />
-        <br />
-        <textarea {...register("usermemo")}></textarea>
-        <br />
-        <button type="submit">확인</button>
-      </form>
-    </>
-  );
-};
-
-export default FormComponent;
-```
-
-### 3.3. 검증 코드 메시지 출력 시점
-
-```js
-const { register, handleSubmit, formState } = useForm({
-  defaultValues: initState,
-  resolver: yupResolver(validationSchema),
-  mode: "onChange",
-});
-```
-
-### 3.4. 최종 적용 코드
-
-```js
-import React from "react";
-import { useForm } from "react-hook-form";
-
-import { yupResolver } from "@hookform/resolvers/yup";
-import * as yup from "yup";
-
-// 초기값
-const initState = {
-  userid: "",
-  userpass: "",
-  useremail: "",
-  usermemo: "",
-};
-
-const FormComponent = () => {
-  console.log("리랜더링");
-
-  // yup 검증 코드
-  const validationSchema = yup.object({
-    userid: yup.string("내용을 입력하세요.").required("아이디는 필수입니다."),
-    userpass: yup
-      .string("내용을 입력하세요.")
-      .required("비밀번호는 필수입니다.")
-      .min(4, "4자 이상 입력하세요.")
-      .max(16, "16자까지만 입력하세요 "),
-    useremail: yup
-      .string("내용을 입력하세요.")
-      .required("이메일은 필수입니다.")
-      .email("이메일 형식에 맞지 않습니다"),
-    usermemo: yup.string("내용을 입력하세요.").required("메모 필수입니다."),
-  });
-
-  // 1. useForm 을 활용
-  // register 는 폼의 name 값 셋팅 및 읽기기능
-  // handleSubmit 은 폼의 상태 변화 및 완료시 실행이 됩니다.
-  const { register, handleSubmit, formState } = useForm({
-    defaultValues: initState,
-    resolver: yupResolver(validationSchema),
-    mode: "onChange",
-  });
-
-  // 확인 버튼 선택시 실행
-  const handleSubmitMy = data => {
-    console.log(data);
-  };
-
-  return (
-    <>
-      <form onSubmit={handleSubmit(handleSubmitMy)}>
-        <input type="text" {...register("userid")} />
-        <div style={{ color: "red" }}>{formState.errors.userid?.message}</div>
-        <br />
-        <input type="password" {...register("userpass")} />
-        <div style={{ color: "red" }}>{formState.errors.userpass?.message}</div>
-        <br />
-        <input type="email" {...register("useremail")} />
-        <div style={{ color: "red" }}>
-          {formState.errors.useremail?.message}
-        </div>
-        <br />
-        <textarea {...register("usermemo")}></textarea>
-        <div style={{ color: "red" }}>{formState.errors.usermemo?.message}</div>
-        <br />
-
-        <div>
-          모든 검증을 통과했는지 파악 : {formState.isValid ? "OK" : "NO"}
-        </div>
-
-        <button type="submit">확인</button>
-      </form>
-    </>
-  );
-};
-
-export default FormComponent;
-```
+- Editor 안쪽에 배치하기
