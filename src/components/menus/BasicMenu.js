@@ -21,6 +21,9 @@ const BasicMenu = () => {
         <li>
           <Link to="/form">Form</Link>
         </li>
+        <li>
+          <Link to="/map">카카오지도</Link>
+        </li>
         {/* 로그인 상태 체크 후 내용출력 */}
         {isLogin ? (
           <>

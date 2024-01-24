@@ -1,406 +1,143 @@
-# react-quill ( WYSIWYG Editor)
+# 카카오 지도
 
-- [CKEditor](https://ckeditor.com/)
-- [Toast Editor(npm 말고 yarn 설치)](https://ui.toast.com/tui-editor)
-- [react-quill](https://quilljs.com/)
-- [github](https://www.npmjs.com/package/react-quill)
+- 페이지/라우터/컴포넌트 구성
 
-## 1. 설치 및 초기화
+## 1. page / 레이아웃
 
-- `npm i react-quill`
+- /src/pages/map/MapPage.js
+
+```js
+// 코드 생략
+```
+
+## 2. 기능 컴포넌트
+
+- /src/components/map/MapComponent.js
 
 ```js
 import React from "react";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
 
-const FormComponent = () => {
-  return (
-    <div>
-      <div>
-        <ReactQuill />
-      </div>
-    </div>
-  );
+const MapComponent = () => {
+  return <div>MapComponent</div>;
 };
 
-export default FormComponent;
+export default MapComponent;
 ```
 
-## 2. 출력결과 필요
-
-- 실제로 입력되는 값은 html 태그 형식입니다.
-- 내용이 없을 때는 <br> 태그 들어갑니다.
+## 3. 페이지에 컴포넌트 배치하기
 
 ```js
-import React, { useEffect, useState } from "react";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+import React from "react";
+import BasicLayout from "../../layouts/BasicLayout";
+import MapComponent from "../../components/map/MapComponent";
 
-const FormComponent = () => {
-  const [value, setValue] = useState("");
-  useEffect(() => {
-    console.log(value);
-  }, [value]);
-
+const MapPage = () => {
   return (
-    <div>
-      <div>
-        <ReactQuill onChange={setValue} />
-      </div>
-      <div>{value}</div>
-    </div>
+    <BasicLayout>
+      <h1>카카오 지도</h1>
+      <MapComponent />
+    </BasicLayout>
   );
 };
 
-export default FormComponent;
+export default MapPage;
 ```
 
-## 3. 위험한 태그(크로스 사이트 스크립트(XSS)) 막아주기
+## 4. 카카오 개발자 등록하기
 
-- 추가 설치해 주어야 하는 라이브러리
-- [dumprify](https://www.npmjs.com/package/dompurify)
-- `npm i dompurify`
+- [카카오개발자](https://developers.kakao.com/)
+- [새로운 애플리케이션 등록](https://velog.io/@tpgus758/React%EC%97%90%EC%84%9C-Kakao-map-API-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0)
+- [지도가이드](https://apis.map.kakao.com/web/guide/)
+
+## 5. 지도 적용하기
+
+- /public/index.html
+
+```html
+<title>리액트 공부</title>
+<script
+  type="text/javascript"
+  src="//dapi.kakao.com/v2/maps/sdk.js?appkey=발급받은 키"
+></script>
+```
+
+## 6. 컴포넌트에 적용하기
+
+- /src/components/kko/MapComonents.js
 
 ```js
-import React, { useEffect, useState } from "react";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import DOMPurify from "dompurify";
+import React, { useEffect } from "react";
 
-const FormComponent = () => {
-  const [value, setValue] = useState("");
+// 웹브라우저에 등록된 kakao 객체를 활용
+const { kakao } = window;
+
+const MapComponent = () => {
+  // html 완료가 되면 출력
   useEffect(() => {
-    console.log(value);
-  }, [value]);
+    var container = document.getElementById("map"); //지도를 담을 영역의 DOM 레퍼런스
+    var options = {
+      //지도를 생성할 때 필요한 기본 옵션
+      center: new kakao.maps.LatLng(33.450701, 126.570667), //지도의 중심좌표.
+      level: 3, //지도의 레벨(확대, 축소 정도)
+    };
+
+    var map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
+  }, []);
 
   return (
     <div>
-      <div>
-        <ReactQuill onChange={setValue} />
-      </div>
-      <h2>내용 출력 하기</h2>
-      <div>{value}</div>
-      <div dangerouslySetInnerHTML={{ __html: value }} />
-      ! 올바르게 html 출력하는 방법 !
-      <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(value) }} />
+      <h1>카카카오지도</h1>
+      <div id="map" style={{ width: 500, height: 500 }}></div>
     </div>
   );
 };
 
-export default FormComponent;
+export default MapComponent;
 ```
 
-## 4. 옵션(모듈)들
+## 7. react-kakao-maps-sdk 활용
 
-- toolbar : 에디터에서 사용할 툴바 목록 설정
-- useMemo : 렌더링 될때 마다 입력이 끊기는 버그를 해결
+- [react-kakao-maps-sdk](https://www.npmjs.com/package/react-kakao-maps-sdk)
+- [개발자사이트](https://react-kakao-maps-sdk.jaeseokim.dev/)
+- [활용블로그](https://velog.io/@wlwl99/React-Kakao-Map-SDK-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0)
+- `npm i react-kakao-maps-sdk`
+
+## 8. react-kakao-maps-sdk 적용하기
+
+-/src/components/kko/MapComponent.js
 
 ```js
-import React, { useEffect, useState } from "react";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import DOMPurify from "dompurify";
+import React, { useEffect } from "react";
+import { Map, MapMarker } from "react-kakao-maps-sdk";
 
-const FormComponent = () => {
-  const [value, setValue] = useState("");
-  useEffect(() => {
-    console.log(value);
-  }, [value]);
-
-  const modules = {
-    toolbar: {
-      container: [
-        [{ header: [1, 2, 3, 4, 5, 6, false] }],
-        [{ font: [] }],
-        [{ align: [] }],
-        ["bold", "italic", "underline", "strike", "blockquote"],
-        [{ list: "ordered" }, { list: "bullet" }, "link"],
-        [
-          {
-            color: [
-              "#000000",
-              "#e60000",
-              "#ff9900",
-              "#ffff00",
-              "#008a00",
-              "#0066cc",
-              "#9933ff",
-              "#ffffff",
-              "#facccc",
-              "#ffebcc",
-              "#ffffcc",
-              "#cce8cc",
-              "#cce0f5",
-              "#ebd6ff",
-              "#bbbbbb",
-              "#f06666",
-              "#ffc266",
-              "#ffff66",
-              "#66b966",
-              "#66a3e0",
-              "#c285ff",
-              "#888888",
-              "#a10000",
-              "#b26b00",
-              "#b2b200",
-              "#006100",
-              "#0047b2",
-              "#6b24b2",
-              "#444444",
-              "#5c0000",
-              "#663d00",
-              "#666600",
-              "#003700",
-              "#002966",
-              "#3d1466",
-              "custom-color",
-            ],
-          },
-          { background: [] },
-        ],
-        ["image", "video"],
-        ["clean"],
-      ],
-    },
-  };
-
+const MapComponent = () => {
   return (
     <div>
-      <div>
-        <ReactQuill onChange={setValue} modules={modules} />
-      </div>
-      <h2>내용 출력 하기</h2>
-      <div>{value}</div>
-      <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(value) }} />
+      <h1>카카카오지도</h1>
+      <Map // 지도를 표시할 Container
+        center={{
+          // 지도의 중심좌표
+          lat: 33.450701,
+          lng: 126.570667,
+        }}
+        style={{
+          // 지도의 크기
+          width: "100%",
+          height: "450px",
+        }}
+        level={4} // 지도의 확대 레벨
+      >
+        <MapMarker // 마커를 생성합니다
+          position={{
+            // 마커가 표시될 위치입니다
+            lat: 33.450701,
+            lng: 126.570667,
+          }}
+        />
+      </Map>
     </div>
   );
 };
 
-export default FormComponent;
+export default MapComponent;
 ```
-
-## 5. 핸들러 활용하기
-
-```js
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import DOMPurify from "dompurify";
-
-const FormComponent = () => {
-  // 1. React Quill 태그 를 저장한다.
-  const quillRef = useRef(null);
-  // 2. 이미지 핸들링
-  const imageHandler = () => {};
-
-  const [value, setValue] = useState("");
-  useEffect(() => {
-    console.log(value);
-  }, [value]);
-
-  // 화면이 갱신이 될때 마다 아래 모듈이 적용
-  const modules = useMemo(
-    () => ({
-      toolbar: {
-        container: [
-          [{ header: [1, 2, 3, 4, 5, 6, false] }],
-          [{ font: [] }],
-          [{ align: [] }],
-          ["bold", "italic", "underline", "strike", "blockquote"],
-          [{ list: "ordered" }, { list: "bullet" }, "link"],
-          [
-            {
-              color: [
-                "#000000",
-                "#e60000",
-                "#ff9900",
-                "#ffff00",
-                "#008a00",
-                "#0066cc",
-                "#9933ff",
-                "#ffffff",
-                "#facccc",
-                "#ffebcc",
-                "#ffffcc",
-                "#cce8cc",
-                "#cce0f5",
-                "#ebd6ff",
-                "#bbbbbb",
-                "#f06666",
-                "#ffc266",
-                "#ffff66",
-                "#66b966",
-                "#66a3e0",
-                "#c285ff",
-                "#888888",
-                "#a10000",
-                "#b26b00",
-                "#b2b200",
-                "#006100",
-                "#0047b2",
-                "#6b24b2",
-                "#444444",
-                "#5c0000",
-                "#663d00",
-                "#666600",
-                "#003700",
-                "#002966",
-                "#3d1466",
-                "custom-color",
-              ],
-            },
-            { background: [] },
-          ],
-          ["image", "video"],
-          ["clean"],
-        ],
-        // 이미지 관련해서는 내가 직접 처리할께.
-        handlers: { image: imageHandler },
-      },
-    }),
-    [],
-  );
-
-  return (
-    <div>
-      <div>
-        <ReactQuill ref={quillRef} onChange={setValue} modules={modules} />
-      </div>
-      <h2>내용 출력 하기</h2>
-      <div>{value}</div>
-      <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(value) }} />
-    </div>
-  );
-};
-
-export default FormComponent;
-```
-
-## 6. 핸들러 활용하기 (이미지처리하기)
-
-- 우선 백엔드로 이미지 보내고, 주소 받아서 처리 필요
-
-```js
-import React, { useEffect, useMemo, useRef, useState } from "react";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import DOMPurify from "dompurify";
-
-const FormComponent = () => {
-  // 1. React Quill 태그 를 저장한다.
-  const quillRef = useRef(null);
-  // 2. 이미지 핸들링
-  const imageHandler = () => {
-    // 1. 에디터를 저장한다.
-    const editor = quillRef.current.getEditor();
-    // 2. 이미지 업로드를 위한 트릭
-    //   image를 저장할 html 태그를 즉시 생성한다.
-    const input = document.createElement("input");
-    input.setAttribute("type", "file");
-    input.setAttribute("accept", "image/*");
-    input.click(); // 강제클릭
-
-    // 이미지 선택을 한다면 처리를 진행한다.
-    input.addEventListener("change", () => {
-      // console.log("파일체인지");
-      // 일반적인 파일 처리과정을 진행한다.
-      const file = input.files[0];
-      console.log(file);
-      const formData = new FormData();
-      formData.append("img", file);
-      // 백엔드 이미지 서버로 전송해서 이미지 경로 받아야 합니다.
-      try {
-        console.log("서버로 이미지 전송 axio 실행");
-      } catch (err) {
-        console.log("err");
-      }
-    });
-  };
-
-  const [value, setValue] = useState("");
-  useEffect(() => {
-    console.log(value);
-  }, [value]);
-
-  // 화면이 갱신이 될때 마다 아래 모듈이 적용
-  const modules = useMemo(
-    () => ({
-      toolbar: {
-        container: [
-          [{ header: [1, 2, 3, 4, 5, 6, false] }],
-          [{ font: [] }],
-          [{ align: [] }],
-          ["bold", "italic", "underline", "strike", "blockquote"],
-          [{ list: "ordered" }, { list: "bullet" }, "link"],
-          [
-            {
-              color: [
-                "#000000",
-                "#e60000",
-                "#ff9900",
-                "#ffff00",
-                "#008a00",
-                "#0066cc",
-                "#9933ff",
-                "#ffffff",
-                "#facccc",
-                "#ffebcc",
-                "#ffffcc",
-                "#cce8cc",
-                "#cce0f5",
-                "#ebd6ff",
-                "#bbbbbb",
-                "#f06666",
-                "#ffc266",
-                "#ffff66",
-                "#66b966",
-                "#66a3e0",
-                "#c285ff",
-                "#888888",
-                "#a10000",
-                "#b26b00",
-                "#b2b200",
-                "#006100",
-                "#0047b2",
-                "#6b24b2",
-                "#444444",
-                "#5c0000",
-                "#663d00",
-                "#666600",
-                "#003700",
-                "#002966",
-                "#3d1466",
-                "custom-color",
-              ],
-            },
-            { background: [] },
-          ],
-          ["image", "video"],
-          ["clean"],
-        ],
-        // 이미지 관련해서는 내가 직접 처리할께.
-        handlers: { image: imageHandler },
-      },
-    }),
-    [],
-  );
-
-  return (
-    <div>
-      <div>
-        <ReactQuill ref={quillRef} onChange={setValue} modules={modules} />
-      </div>
-      <h2>내용 출력 하기</h2>
-      <div>{value}</div>
-      <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(value) }} />
-    </div>
-  );
-};
-
-export default FormComponent;
-```
-
-## 7. 백엔드에서 URL 받은 이후 처리
-
-- Editor 안쪽에 배치하기
