@@ -1,5 +1,6 @@
 import React from "react";
 import BasicMenu from "../components/menus/BasicMenu";
+import CartComponent from "../components/cart/CartComponent";
 
 // 객체 구조 분해 할당
 const BasicLayout = ({ children }) => {
@@ -8,7 +9,12 @@ const BasicLayout = ({ children }) => {
       <header>
         <BasicMenu />
       </header>
-      <main>{children}</main>
+
+      <div>
+        <main>{children}</main>
+        <CartComponent />
+      </div>
+
       <footer>하단</footer>
     </div>
   );

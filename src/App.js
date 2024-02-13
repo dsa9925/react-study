@@ -30,6 +30,11 @@ const LoginPage = lazy(() => import("./pages/members/LoginPage"));
 const LogoutPage = lazy(() => import("./pages/members/LogoutPage"));
 // Form 페이지
 const LazyFormPage = lazy(() => import("./pages/forms/FormPage"));
+// KKO 지도
+const LazyMapPage = lazy(() => import("./pages/map/MapPage"));
+// KKO 로그인 후 보여줄 페이지
+const LazyKaKaoPage = lazy(() => import("./pages/members/KakaoRedirectPage"));
+const LazyModifyPage = lazy(() => import("./pages/members/ModifyPage"));
 
 const App = () => {
   return (
@@ -180,11 +185,29 @@ const App = () => {
               </Suspense>
             }
           />
+          {/* ---Start 카카오로그인 연습 */}
+          <Route
+            path="kakao"
+            element={
+              <Suspense fallback={<Loading />}>
+                <LazyKaKaoPage />
+              </Suspense>
+            }
+          />
+          {/* ---END 카카오로그인 연습 */}
+          {/* ---Start 정보수정 연습 */}
+          <Route
+            path="modify"
+            element={
+              <Suspense fallback={<Loading />}>
+                <LazyModifyPage />
+              </Suspense>
+            }
+          />
+          {/* ---END 정보수정 연습 */}
         </Route>
         {/* ---End Member */}
-
-        {/* Form 연습 */}
-        {/* --- Start Form 연습 */}
+        {/* ---Start Form 연습 */}
         <Route
           path="/form"
           element={
@@ -193,7 +216,19 @@ const App = () => {
             </Suspense>
           }
         />
-        {/* --- END Form 연습 */}
+        {/* ---END Form 연습 */}
+
+        {/* ---Start 카카오지도 연습 */}
+        <Route
+          path="/map"
+          element={
+            <Suspense fallback={<Loading />}>
+              <LazyMapPage />
+            </Suspense>
+          }
+        />
+        {/* ---END 카카오지도 연습 */}
+
         <Route path="*" element={<h1>페이지가 없어요</h1>}></Route>
       </Routes>
     </BrowserRouter>

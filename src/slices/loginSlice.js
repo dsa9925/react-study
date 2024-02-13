@@ -39,6 +39,12 @@ const loginSlice = createSlice({
   reducers: {
     login: (state, action) => {
       console.log("login.....");
+      // 문제가 발생합니다.
+      // 쿠키에 정보를 구워주지 않았습니다.
+      // 이때 필요한 정보를 보관한다.
+      // 쿠키는 문자열입니다. 객체를 JSON 문자로 변환
+      setCookie("member", JSON.stringify(action.payload));
+      
       return { email: action.payload.email };
     },
     // 로그아웃
@@ -83,5 +89,3 @@ const loginSlice = createSlice({
 
 export const { login, logout } = loginSlice.actions;
 export default loginSlice.reducer;
-
-loginSlice.js;

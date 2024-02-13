@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import useCustomLogin from "../../hooks/useCustomLogin";
+import { getKakaoLoginLink } from "../../api/kakaoApi";
+import { Link } from "react-router-dom";
 
 // 초기값
 const initState = {
@@ -44,6 +46,9 @@ const LoginComponents = () => {
     console.log("서버 에러", result);
   };
 
+  // 카카오 로그인
+  const kakaoLogin = getKakaoLoginLink();
+
   return (
     <div>
       <div>
@@ -72,6 +77,10 @@ const LoginComponents = () => {
 
       <div>
         <button onClick={handleClick}>로그인</button>
+      </div>
+
+      <div>
+        <Link to={kakaoLogin}>카카오로그인</Link>
       </div>
     </div>
   );
