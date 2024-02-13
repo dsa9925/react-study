@@ -20,13 +20,15 @@ const KakaoRedirectPage = () => {
       console.log("access Token", accessToken);
       // 개인 정보 호출
       getMemberWithAccessToken(accessToken).then(memberInfo => {
-        console.log("---------------------");
+        console.log("-------------------");
         console.log(memberInfo);
         // API 백엔드 서버로 로그인을 시도합니다.
+
         dispatch(login(memberInfo));
 
         // 소셜회원이 아니라면
         if (memberInfo && !memberInfo.social) {
+          // 첫페이지로 이동
           moveToPath("/");
         } else {
           // 정보 수정창으로 이동

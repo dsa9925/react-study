@@ -1,12 +1,10 @@
 import React, { useEffect } from "react";
 import { Map, MapMarker } from "react-kakao-maps-sdk";
 
-const { kakao } = window;
-
 const MapComponent = () => {
   return (
     <div>
-      <h1>카카오지도</h1>
+      <h1>카카카오지도</h1>
       <Map // 지도를 표시할 Container
         center={{
           // 지도의 중심좌표

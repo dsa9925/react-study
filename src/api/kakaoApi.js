@@ -2,7 +2,7 @@ import axios from "axios";
 import { API_SERVER_HOST } from "./todoApi";
 
 // 앱 등록시 Rest 키 값(절대 오픈 금지)
-const rest_api_key = "f63acca3570941e0958c1b1cb0648560";
+const rest_api_key = "f6f075f2097bcc9ea1f1920bb63c450e";
 // 카카오 로그인 통과시 이동할 주소
 const redirect_uri = "http://localhost:3000/member/kakao";
 // 카카오 로그인 문서 참조
@@ -37,7 +37,7 @@ export const getAccessToken = async authCode => {
 
 // Access Token 으로 회원정보 가져오기
 export const getMemberWithAccessToken = async accessToken => {
-  console.log("백엔드에 회원 등록을 위한 엑세스 토큰 전달", accessToken);
+  console.log("백엔드에 회원 등록을 위한 액세스 토큰 전달 ", accessToken);
   const res = await axios.get(
     `${API_SERVER_HOST}/api/member/kakao?accessToken=${accessToken}`,
   );

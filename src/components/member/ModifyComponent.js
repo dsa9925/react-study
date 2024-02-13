@@ -49,6 +49,7 @@ const ModifyComponent = () => {
   const [popContent, setPopContent] = useState("");
   const [result, setResult] = useState(0);
   const closeModal = () => {
+    console.log("closeModal", result);
     if (result === 0) {
       // 정상처리(화면이동)
       moveToPath("/");

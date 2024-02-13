@@ -69,8 +69,8 @@ const ProductReadComponent = ({ pno }) => {
         return;
       }
       // 사용자 추가 구매를 시도함.
-      addItem.qty += 1;
-      qty = addItem.qty;
+      addItem[0].qty += 1;
+      qty = addItem[0].qty;
     }
 
     // 장바구니에 상품을 담고 RTK 의 state 를 업데이트

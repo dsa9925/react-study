@@ -44,7 +44,7 @@ const loginSlice = createSlice({
       // 이때 필요한 정보를 보관한다.
       // 쿠키는 문자열입니다. 객체를 JSON 문자로 변환
       setCookie("member", JSON.stringify(action.payload));
-
+      
       return { email: action.payload.email };
     },
     // 로그아웃

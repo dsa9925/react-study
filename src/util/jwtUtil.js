@@ -47,7 +47,7 @@ const refreshJWT = async (accessToken, refreshToken) => {
   const res = await axios.get(
     `${host}/api/member/refresh?refreshToken=${refreshToken}`,
     header,
-  ); // 새로 요청하는 거니까 jwtAxios가 아니라 axios 사용.
+  );
   console.log("1. refreshToken 토큰 요청");
   // 새로 만든 AccessToken 과 RefereshToken 리턴
   console.log("2. 백엔드에서 새로 준 값", res.data);
@@ -67,15 +67,15 @@ const beforeRes = async res => {
     const memberInfo = getCookie("member");
     console.log("5. 쿠키 토큰 정보 AccessToken ", memberInfo.accessToken);
     console.log("6. 쿠키 토큰 정보 RefreshToken ", memberInfo.refreshToken);
-    console.log("7. 위의 정보를 토대로 새로운 토큰을 요청합니다.");
+    console.log("7. 위의 정보로 새로운 토큰을 요청합니다.");
     const result = await refreshJWT(
       memberInfo.accessToken,
       memberInfo.refreshToken,
     );
     console.log("8. 요청 이후 되돌아와서 새로운 정보로 쿠키를 업데이트 ");
-    (memberInfo.accessToken = result.accessToken),
-      (memberInfo.refreshToken = result.refreshToken),
-      setCookie("member", JSON.stringify(memberInfo));
+    memberInfo.accessToken = result.accessToken;
+    memberInfo.refreshToken = result.refreshToken;
+    setCookie("member", JSON.stringify(memberInfo));
 
     console.log("9. 데이터 요청하던 API 재 요청");
     const originalRequest = res.config;
