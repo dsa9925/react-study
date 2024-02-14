@@ -41,17 +41,13 @@ export const getList = async ({ param, successFn, failFn, errorFn }) => {
 };
 
 // 하나의 제품 정보 가져오기
-export const getOne = async ({ pno, successFn, failFn, errorFn }) => {
+export const getOne = async ({ pno }) => {
   try {
     const res = await jwtAxios.get(`${host}/${pno}`);
     const status = res.status.toString();
-    if (status.charAt(0) === "2") {
-      successFn(res.data);
-    } else {
-      failFn("상세정보 호출 오류입니다.");
-    }
+    return res.data;
   } catch (error) {
-    errorFn("상세정보 호출 서버 에러에요");
+    console.log("상세정보 호출 서버 에러에요");
   }
 };
 

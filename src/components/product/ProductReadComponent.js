@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
 import { getOne } from "../../api/productApi";
 import { API_SERVER_HOST } from "../../api/todoApi";
 import Fetching from "../common/Fetching";
 import useCustomMove from "../../hooks/useCustomMove";
 import useCustomCart from "../../hooks/useCustomCart";
 import useCustomLogin from "../../hooks/useCustomLogin";
+// ReactQuery 활용
+import { useQuery } from "@tanstack/react-query";
 // 이미지 API 주소
 const host = API_SERVER_HOST;
 
@@ -20,31 +21,14 @@ const initState = {
 };
 
 const ProductReadComponent = ({ pno }) => {
-  const [product, setProduct] = useState(initState);
-  // 로딩창
-  const [fetching, setFetching] = useState(false);
-
-  useEffect(() => {
-    setFetching(true);
-    getOne({ pno, successFn, failFn, errorFn });
-  }, []);
-
-  const successFn = result => {
-    setFetching(false);
-    console.log(result);
-    setProduct(result);
-  };
-  const failFn = result => {
-    setFetching(false);
-    console.log(result);
-  };
-  const errorFn = result => {
-    setFetching(false);
-    console.log(result);
-  };
+  const { data, isFetching } = useQuery({
+    queryKey: ["products", pno],
+    queryFn: () => getOne({ pno }),
+    staleTime: 1000 * 60,
+  });
+  const product = data || initState;
 
   const { moveToModify, moveToList, page } = useCustomMove();
-
   // 사용자 정보를 이용해서 장바구니 담기
   const { loginState } = useCustomLogin();
   // 장바구니 관련 RTK state 사용
@@ -79,7 +63,7 @@ const ProductReadComponent = ({ pno }) => {
 
   return (
     <div>
-      {fetching ? <Fetching /> : null}
+      {isFetching ? <Fetching /> : null}
       <div>
         <div>제품번호: {product.pno}</div>
       </div>
