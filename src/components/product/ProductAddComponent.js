@@ -3,6 +3,7 @@ import { postAdd } from "../../api/productApi";
 import Fetching from "../common/Fetching";
 import ResultModal from "../common/ResultModal";
 import useCustomMove from "../../hooks/useCustomMove";
+import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
 
 // 제품 입력시 초기값
 const initState = {
@@ -32,7 +33,15 @@ const ProductAddComponent = () => {
   const uploadRef = useRef(null);
 
   // 로딩창 보여주기 상태
-  const [fetching, setFetching] = useState(false);
+  // const [fetching, setFetching] = useState(false);
+
+  // ReactQuery 로 업데이트하겠다.
+  // useQuery 에서는 isFetching
+  // useMutaion 에서는 isPending
+  const addMutation = useMutation({
+    // API 로 자료 전송
+    mutationFn: product => postAdd({ product }),
+  });
 
   // 파일업로드 실행
   const handleClick = () => {
@@ -58,61 +67,65 @@ const ProductAddComponent = () => {
 
     // console.log(product);
     // 제품 정보 전송하기
-    setFetching(true);
-    postAdd({ product: formData, successFn, failFn, errorFn });
+    // setFetching(true);
+    // postAdd({ product: formData, successFn, failFn, errorFn });
+    addMutation.mutate(formData);
   };
 
-  const [resultTitle, setResultTitle] = useState("");
-  const [resultContent, setResultContent] = useState("");
-  const [reDirect, setReDirect] = useState(0);
+  // const [resultTitle, setResultTitle] = useState("");
+  // const [resultContent, setResultContent] = useState("");
+  // const [reDirect, setReDirect] = useState(0);
 
-  const successFn = result => {
-    setFetching(false);
-    setResultTitle("이미지 업로드");
-    setResultContent("이미지 업로드에 성공하였습니다.");
-    setReDirect(0);
-    console.log(result);
-  };
-  const failFn = result => {
-    setFetching(false);
-    setResultTitle("이미지 업로드 오류");
-    setResultContent("오류가 발생하였습니다. 잠시 후 시도해주세요.");
-    setReDirect(1);
-    console.log(result);
-  };
-  const errorFn = result => {
-    setFetching(false);
-    setResultTitle("서버 오류");
-    setResultContent("오류가 발생하였습니다. 관리자에게 문의해 주세요.");
-    setReDirect(1);
-    console.log(result);
-  };
+  // const successFn = result => {
+  //   // setFetching(false);
+  //   setResultTitle("이미지 업로드");
+  //   setResultContent("이미지 업로드에 성공하였습니다.");
+  //   setReDirect(0);
+  //   console.log(result);
+  // };
+  // const failFn = result => {
+  //   // setFetching(false);
+  //   setResultTitle("이미지 업로드 오류");
+  //   setResultContent("오류가 발생하였습니다. 잠시 후 시도해주세요.");
+  //   setReDirect(1);
+  //   console.log(result);
+  // };
+  // const errorFn = result => {
+  //   // setFetching(false);
+  //   setResultTitle("서버 오류");
+  //   setResultContent("오류가 발생하였습니다. 관리자에게 문의해 주세요.");
+  //   setReDirect(1);
+  //   console.log(result);
+  // };
 
   // 커스텀 훅 활용하기
   const { moveToList } = useCustomMove();
+  // APP client 참조
+  const client = useQueryClient();
   const closeModal = () => {
     // 팝업닫기
-    setResultTitle("");
-
-    if (reDirect === 0) {
-      // 목록가기
-      moveToList({ page: 1 });
-    } else {
-      // 팝업닫기
-    }
+    // setResultTitle("");
+    // if (reDirect === 0) {
+    //   // 목록가기
+    //   moveToList({ page: 1 });
+    // } else {
+    //   // 팝업닫기
+    // }
+    client.invalidateQueries("products/list");
+    moveToList({ page: 1 });
   };
 
   return (
     <div>
-      {resultTitle !== "" ? (
+      {addMutation.isSuccess ? (
         <ResultModal
-          title={resultTitle}
-          content={resultContent}
+          title={"제품 등록 결과"}
+          content={`${addMutation.data.result}가 등록되었습니다.`}
           callFn={closeModal}
         />
       ) : null}
 
-      {fetching ? <Fetching /> : null}
+      {addMutation.isPending ? <Fetching /> : null}
       <div>
         <div>제품 이름</div>
         <div>

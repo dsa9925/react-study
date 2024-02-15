@@ -21,6 +21,27 @@ const initState = {
 };
 
 const ProductReadComponent = ({ pno }) => {
+  // V5 입니다.
+  // useQuery 함수에 매개 변수로 {} 묶어주고 전달한다.
+  // 매개변수는 객체리터럴 형태로서 {이름:값, 이름:함수..}
+  // : 매개변수 객체의 이름들은 API 를 참조하여서 활용
+  // : 리턴 값 data 는 API 연동 실행 후 돌려진 값
+  // : 리턴 값 isFetching 은 API 연결 진행 중 (로딩창 등...)
+  // useQuery 값을 읽기
+  // 제일 중요한 것은 queryKey가 중요합니다.
+  // queryKey가 ReactQuery의 변수목록이 됩니다.
+  // queryFn가 axios 호출
+
+  // staleTime가 API 백엔드 서버를 호출할지 말지 시간조절
+  // staleTime에 지정한 시간 안에는 다시 API 백엔드 호출 안함
+  //    fresh 상태에서는 호출 안함
+
+  // staleTime에 지정한 시간 지나면 API 백엔드 호출 가능
+  //    stale 상태에서는 호출 가능
+
+  // 주의 사항
+  // : axios 코드에서는 반드시 return이 있어야 정상 작동됩니다.
+
   const { data, isFetching } = useQuery({
     queryKey: ["products", pno],
     queryFn: () => getOne({ pno }),

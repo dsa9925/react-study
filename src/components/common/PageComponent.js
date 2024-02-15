@@ -1,7 +1,7 @@
 import React from "react";
 import useCustomMove from "../../hooks/useCustomMove";
 
-const PageComponent = ({ serverData }) => {
+const PageComponent = ({ serverData, movePage }) => {
   const { moveToList } = useCustomMove();
 
   return (
@@ -9,7 +9,8 @@ const PageComponent = ({ serverData }) => {
       {/* 이전버튼 */}
       {serverData.prev ? (
         <button
-          onClick={() => moveToList({ page: serverData.prevPage, size: 10 })}
+          // onClick={() => moveToList({ page: serverData.prevPage, size: 10 })}
+          onClick={() => movePage({ page: serverData.prevPage, size: 10 })}
         >
           prev
         </button>
@@ -19,7 +20,8 @@ const PageComponent = ({ serverData }) => {
         <button
           key={item}
           onClick={() => {
-            moveToList({ page: item });
+            // moveToList({ page: item });
+            movePage({ page: item });
           }}
         >
           {item}
@@ -28,7 +30,8 @@ const PageComponent = ({ serverData }) => {
       {/* 다음버튼 */}
       {serverData.next ? (
         <button
-          onClick={() => moveToList({ page: serverData.nextPage, size: 10 })}
+          // onClick={() => moveToList({ page: serverData.nextPage, size: 10 })}
+          onClick={() => movePage({ page: serverData.nextPage, size: 10 })}
         >
           next
         </button>

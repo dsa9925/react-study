@@ -4,8 +4,11 @@ import {
   useSearchParams,
 } from "react-router-dom";
 import { getNum } from "../util/utils";
+import { useState } from "react";
 
 const useCustomMove = () => {
+  const [refresh, setRefresh] = useState(1);
+
   // navigate (패스이동 hook)
   const navigate = useNavigate();
   // 쿼리 알아내기
@@ -44,6 +47,8 @@ const useCustomMove = () => {
       queryStr = queryStrDefault;
     }
 
+    setRefresh(refresh * -1);
+
     navigate({ pathname: "../list", search: queryStr });
   };
 
@@ -57,6 +62,6 @@ const useCustomMove = () => {
     navigate({ pathname: `../read/${num}`, search: queryStrDefault });
   };
 
-  return { moveToList, moveToModify, page, size, moveToRead };
+  return { moveToList, moveToModify, page, size, moveToRead, refresh };
 };
 export default useCustomMove;
