@@ -6,10 +6,13 @@ import App from "./App";
 import { Provider } from "react-redux";
 // 저장소 (전역)
 import store from "./store";
+import { RecoilRoot } from "recoil";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <Provider store={store}>
+  // <Provider store={store}>
+  <RecoilRoot>
     <App />
-  </Provider>,
+  </RecoilRoot>,
+  // </Provider>,
 );
