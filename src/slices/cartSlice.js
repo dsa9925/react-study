@@ -9,7 +9,7 @@ export const getCartItemsAsync = createAsyncThunk("getCartItemsAsync", () => {
 export const postChangeCartAsync = createAsyncThunk(
   "postChangeCartAsync",
   param => {
-    postChangeCart(param);
+   return postChangeCart(param);
   },
 );
 

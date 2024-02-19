@@ -3,7 +3,7 @@ import { postAdd } from "../../api/productApi";
 import Fetching from "../common/Fetching";
 import ResultModal from "../common/ResultModal";
 import useCustomMove from "../../hooks/useCustomMove";
-import { useMutation, useQueries, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 
 // 제품 입력시 초기값
 const initState = {
@@ -38,7 +38,7 @@ const ProductAddComponent = () => {
   // ReactQuery 로 업데이트하겠다.
   // useQuery 에서는 isFetching
   // useMutaion 에서는 isPending
-  const addMutation = useMutation({
+  const addMutaion = useMutation({
     // API 로 자료 전송
     mutationFn: product => postAdd({ product }),
   });
@@ -69,7 +69,7 @@ const ProductAddComponent = () => {
     // 제품 정보 전송하기
     // setFetching(true);
     // postAdd({ product: formData, successFn, failFn, errorFn });
-    addMutation.mutate(formData);
+    addMutaion.mutate(formData);
   };
 
   // const [resultTitle, setResultTitle] = useState("");
@@ -117,15 +117,15 @@ const ProductAddComponent = () => {
 
   return (
     <div>
-      {addMutation.isSuccess ? (
+      {addMutaion.isSuccess ? (
         <ResultModal
           title={"제품 등록 결과"}
-          content={`${addMutation.data.result}가 등록되었습니다.`}
+          content={`${addMutaion.data.result}가 등록되었습니다.`}
           callFn={closeModal}
         />
       ) : null}
 
-      {addMutation.isPending ? <Fetching /> : null}
+      {addMutaion.isPending ? <Fetching /> : null}
       <div>
         <div>제품 이름</div>
         <div>

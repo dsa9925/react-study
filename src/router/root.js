@@ -7,6 +7,7 @@ import { Suspense, lazy } from "react";
 import todoRouter from "./todoRouter";
 import productRouter from "./productRouter";
 import memberRouter from "./memberRouter";
+import MemoPage from "../pages/MemoPage";
 
 // 메인패스 컴포넌트
 const LazyMainPage = lazy(() => import("../pages/MainPage"));
@@ -18,6 +19,10 @@ const LazyFormPage = lazy(() => import("../pages/forms/FormPage"));
 const LazyMapPage = lazy(() => import("../pages/map/MapPage"));
 
 const router = createBrowserRouter([
+  {
+    path: "/memo",
+    element: <MemoPage />,
+  },
   {
     path: "/",
     element: (

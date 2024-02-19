@@ -31,7 +31,7 @@ const ProductModifyComponent = ({ pno }) => {
   });
 
   // 현재는 setState 필요합니다. 관리를 위해서
-  // 아래는 조심하자. 상태가 계쏙 업데이트 됩니다.
+  // 아래는 조심하자 상태가 계속 업데이트 됩니다.
   // if (query.isSuccess) {
   //   setProduct(query.data);
   // }

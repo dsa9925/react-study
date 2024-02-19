@@ -8,7 +8,8 @@ const queryClient = new QueryClient();
 const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />;{/* 리액트쿼리 개발자도구 */}
+      <RouterProvider router={router} />
+      {/* 리액트쿼리 개발자도구 */}
       <ReactQueryDevtools initialIsOpen={true} />
     </QueryClientProvider>
   );

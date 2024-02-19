@@ -7,12 +7,13 @@ import { Provider } from "react-redux";
 // 저장소 (전역)
 import store from "./store";
 import { RecoilRoot } from "recoil";
+import MemoPage from "./pages/MemoPage";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   // <Provider store={store}>
   <RecoilRoot>
-    <App />
+    <MemoPage />
   </RecoilRoot>,
   // </Provider>,
 );

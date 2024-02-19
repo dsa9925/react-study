@@ -8,7 +8,6 @@ import { useState } from "react";
 
 const useCustomMove = () => {
   const [refresh, setRefresh] = useState(1);
-
   // navigate (패스이동 hook)
   const navigate = useNavigate();
   // 쿼리 알아내기

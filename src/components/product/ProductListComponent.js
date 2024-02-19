@@ -49,7 +49,7 @@ const ProductListComponent = () => {
     // 외부 API 호출
     // 주의 사항 : axios 는 결과를 리턴한다.
     queryFn: () => getList({ page, size }),
-    // 일정시간 즉, fresh 시간 동안 API 호출 안함.
+    // 일정시간 즉 fresh 시간동안 API 호출 안함.
     staleTime: 1000 * 60,
   });
 

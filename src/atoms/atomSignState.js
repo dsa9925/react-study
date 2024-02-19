@@ -4,12 +4,12 @@ import { getCookie } from "../util/cookieUtil";
 const initState = {
   email: "",
 };
-const loadMemberCookie = () => {
+const loadMembeCookie = () => {
   const memberInfo = getCookie("member");
   return memberInfo;
 };
 
 export const atomSignState = atom({
   key: "atomSignState",
-  default: loadMemberCookie() || initState,
+  default: loadMembeCookie() || initState,
 });
