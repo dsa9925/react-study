@@ -68,7 +68,8 @@
     "eslint": "^8.54.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-react": "^7.33.2",
-    "sass": "^1.69.5"
+    "sass": "^1.69.5",
+    "typescript": "^5.3.3"
   },
   "proxy": "http://192.168.0.66:8080"
 }
