@@ -1,1023 +1,899 @@
-# 타입스크립트 1
+# 타입스크립트 문법
 
-## 1. 기존 프로젝트(CRA로 생성)에 셋팅하기
+- src / tsbasic.ts 파일 생성
 
-- npx create-react-app ./ 으로 생성
+## 1. 타입스크립트 정의
 
-### 1.1. 관련 패키지 설치
+- 컴파일타임에 변수, 함수에 타입검사
+- 런타임 오류 미리 방지 목적
 
-`npm install --save-dev typescript @types/node @types/react @types/react-dom @typescript-eslint/eslint-plugin @typescript-eslint/parser css-loader style-loader`
+## 2. 기본 데이터 타입
 
-### 1.2. tsconfig.json 생성 및 설정
+- 타입을 확인해 보는 법
+  : typeof 변수명
 
-- 설치 : `npx tsc --init`
-- tsconfig.json 환경 셋팅
+### 2.1. 숫자형
 
-```js
-{
-  "compilerOptions": {
-    /* Visit https://aka.ms/tsconfig to read more about this file */
+```ts
+// number 형
+let age = 20;
+age = "안녕"; // 타입추른으로 작성 중 오류 체크
 
-    /* Language and Environment */
-    "target": "ES2016" /* TypeScript 가 JS 로 변환하는 버전 */,
-    "lib": [
-      "dom",
-      "dom.Iterable"
-    ] /* Specify a set of bundled library declaration files that describe the target runtime environment. */,
-    "jsx": "react-jsx" /* JSX를 처리하는 방식( next.js 에서는 preserve) */,
+let ageTs: number = 20;
+ageTs = "안녕"; // 명시적으로 타입오류 체크
+```
 
-    "module": "commonjs" /* 모듈 코드 생성 JS 버전 */,
+- 정수
+  let num:number = 10;
 
-    /* JavaScript Support */
-    "allowJs": true /* js 파일을 컴파일에 포함시킬지 여부 */,
-    "noEmit": true /* 출력파일을 생성할지 말지 결정 */,
-    "esModuleInterop": true /* ES모듈과 CommonJS 모듈간의 상호 연동 가능 */,
-    "forceConsistentCasingInFileNames": true /* import 하는 경우 대소문자 구분 */,
+- 실수
+  let num:number = 1.0;
 
-    /* Type Checking */
-    "strict": true /* JS 엄격모드 는 필수 사항 */,
-    "skipLibCheck": true /* 타입스크립트 라이브러리 정의 파일 검토 생략 ( .d.ts files.) */
+- 8진수
+  let num:number = 0o12
+  let num:number = 0O12
+
+- 16진수
+  let num:number = 0xAF
+  let num:number = 0XAF
+
+- 2진수
+  let num:number = 0b1010
+  let num:number = 0B1010
+
+- 산술 연산자 : + - \* / %
+
+- 비교 연산자 : == != < > <= =>
+
+- 동치 연산자 : === !==
+
+- 논리 연산자 : && || !
+
+- 메서드
+  : toString()
+  : toFixed()
+  : toExponential()
+  : toPrecision()
+
+- 예약어
+  : NaN
+  : Infinity - 양의 무한값
+  : -Infinity - 음의 무한값
+
+### 2.2. 문자열형
+
+- 주의사항
+  : String 대문자는 주의 (X)
+  : string 타입은 소문자로
+
+```ts
+// string 형
+let nickName = "홍길동";
+nickName = "안녕"; // 타입추른으로 작성 중 오류 체크
+console.log(typeof nickName);
+
+let nickName: number = 20;
+nickName = "안녕"; // 명시적으로 타입오류 체크
+console.log(typeof nickName);
+
+if (typeof nickName === "string") {
+  // 실행 코드
+}
+```
+
+- 템플릿 리터럴 (백틱)
+  let hi:string = `Hello, ${변수명}`
+
+- 메소드
+  : toUpplerCase();
+  : toLowerCase();
+
+- 속성
+  : 변수명.length
+
+- 문자열 검색
+  let index:number = nickName.indexOf("글자");
+  let includes:boolean = nickName.includes("글자");
+
+### 2.3. 불리언 형
+
+```ts
+// boolean 형
+let nickName = true;
+nickName = "True"; // 타입추른으로 작성 중 오류 체크
+console.log(typeof nickName);
+
+let nickName: boolean = true;
+nickName = "안녕"; // 명시적으로 타입오류 체크
+console.log(typeof nickName);
+
+if (typeof nickName === "boolean") {
+  // 실행 코드
+}
+```
+
+- 주활용 용도
+  : 조건문
+
+  : 삼항연산자
+
+  : 배열에 요소 타입
+  const arr: boolean[] = [true, false, true, false]
+
+  : 함수에 매개변수타입
+  : 함수에 리턴타입
+  function isLogin(value:boolean):boolean {
+  return value;
+  }
+
+### 2.4. undefined 형
+
+- 변수를 만들었는데 값을 대입안하고 마무리한 경우
+
+let isLogin:undefined;
+
+- 함수에 인자로 undefined 로 전달된 경우
+
+```ts
+function hi(nickName) {
+  if (nickName === undefined) {
+    // 처리 1
+  } else {
+    // 처리 2
   }
 }
 
-```
+hi(); // undefined
+hi("송이");
 
-### 1.3. eslintrc.js 환경 셋팅
-
-```js
-module.exports = {
-  env: {
-    browser: true,
-    es2021: true,
-  },
-  extends: ["eslint:recommended", "plugin:react/recommended", "prettier"],
-  overrides: [
-    {
-      env: {
-        node: true,
-      },
-      files: [".eslintrc.{js,cjs}"],
-      parserOptions: {
-        sourceType: "script",
-      },
-    },
-  ],
-  parserOptions: {
-    ecmaVersion: "latest",
-    sourceType: "module",
-    project: "**/tsconfig.json",
-  },
-  plugins: ["react"],
-  rules: {
-    "react/react-in-jsx-scope": "off",
-    "react/prop-types": "off",
-    "no-unused-vars": "off",
-    "react/jsx-no-target-blank": "off",
-    // "no-undef": "off",
-  },
-};
-```
-
-### 1.4. 타입스크립트 테스트해보기
-
-- 파일확장자 규칙
-  : 파일명.js ===> 파일명.ts
-  : 컴포넌트.js ===> 파일명.tsx
-  : src/pages/MemoPage.js ===> src/pages/MemoPage.tsx
-
-### 1.5. 타입스크립트 정의 파일 생성
-
-- 예) svg 파일을 활용하시면 ts 에러가 발생함.
-- src/react-app-env.d.ts 생성
-
-```js
-declare module "*.svg" {
-  const content: any;
-  export default content;
-}
-```
-
-### 1.6. .gitignore 내용 포함
-
-- /src/reportWebVitals.ts
-
-## 2. 신규 프로젝트에 생성하기
-
-`npx create-react-app ./ --template typescript`
-
-## 3. 타입스크립트 사용하는 이유
-
-- 코드 작성중 오류를 미리 제거하기 위한 용도
-- 데이터의 종류(타입) 를 확인해 준다.
-- 전달해 주는 데이터(함수의 파라메터)
-- 리턴(결과값)해 주는 데이터타입(함수의 리턴값)
-
-- /src/test.js 생성
-
-```js
-// 코드 작성 중에는 에러 미발생
-// 코드 활용 평상시 에도 정상작동
-// 언젠가 발생합니다.
-// 코드 작성중에 체크하자가 TS
-function add(a, b) {
-  return a + b;
-}
-add(10, 20);
-add(10, "20");
-```
-
-```js
-// 코드 작성 중에는 에러 미발생
-// 코드 활용 평상시 에도 정상작동
-// 언젠가 발생합니다.
-// 코드 작성중에 체크하자가 TS
-function add(a, b) {
-  if (typeof a !== "number") {
-    return "에러입니다.";
+// 옵션 파라메터 ?
+function hiTS(nickName?: string) {
+  if (nickName === undefined) {
+    // 처리 1 값을 입력안한경우\
+    alert("이름을 입력하세요.");
+  } else {
+    // 처리 2
   }
-  if (typeof b !== "number") {
-    return "에러입니다.";
+}
+hiTS(); // undefined
+hiTS("송이");
+```
+
+- undefined 자체로 값 할당
+
+```ts
+let nickName;
+if (nickName) {
+} else {
+}
+
+let nickNameTS: string | undefined;
+if (nickName) {
+} else {
+}
+```
+
+- 삼항연산자
+- 반환값이 undefined 함수
+
+```ts
+function hi(id: number): number | undefined {
+  if (user.id) {
+    return uider.id;
+  } else {
+    return undefined;
   }
-  return a + b;
 }
-add(10, 20);
-add(10, "20");
 ```
 
-- /src/test.js =====> test.ts
+- null 과 undefined 비교;
 
-## 4. 핸드북
-
-- https://typescript-kr.github.io/pages/the-handbook.html
-
-- 지극히 제 개인적 사견
-  : React 에 일단 적용
-  : 컴포넌트 만들기, props, useState, event, axios 에 TS 적용
-  : 기본 문법, Chat Gpt, 구글링
-
-## 5. 기초문법
-
-### 5.1. 변수 타입(종류)
-
-```js
-// 빨간줄 안생기면 그대로 두세요.
-// 타입(값의종류)을 TS 에 유추하면 손대지마세요.
-// 타입 추론이 정상적이면 그냥 두세요.
-// 타입추론
-let age: number = 50;
-const nicName: string = "홍길동";
-let isFlag: boolean = false;
-let isNo: any = null;
-let isUn: any = undefined;
-let isSymbol: symbol = Symbol();
-let isArr: any[] = [];
-let isArr2: number[] = [1, 2, 3];
-let isArr3: (string | number)[] = [1, "안녕", 3];
-let isObj: {} = {};
-let Props: {
-  pno: number,
-  pname: string,
-} = { pno: 1, pname: "장난감" };
-
-const State: {
-  pno: number,
-  pname: string,
-  onChange: () => void,
-} = { pno: 1, pname: "장난감", onChange: function () {} };
-```
-
-```js
-function add(a: number, b: number): number {
-  return a + b;
+```ts
+const value: unknown = aaa;
+if (value === null) {
+  //
+} else if (value === undefined) {
+  //
+} else {
 }
-let result = add(1, 2);
+```
 
-const sum = (a: string, b: string): string => a + b;
-let result2 = sum("사랑", "해요");
+### 2.5. null 형
 
-interface Restaurant {
-  ishop: number;
-  name: string;
-  location: string;
-  count: number;
-  pics: string[];
-  facilities: string[];
+- 의도적으로 값이 없음을 표현하는 경우
+
+```ts
+let nickName = null;
+
+let nickNameTS: null = null;
+```
+
+- 빈문자열
+
+```ts
+let nickName: string | null = "";
+nickName = "안녕";
+nickName = null;
+```
+
+- 조건문
+
+```ts
+let nickName: string | null = "";
+if (nickName === null) {
+  //
+} else {
+  //
 }
-
-const 고기집: Restaurant[] = [
-  {
-    ishop: 1,
-    name: "고기굽는남자",
-    location: "삼덕동1가 32-10",
-    count: 33,
-    pics: [
-      "22f6a12a-63d9-4c96-a55d-a297d7e2083f.jpg",
-      "28bc248f-873d-44ac-bf31-a59fa7be485a.jpg",
-      "0d9969ca-dde8-4d42-9b10-3caa87e1aca0.jpg",
-    ],
-    facilities: ["단체 가능", "예약 가능", "화장실구분"],
-  },
-  {
-    ishop: 2,
-    name: "실비소갈비",
-    location: "삼덕동2가 132",
-    count: 33,
-    pics: [
-      "0d1cedd2-b347-4772-ac4f-d00f9346a040.jpg",
-      "7a902bcb-45b5-4736-a475-24e1d2247c4e.jpg",
-    ],
-    facilities: ["주차장", "단체 가능", "와이파이", "화장실구분"],
-  },
-  {
-    ishop: 3,
-    name: "팔각도",
-    location: "삼덕동1가 63-11",
-    count: 33,
-    pics: [
-      "a111be25-0c4a-4a1e-91b8-33bc747febdd.jpg",
-      "a4d28843-9247-4190-a77b-53e71d3de4b3.jpg",
-    ],
-    facilities: ["단체 가능", "와이파이", "예약 가능", "화장실구분"],
-  },
-  {
-    ishop: 4,
-    name: "js가든",
-    location: "계산동2가 200",
-    count: 33,
-    pics: [
-      "e5c2d247-d419-4038-b376-705f01b15b3a.jpg",
-      "136dd470-285e-423b-9c28-0eaf914800ba.jpg",
-    ],
-    facilities: [],
-  },
-  {
-    ishop: 5,
-    name: "국일생갈비",
-    location: "대구 중구 국채보상로 492 ",
-    count: 33,
-    pics: [
-      "e6c9b6f2-4062-4a3a-8bde-fe96539148c9.jpg",
-      "5e5060a3-2e59-4c31-98c1-a4d21acd4f9d.jpg",
-    ],
-    facilities: [
-      "주차장",
-      "단체 가능",
-      "포장가능",
-      "와이파이",
-      "예약 가능",
-      "화장실구분",
-    ],
-  },
-  {
-    ishop: 6,
-    name: "목구멍",
-    location: "종로2가 25-1",
-    count: 33,
-    pics: [
-      "2d5e125f-085e-4da7-868e-d9da0cdb15bb.jpg",
-      "1a24fe22-0a00-4946-b3be-3b64b1ac15cd.jpg",
-    ],
-    facilities: ["단체 가능", "와이파이", "예약 가능", "화장실구분"],
-  },
-  {
-    ishop: 7,
-    name: "더부처스",
-    location: "대구 중구 달구벌대로440길 9-18 1층",
-    count: 33,
-    pics: [
-      "e4985079-788f-4211-9dc1-da3fdc230b52.jpg",
-      "0a6bf272-1b4a-4c76-9bfe-dc8bc455beb8.jpg",
-    ],
-    facilities: ["주차장", "와이파이", "예약 가능"],
-  },
-  {
-    ishop: 8,
-    name: "돗소리 종로점",
-    location: "대구 중구 종로 24-1",
-    count: 33,
-    pics: [
-      "67c3e7e3-b9c5-492f-a06f-5a12f472c66e.jpg",
-      "746cfd05-980d-413f-8c8f-dd5cbfe8dd07.jpg",
-    ],
-    facilities: ["단체 가능", "와이파이", "예약 가능"],
-  },
-  {
-    ishop: 9,
-    name: "혜옥당 종로본점",
-    location: "대구 중구 중앙대로81길 28 지상1, 2층",
-    count: 33,
-    pics: [
-      "955d4299-4f2e-4d48-8afd-9f5e9f10eb8e.jpg",
-      "c84ad4fc-f817-43ab-8ef8-df5e513a9201.jpg",
-    ],
-    facilities: ["단체 가능", "와이파이", "예약 가능", "화장실구분"],
-  },
-  {
-    ishop: 10,
-    name: "음밀한양",
-    location: "대구 중구 달구벌대로450길 10",
-    count: 33,
-    pics: [
-      "729ea550-4f31-4141-bde1-be5b2c54c09a.jpg",
-      "4fae44f8-5bee-42fd-8adc-a3cc59efd04e.jpg",
-      "02ae0cfe-b970-419a-8430-4c10fb9c7b16.jpg",
-    ],
-    facilities: [
-      "단체 가능",
-      "포장가능",
-      "와이파이",
-      "예약 가능",
-      "반려동물",
-      "간편결제",
-    ],
-  },
-];
 ```
 
-## 5. 리액트 활용
+### 2.6. any 형
 
-## 5.1 컴포넌트 활용
+- 아무거나 담겠다.
+- 일반 js 처럼 사용하겠다.
+- 처음에 ts 를 할때 힘들면 any 사용
+- 타입검사 안합니다.
+- 사용하더라도 최소로만 사용.
+- js 를 ts 로 마이그레이션 할때 활용도 높다.
 
-- src/Test.js 생성
-
-```js
-import React from "react";
-
-const Test = () => {
-  return <div>Test</div>;
-};
-
-export default Test;
+```ts
+let nickName: any = "";
+nickName = 1;
+nickName = [1, 2, 3];
 ```
 
-- JSX 를 리턴값으로 활용
-- src/Test.js ====> src/Test.ts (X)
-- src/Test.js ====> src/Test.tsx (O)
+## 3. 복합형
 
-  ```txt
-  function 함수명():리턴값종류 {
-        return 값
-    }
+- 객체 : object, array, interface ...
+- 기본형을 모아서 타입을 정의
 
-    const 함수명 = ():리턴값종류 => 값
+### 3.1. Array
 
+```ts
+let student = ["김", "박", "이"];
 
-    function 함수명():리턴값종류 {
-        return JSX (html)
-    }
+let studentTS: Array<string> = ["김", "박", "이"];
+// 아래를 추천
+let studentTSBest: string[] = ["김", "박", "이"];
+```
 
-    const 함수명 = ():리턴값종류 => JSX (html)
+- 배열의 요소의 타입정의
+  : 요소가 숫자로 된 배열
+  let student:number[] = [1,2,3,4];
 
-    타입에 대한 추론을 VSCode 에 맡겨라
+  : 요소가 글자로 된 배열
+  let student:string[] = ['a', 'b', 'c']
 
-    const 함수명 = ():리턴값종류 => JSX (html)
+  : 요소가 숫자도 되고 또는 글자도 되는 배열
 
-    VSCode 코드 힌트
-    const Test: () => React.JSX.Element
+  ```ts
+  let student: (string | number)[] = [1, "a", 20, "hello"];
   ```
 
-: step 1
+- 배열 속성
+  : 배열.length
+
+- 배열 메소드
+
+  : 배열요소 추가
+  배열.push(요소)
+
+  : 배열요소 제거
+  배열.pop()
+
+  : 배열 요소 찾기
+  배열.indexOf("요소값")
+
+  : 배열 요소 필터링
+  배열.filter( item => item.id === 1)
+
+  : 배열 요소 맵핑
+  배열.map( item => item.nickName.toUpperCase())
+
+- 제네릭 배열
 
 ```ts
-import React from "react";
-const Test = () => {
-  return <div>Test</div>;
-};
-
-export default Test;
-```
-
-: step 2 (타입추론을 확인)
-
-```ts
-import React from "react";
-
-const Test = (): React.JSX.Element => {
-  return <div>Test</div>;
-};
-
-export default Test;
-```
-
-: step 3 (타입작성)
-
-```ts
-import React from "react";
-
-const Test = (): JSX.Element => {
-  return <div>Test</div>;
-};
-
-export default Test;
-```
-
-- 참고사항
-
-```ts
-import React from "react";
-
-export default function Test(): JSX.Element {
-  return <div>Test</div>;
+// 객체의 키이름과 키의 데이터 타입을 미리 정리
+// 객체 구조를 설계한다.
+// 데이터 타입으로 활용한다.
+interface User {
+  id: string;
+  nickName: string;
+  age: number;
 }
+// 비추천
+let member2: User[] = [];
+
+// 만약, interface 나 type 으로 정의된 배열은
+// 가능하면 Array<타입> 추천
+let member: Array<User> = [];
 ```
 
+- 함수의 매개변수 / 리턴값의 타입으로 정의
+
+  ```ts
+  function showName(names: string[]): void {
+    // 리턴이 없다.
+  }
+  function showName2(names: string[]): string[] {
+    return names;
+  }
+  ```
+
+### 3.2. 객체
+
+- 아래처럼 할거면 하지마세요.(interface, type)
+- object 는 소문자로 작성
+- 가능하면 객체는 구체적으로 작성하여야 합니다.
+
 ```ts
-import React from "react";
-function Test(): JSX.Element {
-  return <div>Test</div>;
+let obj = { nickName: "홍길동", age: 20 };
+let obj2: object = { nickName: "홍길동", age: 20 };
+```
+
+- 객체 타입을 interface 로 만들기
+
+```ts
+interface Person {
+  nickName: string;
+  age: number;
 }
-export default Test;
+let who: Person = { nickName: "홍", age: 10 };
 ```
 
-## 5.2 useState 활용
+- 객체 타입을 type alias 로 만들기
 
 ```ts
-import React, { useState } from "react";
-const Test = (): JSX.Element => {
-  const [count, setCount] = useState(0);
-  return <div>Test</div>;
+// 타입은 const 변수 처럼 만들면 됩니다.
+type Person = {
+  nickName: string;
+  age: number;
 };
-export default Test;
+let who: Person = { nickName: "홍", age: 10 };
 ```
+
+### 3.3. tuple 튜플
+
+- 미리 배열의 요소 갯수와 요소 타입들을 선언한것.
+- 한번 만들면 변경이 불가하다.
 
 ```ts
-import React, { useState } from "react";
-const Test = (): JSX.Element => {
-  // 제네릭 : Genric
-  const [count, setCount] = useState<number>(0);
-  return <div>Test</div>;
-};
-export default Test;
+let student: (string | number | boolean)[] = ["hi", 230, false, 258];
+// Tuple
+let studentTuple: [string, number, boolean, number] = ["hi", 230, false, 258];
 ```
 
-## 5.2 Event Handler 활용
+- tuple 의 요소에 접근 (인덱싱사용)
+  studentTuple[0]
+  studentTuple[1]
+  studentTuple[2]
+  studentTuple[3]
 
-- 가능하면 외우세요. (2개정도)
-  : onClick
+- tuple 디스트럭처링
 
 ```ts
-import React, { MouseEvent, useState } from "react";
-const Test = (): JSX.Element => {
-  // 제네릭 : Genric
-  const [count, setCount] = useState<number>(0);
-  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
-    console.log(event.target);
-  };
-  return (
-    <div>
-      <button onClick={handleClick}>카운터증가</button>
-    </div>
-  );
-};
-export default Test;
+const person: [string, number] = ["홍", 20];
+// destructuring
+const [nickName, age] = person;
+console.log(nickName); // 홍
+console.log(age); // 20
 ```
 
-: onChange
+- tuple 인지 아닌지 체크하는 법
 
 ```ts
-import React, { ChangeEvent, MouseEvent, useState } from "react";
-const Test = (): JSX.Element => {
-  // 제네릭 : Genric
-  const [count, setCount] = useState<number>(0);
-  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
-    console.log(event.target);
-  };
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setCount(parseInt(event.target.value));
-  };
-  return (
-    <div>
-      <button onClick={handleClick}>카운터증가</button>
-      <input type="number" value={count} onChange={handleChange} />
-    </div>
-  );
-};
-export default Test;
+const person: [string, number] = ["홍", 20];
+// destructuring
+const [nickName, age] = person;
+console.log(nickName); // 홍
+console.log(age); // 20
+// tuple 인지 아닌지 체크하는 법
+const isTuple = Array.isArray(person) && person.length == 2;
 ```
 
-## 5.3 props 활용
+### 3.4. union 유니온
 
-- 컴포넌트에 전달되는 props 는 객체형태입니다.
-
-```txt
-fucntion 함수명(매개변수) {
-    return 리턴값
-   }
-
-   fucntion 함수명(매개변수:데이터타입):리턴타입 {
-    return 리턴값
-   }
-
-   const 변수 = (매개변수) => {
-    return 리턴값
-   }
-
-   const 변수 = (매개변수:데이터타입):리턴타입 => {
-      return 리턴값
-   }
-```
-
-- step 1.
+- 여러 개의 타입 중에 골라서 적용한다.
 
 ```ts
-import React, { ChangeEvent, MouseEvent, useState } from "react";
-const Test = (props: {
-  ishop: number;
-  name: string;
-  location: string;
-  count: number;
-  pics: [];
-  facilities: [];
-}): JSX.Element => {
-  // 제네릭 : Genric
-  const [count, setCount] = useState<number>(0);
-  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
-    console.log(event.target);
-  };
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setCount(parseInt(event.target.value));
-  };
-  return (
-    <div>
-      <button onClick={handleClick}>카운터증가</button>
-      <input type="number" value={count} onChange={handleChange} />
-    </div>
-  );
-};
-export default Test;
+// union 을 모르시는 경우
+// 적당한 변수 타입을 계속 만들어가야 합니다.
+let level: number = 5;
+let levelStr: string = "";
+levelStr = true;
+
+// union 을 적용 경우
+let lelvelUnion: number | string = 5;
+lelvelUnion = "A";
 ```
-
-- step 2: 인터페이스 활용
-
-```ts
-import React, { ChangeEvent, MouseEvent, useState } from "react";
-
-// interface : 객체의 구조(키:데이터종류)를 미리 설정하는 문법
-interface IShop {
-  ishop: number;
-  name: string;
-  location: string;
-  count: number;
-  pics: [];
-  facilities: [];
-}
-
-const Test = (props: IShop): JSX.Element => {
-  // 제네릭 : Genric
-  const [count, setCount] = useState<number>(0);
-  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
-    console.log(event.target);
-  };
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setCount(parseInt(event.target.value));
-  };
-  return (
-    <div>
-      <button onClick={handleClick}>카운터증가</button>
-      <input type="number" value={count} onChange={handleChange} />
-    </div>
-  );
-};
-export default Test;
-```
-
-- step 2: 타입앨리어스 활용
-
-```ts
-import React, { ChangeEvent, MouseEvent, useState } from "react";
-
-// interface : 객체의 구조(키:데이터종류)를 미리 설정하는 문법
-interface IShop {
-  ishop: number;
-  name: string;
-  location: string;
-  count: number;
-  pics: [];
-  facilities: [];
-}
-// type : 객체 형태의 타입을 만들고 변수명(별명 - alias )을 만듦
-// 타입 앨리어스 : 변수를 한개 만든다.
-// 데이터 타입처럼 활용할 것입니다.
-type TShop = {
-  ishop: number;
-  name: string;
-  location: string;
-  count: number;
-  pics: [];
-  facilities: [];
-};
-
-const Test = (props: TShop): JSX.Element => {
-  // 제네릭 : Genric
-  const [count, setCount] = useState<number>(0);
-  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
-    console.log(event.target);
-  };
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setCount(parseInt(event.target.value));
-  };
-  return (
-    <div>
-      <button onClick={handleClick}>카운터증가</button>
-      <input type="number" value={count} onChange={handleChange} />
-    </div>
-  );
-};
-export default Test;
-```
-
-- interface 와 type 중 어느 것으로 타입을 만들까?
-  : 특징(문법상의 장단점)을 알아두자
-  : 회사 마다 개발자 마다 선호도가 다르다.
-  : interface 는 동일한 이름으로 여러 번 만들 수 있다.
-  : interface 는 다른 interface 를 확장(기능추가)할 수 있다.
-  : type 은 한번 만들면 다시는 새로 정의할 수 없다. (마치 const)
-
-## 5.3 axios 활용(GET)
-
-- src/API.js
 
 ```js
-import axios from "axios";
+// union 을 모르시는 경우
+// 적당한 함수 매개변수/리턴값 타입을 계속 만들어가야 합니다.
+function showInfo(str: string): string {
+  return str;
+}
+const res: string = showInfo("안녕");
 
-export const getShop = async () => {
-  try {
-    const res = axios.get("주소");
-    return res.data;
-  } catch (err) {
-    console.log(err);
+function showInfoAge(str: number): number {
+  return str;
+}
+const res2: number = showInfoAge(20);
+
+// union 을 적용 경우
+function showInfoUnion(str: string | number): string | number {
+  return str;
+}
+const res3: string | number = showInfoUnion("안녕");
+const res4: string | number = showInfoUnion(20);
+```
+
+- interface 를 활용한 union
+
+```ts
+interface Student {
+  nickName: string;
+  age: number;
+}
+
+interface Human {
+  nickName: string;
+  job: string;
+}
+
+function showInfo(what: Student | Human) {
+  console.log(what);
+}
+// 문제가 발생합니다.
+function showInfoAge(what: Student | Human) {
+  if ("age" in what) {
+    console.log(what.age);
+  }
+  if ("job" in what) {
+    console.log(what.job);
+  }
+  // 공통적으로 작성되어있는 key
+  console.log(what.nickName);
+}
+```
+
+- type 를 활용한 union
+
+```js
+type Student = {
+  nickName: string,
+  age: number,
+};
+
+type Human = {
+  nickName: string,
+  job: string,
+};
+
+function showInfo(what: Student | Human) {
+  console.log(what);
+}
+// 문제가 발생합니다.
+function showInfoAge(what: Student | Human) {
+  if ("age" in what) {
+    console.log(what.age);
+  }
+  if ("job" in what) {
+    console.log(what.job);
+  }
+  // 공통적으로 작성되어있는 key
+  console.log(what.nickName);
+}
+```
+
+```ts
+type Student = {
+  nickName: string;
+  age: number;
+};
+
+type Human = {
+  nickName: string;
+  job: string;
+};
+
+type MultiType = Human | Student;
+
+function showInfo(what: MultiType) {
+  console.log(what);
+}
+// 문제가 발생합니다.
+function showInfoAge(what: MultiType) {
+  if ("age" in what) {
+    console.log(what.age);
+  }
+  if ("job" in what) {
+    console.log(what.job);
+  }
+  // 공통적으로 작성되어있는 key
+  console.log(what.nickName);
+}
+```
+
+### 3.5. intersection 인터섹션
+
+- union 은 여러 개 중 하나라면
+- intersection 은 여러 개를 합한다.
+- 기호로는 & 를 사용합니다.
+- 일반적으로 여러 개의 interface 를 하나로 합쳐서 사용.
+- 일반적으로 여러 개의 type 을 하나로 합쳐서 사용.
+
+```ts
+type Student = {
+  nickName: string;
+  age: number;
+};
+
+type Human = {
+  nickName: string;
+  job: string;
+};
+
+type ISType = Student & Human;
+const who: ISType = { nickName: "홍", age: 20, job: "학생" };
+```
+
+: !! Intersection 적용시 각 키명 중복 후 타입이 다르면 주의
+
+## 4. 함수
+
+- 함수의 parameter 타입/리턴 타입 명시
+  : 반복 되는 코드 모음
+  : 전달 받은 데이터 가공 후 리턴
+  : 알고리즘 작성 후 리턴
+
+- 함수에 활용하는 단어를 정리
+  : 함수 정의
+
+  ```js
+  function 함수명(매개변수) {
+    return 리턴값;
+  }
+  function 함수명(parameter) {
+    return 리턴값;
+  }
+  ```
+
+  : 함수 호출
+
+  ```js
+  함수명(인자);
+  함수명(argument);
+  ```
+
+  ```ts
+  function sayHi() {
+    return undefined;
+  }
+  function sayHiTS(): undefined {
+    return undefined;
+  }
+  function sayHiStr(text: string): string {
+    return text;
+  }
+  ```
+
+  - parameter 개수 보다 인자의 개수가 많으면?
+  - 함수 정의 시 parameter 개수 === 호출시 인자 개수
+
+    ```ts
+    function sayHi(text) {
+      return text;
+    }
+    sayHi("안녕");
+    sayHi("안녕", "반가워");
+
+    function sayHiTs(text: string): string {
+      return text;
+    }
+    sayHiTs("안녕");
+    sayHiTs("안녕", "반가워");
+    ```
+
+- parameter 개수 > 인자의 개수가 적다면?
+
+  ```ts
+  function sayHi(text, word) {
+    return text;
+  }
+  sayHi("안녕");
+  sayHi("안녕", "반가워");
+
+  // 옵션 parameter 를 주면 된다.(?)
+  function sayHiTs(text: string, word?: string): string {
+    return text;
+  }
+  sayHiTs("안녕");
+  sayHiTs("안녕", "반가워");
+  ```
+
+## 5. interface
+
+- 객체의 기본 키와 키의 데이터 종류를 작성 후
+- 재활용을 하면 코드량이 줄고 가독성 및 에러(작성중)를 쉽게 파악
+- 대상이 객체입니다. 1 순위로 고민 { 키명: 키값}
+- 객체의 타입을 정의할때 사용하는 문법
+- 고민은 type 도 그렇더라, 회사의 기준을 준수하면 된다.
+- 힌트 : ChatGPT ==> 객체를 타입스크립트 ===> interface
+  : API 백엔드 연동은 interface 라고 정의하면 어떨까?
+
+## 5.1. interface 정의하는 법
+
+```ts
+interface 대문자로시작하는인터페이스명 {
+  키명1: 값의종류;
+  키명2: 값의종류;
+}
+```
+
+## 5.2. interface 사용하는 법
+
+```ts
+interface 대문자로시작하는인터페이스명 {
+  키명1: 값의종류;
+  키명2: 값의종류;
+}
+// 인터페이스 사용하기
+const 변수명:인터페이스명 = {
+  키명1: 값의종류;
+  키명2: 값의종류;
+}
+```
+
+## 5.3. interface 샘플
+
+```ts
+// 정의법
+interface Student {
+  id: number;
+  nickName: string;
+  speak(): void;
+}
+// 사용법
+const gogo = () => {};
+const who: Student = { id: 1, nickName: "hong", speak: gogo };
+who.id;
+who.nickName;
+who.speak();
+```
+
+### 5.4. interface 를 활용
+
+#### 5.4.1. 함수 parameter
+
+- 왜 가능하냐면 객체가 함수의 parameter 전달 가능
+
+```ts
+// 인터페이스 정의
+interface Student {
+  id: number;
+  nickName: string;
+  speak(): void;
+}
+
+// 인터페이스를 parameter 로  전달받는 함수
+function showItem(item: Student) {
+  console.log(item);
+}
+
+// 인터페이스 활용
+const gogo = () => {};
+const who: Student = { id: 1, nickName: "hong", speak: gogo };
+
+// 인터페이스에서 인자
+showItem(who);
+```
+
+#### 5.4.2. 함수의 return 타입
+
+- 함수의 반환타입을 inteface 로 하겠다.
+
+```ts
+interface Student {
+  id: number;
+  nickName: string;
+  speak(): void;
+}
+function showItem(item: Student): Student {
+  console.log(item);
+  return item;
+}
+
+const gogo = () => {};
+const who: Student = { id: 1, nickName: "hong", speak: gogo };
+// 리턴을 받음
+const st: Student = showItem(who);
+```
+
+#### 5.4.3. 간략한 기능 요약
+
+- 인터페이스 함수만 만들어 보기
+
+```ts
+// 정수 1개를 입력받고 정수 1개를 리턴
+interface Fn {
+  // 화살표 함수로 즉시 생성도 가능
+  (num: number): number;
+}
+const now: Fn = num => num;
+```
+
+- 오브젝트를 입력받고 void 리턴
+
+```ts
+interface Fn {
+  (num: User): void;
+}
+const now: Fn = userIns => console.log(userIns);
+```
+
+- 입력 parameter 를 옵션으로 받는 경우
+
+```ts
+interface Fn {
+  (num?: number): void;
+}
+const now: Fn = num => {
+  if (num) {
+    // 숫자..
+  } else {
+    // ...
   }
 };
 ```
 
-- src/API.ts : 파일명 변환
-
-- step 1
+- 입력 parameter 가 여러 개인 경우
 
 ```ts
-import axios from "axios";
-
-// Swagger 에서 돌려주는 값
-const dummy = [
-  {
-    ishop: 1,
-    name: "고기굽는남자",
-    location: "삼덕동1가 32-10",
-    count: 33,
-    pics: [
-      "22f6a12a-63d9-4c96-a55d-a297d7e2083f.jpg",
-      "28bc248f-873d-44ac-bf31-a59fa7be485a.jpg",
-      "0d9969ca-dde8-4d42-9b10-3caa87e1aca0.jpg",
-    ],
-    facilities: ["단체 가능", "예약 가능", "화장실구분"],
-  },
-  {
-    ishop: 2,
-    name: "실비소갈비",
-    location: "삼덕동2가 132",
-    count: 33,
-    pics: [
-      "0d1cedd2-b347-4772-ac4f-d00f9346a040.jpg",
-      "7a902bcb-45b5-4736-a475-24e1d2247c4e.jpg",
-    ],
-    facilities: ["주차장", "단체 가능", "와이파이", "화장실구분"],
-  },
-];
-// 더미 결과물에 대한 interface 또는 type 으로 정리
-// chat 한테 물어보세요.
-interface IShop {
-  ishop: number;
-  name: string;
-  location: string;
-  count: number;
-  pics: string[];
-  facilities: string[];
+interface Fn {
+  (num: number, str: string, bool: boolean): void;
 }
-
-type TShop = {
-  ishop: number;
-  name: string;
-  location: string;
-  count: number;
-  pics: string[];
-  facilities: string[];
-};
-
-export const getShop = async () => {
-  try {
-    const res = axios.get("주소");
-    return res.data;
-  } catch (err) {
-    console.log(err);
-  }
+const now: Fn = (num, str, bool) => {
+  // console.log(num, str, bool)
 };
 ```
 
-- step 2
-
-```js
-import axios from "axios";
-
-// Swagger 에서 돌려주는 값
-const dummy = [
-  {
-    ishop: 1,
-    name: "고기굽는남자",
-    location: "삼덕동1가 32-10",
-    count: 33,
-    pics: [
-      "22f6a12a-63d9-4c96-a55d-a297d7e2083f.jpg",
-      "28bc248f-873d-44ac-bf31-a59fa7be485a.jpg",
-      "0d9969ca-dde8-4d42-9b10-3caa87e1aca0.jpg",
-    ],
-    facilities: ["단체 가능", "예약 가능", "화장실구분"],
-  },
-  {
-    ishop: 2,
-    name: "실비소갈비",
-    location: "삼덕동2가 132",
-    count: 33,
-    pics: [
-      "0d1cedd2-b347-4772-ac4f-d00f9346a040.jpg",
-      "7a902bcb-45b5-4736-a475-24e1d2247c4e.jpg",
-    ],
-    facilities: ["주차장", "단체 가능", "와이파이", "화장실구분"],
-  },
-];
-// 더미 결과물에 대한 interface 또는 type 으로 정리
-// chat 한테 물어보세요.
-interface IShop {
-  ishop: number;
-  name: string;
-  location: string;
-  count: number;
-  pics: string[];
-  facilities: string[];
-}
-
-type TShop = {
-  ishop: number;
-  name: string;
-  location: string;
-  count: number;
-  pics: string[];
-  facilities: string[];
-};
-
-// 유니온 ( | )
-//   A  |  B
-//   A 또는  B
-//   IShop[] | undefined
-
-// 인터섹션 ( & )
-//  A & B
-//  A 그리고 B
-
-export const getShop = async (): Promise<IShop[]> => {
-  const response = await axios.get<IShop[]>("실제 요청 URL");
-  return response.data; // 서버에서 받은 데이터를 반환
-};
-
-```
-
-- step 3 개선하기
-
-```js
-import axios from "axios";
-
-// Swagger 에서 돌려주는 값
-const dummy = [
-  {
-    ishop: 1,
-    name: "고기굽는남자",
-    location: "삼덕동1가 32-10",
-    count: 33,
-    pics: [
-      "22f6a12a-63d9-4c96-a55d-a297d7e2083f.jpg",
-      "28bc248f-873d-44ac-bf31-a59fa7be485a.jpg",
-      "0d9969ca-dde8-4d42-9b10-3caa87e1aca0.jpg",
-    ],
-    facilities: ["단체 가능", "예약 가능", "화장실구분"],
-  },
-  {
-    ishop: 2,
-    name: "실비소갈비",
-    location: "삼덕동2가 132",
-    count: 33,
-    pics: [
-      "0d1cedd2-b347-4772-ac4f-d00f9346a040.jpg",
-      "7a902bcb-45b5-4736-a475-24e1d2247c4e.jpg",
-    ],
-    facilities: ["주차장", "단체 가능", "와이파이", "화장실구분"],
-  },
-];
-// 더미 결과물에 대한 interface 또는 type 으로 정리
-// chat 한테 물어보세요.
-interface IShop {
-  ishop: number;
-  name: string;
-  location: string;
-  count: number;
-  pics: string[];
-  facilities: string[];
-}
-
-type TShop = {
-  ishop: number;
-  name: string;
-  location: string;
-  count: number;
-  pics: string[];
-  facilities: string[];
-};
-
-// 유니온 ( | )
-//   A  |  B
-//   A 또는  B
-//   IShop[] | undefined
-
-// 인터섹션 ( & )
-//  A & B
-//  A 그리고 B
-
-export const getShop = async <T = TShop>(): Promise<T[]> => {
-  const response = await axios.get<T[]>("실제 요청 URL");
-  return response.data; // 서버에서 받은 데이터를 반환
-};
-
-```
-
-## 5.4 axios 활용(POST)
-
-- step 1.
+- 리턴 타입이 Promise 이 인터페이스
 
 ```ts
-import axios from "axios";
-
-// Swagger 에서 돌려주는 값
-const dummy = [
-  {
-    ishop: 1,
-    name: "고기굽는남자",
-    location: "삼덕동1가 32-10",
-    count: 33,
-    pics: [
-      "22f6a12a-63d9-4c96-a55d-a297d7e2083f.jpg",
-      "28bc248f-873d-44ac-bf31-a59fa7be485a.jpg",
-      "0d9969ca-dde8-4d42-9b10-3caa87e1aca0.jpg",
-    ],
-    facilities: ["단체 가능", "예약 가능", "화장실구분"],
-  },
-  {
-    ishop: 2,
-    name: "실비소갈비",
-    location: "삼덕동2가 132",
-    count: 33,
-    pics: [
-      "0d1cedd2-b347-4772-ac4f-d00f9346a040.jpg",
-      "7a902bcb-45b5-4736-a475-24e1d2247c4e.jpg",
-    ],
-    facilities: ["주차장", "단체 가능", "와이파이", "화장실구분"],
-  },
-];
-// 더미 결과물에 대한 interface 또는 type 으로 정리
-// chat 한테 물어보세요.
-interface IShop {
-  ishop: number;
-  name: string;
-  location: string;
-  count: number;
-  pics: string[];
-  facilities: string[];
+interface Fn {
+  (str: string, txt: string): Promise<string>;
 }
-
-type TShop = {
-  ishop: number;
-  name: string;
-  location: string;
-  count: number;
-  pics: string[];
-  facilities: string[];
-};
-
-// 유니온 ( | )
-//   A  |  B
-//   A 또는  B
-//   IShop[] | undefined
-
-// 인터섹션 ( & )
-//  A & B
-//  A 그리고 B
-
-export const getShop = async <T = TShop>(): Promise<T[]> => {
-  const response = await axios.get<T[]>("실제 요청 URL");
-  return response.data; // 서버에서 받은 데이터를 반환
-};
-
-// 보내주어야 하는 데이터의 타입으로 정의한다.
-type TShopData = {
-  pk: number;
-  goodName: string;
-};
-export const postShop = async <TShop, TShopData>(
-  postData: TShopData,
-): Promise<TShop> => {
-  const response = await axios.post<TShop>("주소", postData);
-  return response.data; // 서버에서 받은 데이터를 반환
+const now: Fn = (str, txt) => {
+  return Promise.resolve("리턴값");
 };
 ```
 
-- step 2
+#### 5.4.4. 인터페이스 옵션 ( ? )
+
+- 인터페이스로 정의한 속성에서 선택해서 쓰겠다.
+- 속성을 쓸수도 있고 안쓸 수도 있다.
+- 아래는 원래 interface 라서 반드시 지켜야 한다.
 
 ```ts
-import axios, { AxiosResponse } from "axios";
-
-// Swagger 에서 돌려주는 값
-const dummy = [
-  {
-    ishop: 1,
-    name: "고기굽는남자",
-    location: "삼덕동1가 32-10",
-    count: 33,
-    pics: [
-      "22f6a12a-63d9-4c96-a55d-a297d7e2083f.jpg",
-      "28bc248f-873d-44ac-bf31-a59fa7be485a.jpg",
-      "0d9969ca-dde8-4d42-9b10-3caa87e1aca0.jpg",
-    ],
-    facilities: ["단체 가능", "예약 가능", "화장실구분"],
-  },
-  {
-    ishop: 2,
-    name: "실비소갈비",
-    location: "삼덕동2가 132",
-    count: 33,
-    pics: [
-      "0d1cedd2-b347-4772-ac4f-d00f9346a040.jpg",
-      "7a902bcb-45b5-4736-a475-24e1d2247c4e.jpg",
-    ],
-    facilities: ["주차장", "단체 가능", "와이파이", "화장실구분"],
-  },
-];
-// 더미 결과물에 대한 interface 또는 type 으로 정리
-// chat 한테 물어보세요.
-interface IShop {
-  ishop: number;
-  name: string;
-  location: string;
-  count: number;
-  pics: string[];
-  facilities: string[];
+interface Person {
+  nickName: string;
+  age: number;
 }
-
-type TShop = {
-  ishop: number;
-  name: string;
-  location: string;
-  count: number;
-  pics: string[];
-  facilities: string[];
-};
-
-// 유니온 ( | )
-//   A  |  B
-//   A 또는  B
-//   IShop[] | undefined
-
-// 인터섹션 ( & )
-//  A & B
-//  A 그리고 B
-
-export const getShop = async <T = TShop>(): Promise<T[]> => {
-  const response = await axios.get<T[]>("실제 요청 URL");
-  return response.data; // 서버에서 받은 데이터를 반환
-};
-
-// 보내주어야 하는 데이터의 타입으로 정의한다.
-type TShopData = {
-  pk: number;
-  goodName: string;
-};
-// R 은 전달할 타입 모양
-// T 는 돌려받을 타입 모양
-export const postShop = async <T = TShop, R = TShopData>(
-  postData: R,
-): Promise<T> => {
-  const response = await axios.post<T, AxiosResponse<T>, R>("주소", postData);
-  return response.data; // 서버에서 받은 데이터를 반환
-};
+const p: Persone = { nickName: "홍" }; // 오류
 ```
 
-## 6. Generic
+- 옵션을 적용한 경우
 
-- 함수나 클래스를 만들 때 "어떤 타입"을 사용할지 미리 정하지 않고,
-- 함수나 클래스를 사용할 때 그때그때 원하는 타입을 지정할 수 있어요.
-- 타입 별칭(type alias) 를 마치 함수의 매개변수로 전달하는 느낌이다.
-
-```js
-const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
-  console.log(event.target);
-};
-........
-interface MouseEvent<T = Element, E = NativeMouseEvent> extends UIEvent<T, E> {}
-........
+```ts
+interface Person {
+  nickName: string;
+  age?: number;
+}
+const p: Persone = { nickName: "홍" }; // 정상 작동
 ```
+
+#### 5.4.5. 인터페이스 확장(상속)
+
+- 인터페이스는 extends 키워드를 사용할 수 있다.
+
+```ts
+interface Person {
+  nickName: string;
+  age: number;
+}
+// 타이핑 및 관리도 복잡
+interface Hosop {
+  nickName: string;
+  age: number;
+  job: string;
+}
+interface Choi extends Person {
+  job: string;
+}
+/*  타입이 확장
+interface Choi {
+  nickName: string;
+  age: number;
+  job: string;
+}
+*/
+
+const who: Choi = { job: "개발자", nickName: "미남", age: 20 };
+```
+
+- extends 주의 사항
+
+```ts
+interface Person {
+  nickName: string;
+  age: number;
+}
+// 타입의 종류가 다르면 안된다.
+interface Choi extends Person {
+  nickName: boolean; // 오류발생
+  job: string;
+}
+```
+
+#### 5.4.6. 인터페이스 인덱싱으로 타입만들기
+
+- 인덱싱 : 배열에 있어요.
+
+```ts
+const arr: string[] = ["a", "b", "c"];
+arr[0];
+arr[1];
+arr[2];
+arr.map((item, index, _arr) => {
+  console.log(index);
+});
+```
+
+```ts
+const user = {
+  nickName: "hong",
+  age: 20,
+};
+console.log(user.nickName);
+console.log(user.age);
+
+// 배열인덱싱 : 연관배열 으로 접근이 가능
+console.log(user["nickName"]);
+console.log(user["age"]);
+```
+
+- 배열 인덱싱 활용한 키 정의
+
+```ts
+interface INArr {
+  // 아래의 키는 어떤 숫자든 속성에 이름이 될 수 있다.
+  // 값은 문자열이다.
+  [index: number]: string;
+}
+// 값의 타입은 지켜야 한다.
+const now: InArr = ["홍", "박"];
+console.log(now[0]);
+console.log(now[1]);
+```
+
+```ts
+interface INArr {
+  // 아래의 키는 어떤 숫자든 속성에 이름이 될 수 있다.
+  // 값은 문자열이다.
+  [who: string]: number;
+}
+// 값의 타입은 지켜야 한다.
+const now: InArr = {
+  age: 1,
+  level: 100,
+};
+console.log(now["age"]);
+console.log(now["level"]);
+```
+
+#### 5.4.6. 인터페이스 인덱스 시그니처
+
+- 속성명을 지정하지 않고, 속성의 타입, 속성의 값을 정의하는 문법
+- 마음대로 추가(속성:값타입)가 가능하다.
+- 속성이름과 개수 및 값 타입이 정해지지 않은 경우
