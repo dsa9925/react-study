@@ -10,8 +10,8 @@ const CartItemComponent = ({
   pname,
   price,
   imageFile,
+  changeCart,
 }) => {
-  const { changeCart } = useCustomCart();
   // 상품갯수 변경
   const handleClickQty = amount => {
     changeCart({ email: email, pno: pno, qty: qty + amount, cino });

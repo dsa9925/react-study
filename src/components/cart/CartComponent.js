@@ -11,8 +11,8 @@ const CartComponent = () => {
   // 로그인 정보를 이용(웹앱 전체에 state 관련 기능 모음 - 로그인)
   const { isLogin, loginState } = useCustomLogin();
   const { cartItems, changeCart } = useCustomCart();
-  // const [totalPrice, setTotalPrice] = useRecoilState(atomCartTotalState)
-  const totalPrice = useRecoilValue(atomCartTotalState);
+  const [totalPrice, setTotalPrice] = useRecoilState(atomCartTotalState);
+  // const totalPrice = useRecoilValue(atomCartTotalState);
 
   return (
     <>

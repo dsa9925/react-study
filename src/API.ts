@@ -67,9 +67,7 @@ type TShopData = {
 };
 // R 은 전달할 타입 모양
 // T 는 돌려받을 타입 모양
-export const postShop = async <T = TShop, R = TShopData>(
-  postData: R,
-): Promise<T> => {
+export const postShop = async <T = TShop, R = TShopData>(  postData: R): Promise<T> => {
   const response = await axios.post<T, AxiosResponse<T>, R>("주소", postData);
   return response.data; // 서버에서 받은 데이터를 반환
 };

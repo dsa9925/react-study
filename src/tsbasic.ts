@@ -1,14 +1,19 @@
-interface Student {
-  id: number;
-  nickName: string;
-  speak(): void;
+interface Profile {
+  skill: string;
+  age: number;
 }
-function showItem(item: Student): Student {
-  console.log(item);
-  return item;
-}
+type Who = "a" | "b" | "c";
+type Heroes = Record<Who, Profile>;
 
-const gogo = () => {};
-const who: Student = { id: 1, nickName: "hong", speak: gogo };
+// 만들어지는 타입
+// type Heroes = {
+//   a: Profile;
+//   b: Profile;
+//   c: Profile;
+// }
 
-const st: Student = showItem(who);
+var members: Heroes = {
+  a: { skill: "", age: 100 },
+  b: { skill: "", age: 100 },
+  c: { skill: "", age: 100 },
+};

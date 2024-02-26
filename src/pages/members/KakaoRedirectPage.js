@@ -11,8 +11,8 @@ const KakaoRedirectPage = () => {
   const authCode = uRLSearchParams.get("code");
 
   // 로그인 과정을 위한 loginSlice 을 통해서 로그인시도
-  const dispatch = useDispatch();
-  const { moveToPath } = useCustomLogin();
+  // const dispatch = useDispatch();
+  const { moveToPath, saveAsCookie } = useCustomLogin();
 
   // 인증코드로 Access Token 요청하기
   useEffect(() => {
@@ -24,7 +24,8 @@ const KakaoRedirectPage = () => {
         console.log(memberInfo);
         // API 백엔드 서버로 로그인을 시도합니다.
 
-        dispatch(login(memberInfo));
+        // dispatch(login(memberInfo));
+        saveAsCookie(memberInfo);
 
         // 소셜회원이 아니라면
         if (memberInfo && !memberInfo.social) {
