@@ -1306,11 +1306,15 @@ function isPerson(who: Person | AI) {
   b = a;
   ```
 
-## 8. 유틸리티 타입
+## 8. 유틸리티 타입 (고급영역)
 
+- 외부 또는 다른 개발자가 정의한 타입을 고치지 않고 활용
 - 이미 만들어진 타입의 구조를 고치지 않고 재사용하기
-- tsconfig.json 에서 셋팅
+- tsconfig.json 에서 셋팅을 해야 활용가능
 - 유틸리티 기능들은 라이브러리가 제공
+- TS 는 표준화된 JS + 앞으로 표준화가 될 문법도 지원
+  : ESNext 설정 (최신 또는 비표준화도 활용)
+
   ```json
   "compilerOptions": {
     "lib": [
@@ -1319,7 +1323,7 @@ function isPerson(who: Person | AI) {
   }
   ```
 
-### 8.1. Pick
+### 8.1. Pick ( Pick Me ~~~ )
 
 - 특정 타입의 속성을 뽑아서 새로운 타입을 만들어 낼 때 사용.
 - 문법
@@ -1342,7 +1346,8 @@ function isPerson(who: Person | AI) {
 
 ## 2. Omit
 
-- 특정 타입의 속성을 제외하고 나머지 속성으로 새로운 타입을 만들어 낼 때 사용.
+- 특정 타입의 속성 중 원하지 않는 속성을 제외하고
+- 나머지 속성으로 새로운 타입을 만들어 낼 때 사용.
 - 문법
   : Omit<대상 타입, '대상 타입의 속성 이름' | '대상 타입의 속성 이름'>
 
@@ -1363,6 +1368,7 @@ var user: Profiled = {
 ## 3. Partial
 
 - 특정 타입의 모든 속성을 옵셔널 속성으로 변환한 새로운 타입을 만들어 낼 때 사용.
+- 필수 속성이 아니도록 셋팅한다.
 - 문법
   : Partial<대상 타입>
 
@@ -1373,6 +1379,13 @@ interface Profile {
   name: string;
 }
 type Profiled = Partial<Profile>;
+// 만들어진 결과
+type Profiled = {
+  id?: string;
+  address?: string;
+  name?: string;
+};
+
 var user: Profiled = {
   id: "hong",
 };
@@ -1383,23 +1396,28 @@ var user: Profiled = {
 ## 4. Exclude
 
 - 특정 타입의 유니언 타입을 구성하는 특정 타입을 제외한 새로운 타입을 만들어 낼 때 사용.
-- Pick, Omit, Partial 타입이 모두 객체 타입의 형태를 변형하여 새로운 객체 타입을 만드는 반면 Exclude 타입은 유니언 타입을 변형한다.
+- Pick, Omit, Partial 타입이 모두 객체 타입의 형태를 변형하여 새로운 객체 타입을 만드는 반면
+- Exclude 타입은 유니언 타입을 변형한다.
 - 문법
   : Exclude<대상 타입, "제거할 타입 이름 1" | "제거할 타입 이름 2">
 
   ```ts
   type Languages = "C" | "Java" | "TypeScript" | "React" | "JavaScript";
   type TrueLanguages = Exclude<Languages, "React" | "JavaScript">;
+  // 만들어진 결과
+  // type TrueLanguages = "C" | "Java" | "TypeScript"
   ```
 
 - 결과적으로 타입 별칭을 정의한 것과 같은 효과를 나타낸다.
 
 ## 5. Record
 
-- 타입 1개를 속성의 key로 받고, 다른 타입 1개를 value 로 받아 객체 타입으로 변환
+- 1. 특정 타입 1개를 속성의 key (속성명)으로 받고,
+- 2. 다른 타입 1개를 value (값)으로 받아
+- 3. 객체 타입으로 변환
 - 실제 값을 변경하는 것이 아니라 타입만 map() API 처럼 변환해 줌.
 - 문법
-  : Record<객체 속성의 키로 사용할 타입, 객체 속성의 값으로 사용할 타입>
+  : Record<객체 속성의 키명으로 사용할 타입, 객체 속성의 값으로 사용할 타입>
   : 첫번째 자리는 string, number, string 유니언, number 유니언 등
   : 두번째 자리는 아무 타입이나
 
@@ -1429,4 +1447,262 @@ var user: Profiled = {
 
 ## 9. 맵드 타입
 
-- 내일 진행
+- 기존에 작성된 타입을 이용해서 새로운 타입을 만들때 문법
+- 유틸리티 타입은 모두 다 맵드 타입으로 생성되었음.
+  ```ts
+  type FirstName = "kim" | "park" | "hong";
+  // Maped 타입
+  type Student = {
+    [Name in FirstName]: string;
+  };
+  // 만들어진 결과
+  // type Student = {
+  //   kim: string;
+  //   park: string;
+  //   hong: string;
+  // };
+  ```
+- keyof 는 특정한 타입의 키만 모아서 문자열 유니온 타입으로 변환
+- 데이터 타입도 변경이 가능하다.
+
+  ```ts
+  interface MemberInfo {
+    nickName: string;
+    age: number;
+  }
+  // Maped Type
+  // keyof 는 속성의 이름만 문자열로 가져옮
+  type MemberType = {
+    [H in keyof MemberInfo]: boolean;
+  };
+
+  // 생성된 결과
+  // type MemberType = {
+  //   nickName: boolean;
+  //   age: boolean;
+  // }
+  ```
+
+- 맵핑 수정
+  : 속성값을 옵션(?) 또는 읽기 전용 속성 또는 일반 속성 등으로 변환
+  : ? (옵션속성으로 변경)
+
+  ```ts
+  interface MemberInfo {
+    nickName: string;
+    age: number;
+  }
+  // Maped Type
+  type MemberType = {
+    [H in keyof MemberInfo]?: boolean;
+  };
+
+  // 생성된 결과
+  // type MemberType = {
+  //   nickName?: boolean | undefined;
+  //   age?: boolean | undefined;
+  // }
+  ```
+
+  : -? (옵션속성 제거)
+
+  ```ts
+  interface MemberInfo {
+    nickName?: string;
+    age?: number;
+  }
+  // Maped Type
+  type MemberType = {
+    [H in keyof MemberInfo]-?: boolean;
+  };
+
+  // 생성된 결과
+  // type MemberType = {
+  //   nickName: boolean;
+  //   age: boolean;
+  // }
+  ```
+
+## 10. Module 의 이해
+
+- 모듈은 JS 또는 TS 작성된 파일이라고 보면 될거같다.
+- 모듈은 기능(목적, 역할)으로 구분하는 게 관례
+- 모듈은 작은 코드의 묶음을 통칭
+- JS 는 태생적으로 전역 스코프로 관리됩니다.
+  : 문제점 (문법 오류 또는 값이 변함-예측불가)
+
+  ```txt
+    gogo.js 파일
+
+    let age = 10;
+    ================
+    show.js  파일
+
+    let age = "20대";
+    ===================
+    run.js 파일
+
+    let age = true;
+  ```
+
+### 10.1. JS 전역 스코프 문제 해결법
+
+- Common.js 라이브러리
+  : 웹브라우저, 서버, PC 에서 활용하는 모듈
+  : Node.js
+
+  ```js
+  // math.js
+  function add(a, b) {
+    return a + b;
+  }
+  module.exports = { add };
+
+  // app.js
+  const math = require("./math.js");
+  math.add(10, 20);
+  ```
+
+- Requier.js 라이브러리
+  : AMD(Asynchronus Module Definition)
+  : 비동기용 모듈 라이브러리
+  : 비동기(필요할때 불러들여서 활용.)
+  ```html
+  <!-- index.html -->
+  <srcript src="require.js" />
+  <srcript>
+    require(["http://~~~.js"], function(){
+      console.log("실행하자")
+    });
+  </script>
+  ```
+
+### 10.2. JS 모듈
+
+- import / export 문법
+  : export 기본
+
+  ```js
+  // math.js
+  function add(a, b) {
+    return a + b;
+  }
+  export { add };
+
+  // app.js
+  import { add } from "./math.js";
+  add(10, 20);
+  ```
+
+  : export default (하나만 설정)
+
+  ```js
+  // math.js
+  function add(a, b) {
+    return a + b;
+  }
+  export default add;
+
+  // app.js
+  import add from "./math.js";
+  add(10, 20);
+  ```
+
+  : import as 활용
+
+  ```js
+  // math.js
+  function add(a, b) {
+    return a + b;
+  }
+  export { add };
+
+  // app.js
+  // as 는 alias : 별명을 짓는다.
+  import { gogo as add } from "./math.js";
+
+  // 본인의 코드로 add 를 함수를 만들면 충돌 발생
+  function add(a) {
+    return a * 100;
+  }
+
+  add(10, 20);
+  gogo(200, 50);
+  ```
+
+  : import \* 경로 (export 가 너무 많은 경우)
+
+  ```js
+  // math.js
+  function add(a, b) {
+    return a + b;
+  }
+  function multi(a, b) {
+    return a * b;
+  }
+  function divide(a, b) {
+    return a / b;
+  }
+  function moduler(a, b) {
+    return a % b;
+  }
+  export {add, multi, divide, moduler}
+
+  // app.js
+  // as 는 alias : 별명을 짓는다.
+  import * from "./math.js"
+
+  add(10, 20);
+  multi(10, 20);
+  divide(10, 20);
+  moduler(10, 20);
+  ```
+
+  : export 샘플
+
+  ```js
+  // math.js
+  function add(a, b) {
+    return a + b;
+  }
+  const PI = 3.14;
+  const divide = () => {};
+  class Person {}
+  export { add, PI, divide, Person };
+  ```
+
+- TS 모듈
+  : tsconfig.json 셋팅
+
+  ```json
+  "compilerOptions": {
+    "module": "commonjs",
+    "allowJs": true
+  }
+  ```
+
+  : 샘플코드
+
+  ```ts
+  // math.ts
+  function add(a: number, b: number): number {
+    return a + b;
+  }
+  const PI: number = 3.14;
+  const divide: Function = (): void => {};
+  class Person {}
+  interface AI {}
+  type Info = {};
+
+  export { add, PI, divide, Person, AI, Info };
+  ```
+
+  ```ts
+  // app.ts
+  import { add, PI, divide, Person, AI, Info } from "./math";
+  ```
+
+  ```ts
+  // app.ts
+  import type { add, PI, divide, Person, AI, Info } from "./math";
+  ```

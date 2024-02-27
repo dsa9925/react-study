@@ -1,19 +1,14 @@
-interface Profile {
-  skill: string;
-  age: number;
+// math.ts
+function add(a: number, b: number): number {
+  return a + b;
 }
-type Who = "a" | "b" | "c";
-type Heroes = Record<Who, Profile>;
+const PI: number = 3.14;
+const divide: Function = (): void => {};
+class Person {}
+interface AI {}
+type Info = {};
 
-// 만들어지는 타입
-// type Heroes = {
-//   a: Profile;
-//   b: Profile;
-//   c: Profile;
-// }
+export { add, PI, divide, Person, AI, Info };
 
-var members: Heroes = {
-  a: { skill: "", age: 100 },
-  b: { skill: "", age: 100 },
-  c: { skill: "", age: 100 },
-};
+// app.ts
+import { add, PI, divide, Person, AI, Info } from "./math";
